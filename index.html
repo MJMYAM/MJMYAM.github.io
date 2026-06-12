@@ -930,6 +930,26 @@ function renderStadiums(){
 }
 
 
+
+/* ===== نتائج مؤكدة للمباريات المنتهية (تصحيح يدوي موثّق يتجاوز أخطاء المصدر) ===== */
+var FINAL_RESULTS={
+  1:{sh:2, sa:0, status:"finished",
+     gh:[{who:"خوليان كينيونيس", min:"9"},{who:"راؤول خيمينيز", min:"62"}], ga:[]},
+  2:{sh:2, sa:1, status:"finished",
+     gh:[], ga:[]}
+};
+/* ملاحظة: المباراة 2 في جدولنا = كوريا الجنوبية (h) ضد التشيك (a) => كوريا 2-1 التشيك */
+function applyFinals(){
+  Object.keys(FINAL_RESULTS).forEach(function(k){
+    var n=+k, f=FINAL_RESULTS[k];
+    SC_CACHE[n]={found:true, sh:f.sh, sa:f.sa, status:f.status, minute:""};
+    if(f.gh || f.ga) GOAL_CACHE[n]={home:(f.gh||[]).map(wrapG), away:(f.ga||[]).map(wrapG)};
+    refreshCards(n);
+  });
+  refreshHeroScore();
+}
+function wrapG(x){return {who:'<span style="direction:rtl">'+x.who+'</span>', min:x.min, type:x.type||""};}
+
 /* ===== الأهداف والهدّافون (من نفس المصدر المباشر) ===== */
 var GOAL_CACHE={};
 function goalIcon(ty){
@@ -953,6 +973,7 @@ function renderGoals(m, g){
 }
 async function fetchGoals(n, box, btn){
   var m=getM(n); if(!m || !box) return;
+  if(FINAL_RESULTS[n] && GOAL_CACHE[n]){ box.innerHTML=renderGoals(m,GOAL_CACHE[n]); return; }
   if(btn){btn.disabled=true; btn.innerHTML='جارٍ جلب الأهداف والهدّافين <span class="spin"></span>';}
   else{box.innerHTML='<div class="lu-note">جارٍ التحديث <span class="spin"></span></div>';}
   try{
@@ -1219,9 +1240,10 @@ async function loadScoresESPN(fromYmd,toYmd){
       var status = ty.state==="post" ? "finished" : (ty.state==="in" ? (/half/i.test(desc)?"ht":"live") : "not_started");
       if(status==="not_started") return;
       var sd=mapSides(cs, mm);
+      EVTEAM[mm.n]={h:cs[sd.hi].team.id, a:cs[sd.ai].team.id};
+      if(FINAL_RESULTS[mm.n]){ return; }
       var sh=parseInt(cs[sd.hi].score||"0",10), sa=parseInt(cs[sd.ai].score||"0",10);
       SC_CACHE[mm.n]={found:true, sh:isNaN(sh)?0:sh, sa:isNaN(sa)?0:sa, status:status, minute:String(st.displayClock||"").replace(/['\u2019]/g,"")};
-      EVTEAM[mm.n]={h:cs[sd.hi].team.id, a:cs[sd.ai].team.id};
       refreshCards(mm.n); changed=true;
     }catch(e){}
   });
@@ -1471,7 +1493,9 @@ tick();
 setInterval(tick, 1000);
 setInterval(function(){renderHero(); renderHomeLists();}, 60000);
 setInterval(pollScores, 120000);
+applyFinals();
 loadScoresESPN("20260610", ymd(new Date(Date.now()+24*3600000))).catch(function(){});
+setTimeout(applyFinals, 4000);
 </script>
 </body>
 </html>
