@@ -1236,8 +1236,9 @@ async function loadScoresESPN(fromYmd,toYmd){
       var mm=findByNames(n1,n2) || attachKnockout(ev,n1,n2);
       if(!mm) return;
       EV_ID[mm.n]=ev.id;
-      var st=ev.status||{}, ty=st.type||{}, desc=ty.description||"";
-      var status = ty.state==="post" ? "finished" : (ty.state==="in" ? (/half/i.test(desc)?"ht":"live") : "not_started");
+      var st=ev.status||{}, ty=st.type||{}, desc=(ty.description||"")+" "+(ty.detail||"")+" "+(ty.name||"");
+      var isHT = /halftime|half-time|half time|STATUS_HALFTIME/i.test(desc) && !/second/i.test(desc);
+      var status = ty.state==="post" ? "finished" : (ty.state==="in" ? (isHT?"ht":"live") : "not_started");
       if(status==="not_started") return;
       var sd=mapSides(cs, mm);
       EVTEAM[mm.n]={h:cs[sd.hi].team.id, a:cs[sd.ai].team.id};
