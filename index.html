@@ -972,8 +972,8 @@ async function fetchGoals(n, box, btn){
       var comps=((d1.header||{}).competitions||[])[0];
       if(comps){
         var cs=comps.competitors||[];
-        var n1=(cs[0].team||{}).displayName, hIdx=teamIs(m.h,n1)?0:1;
-        var sh=parseInt(cs[hIdx].score,10), sa=parseInt(cs[1-hIdx].score,10);
+        var sd=mapSides(cs, m);
+        var sh=parseInt(cs[sd.hi].score,10), sa=parseInt(cs[sd.ai].score,10);
         if(!isNaN(sh)&&!isNaN(sa)){
           var stt=((comps.status||{}).type||{});
           SC_CACHE[n]={found:true,sh:sh,sa:sa,status:stt.state==="post"?"finished":(stt.state==="in"?"live":"not_started"),minute:""};
@@ -1160,6 +1160,23 @@ function teamIs(ar,en){
   var e=normEn(en);
   return al.some(function(a){return e.indexOf(a)!==-1 || a.indexOf(e)!==-1;});
 }
+function mapSides(cs, m){
+  var hi=-1, ai=-1;
+  for(var i=0;i<cs.length;i++){
+    var nm=((cs[i].team||{}).displayName)||((cs[i].team||{}).name)||"";
+    if(hi===-1 && teamIs(m.h,nm)) hi=i;
+    else if(ai===-1 && teamIs(m.a,nm)) ai=i;
+  }
+  if(hi===-1 || ai===-1){
+    for(var j=0;j<cs.length;j++){
+      if(cs[j].homeAway==="home" && hi===-1) hi=j;
+      if(cs[j].homeAway==="away" && ai===-1) ai=j;
+    }
+  }
+  if(hi===-1) hi=(ai===0?1:0);
+  if(ai===-1) ai=(hi===0?1:0);
+  return {hi:hi, ai:ai};
+}
 function findByNames(n1,n2){
   for(var i=0;i<M.length;i++){var m=M[i];
     if(!ALIAS[m.h]||!ALIAS[m.a]) continue;
@@ -1198,13 +1215,13 @@ async function loadScoresESPN(fromYmd,toYmd){
       var mm=findByNames(n1,n2) || attachKnockout(ev,n1,n2);
       if(!mm) return;
       EV_ID[mm.n]=ev.id;
-      try{ var _h=teamIs(mm.h,n1)?0:1; EVTEAM[mm.n]={h:cs[_h].team.id, a:cs[1-_h].team.id}; }catch(_e){}
       var st=ev.status||{}, ty=st.type||{}, desc=ty.description||"";
       var status = ty.state==="post" ? "finished" : (ty.state==="in" ? (/half/i.test(desc)?"ht":"live") : "not_started");
       if(status==="not_started") return;
-      var hIdx = teamIs(mm.h,n1)?0:1;
-      var sh=parseInt(cs[hIdx].score||"0",10), sa=parseInt(cs[1-hIdx].score||"0",10);
+      var sd=mapSides(cs, mm);
+      var sh=parseInt(cs[sd.hi].score||"0",10), sa=parseInt(cs[sd.ai].score||"0",10);
       SC_CACHE[mm.n]={found:true, sh:isNaN(sh)?0:sh, sa:isNaN(sa)?0:sa, status:status, minute:String(st.displayClock||"").replace(/['\u2019]/g,"")};
+      EVTEAM[mm.n]={h:cs[sd.hi].team.id, a:cs[sd.ai].team.id};
       refreshCards(mm.n); changed=true;
     }catch(e){}
   });
