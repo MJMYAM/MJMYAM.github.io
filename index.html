@@ -336,7 +336,7 @@ nav#bn button .ic{font-size:19px;}
 .adv.show{display:block;}
 
 /* ===== النتيجة المباشرة وجدول الترتيب ===== */
-.vs .sc{display:flex; align-items:center; justify-content:center; gap:6px; direction:ltr;}
+.vs .sc{display:flex; align-items:center; justify-content:center; gap:6px; direction:rtl;}
 .vs .sc .num{font-family:"Changa",sans-serif; font-weight:800; font-size:22px; line-height:1.1; color:#fff;}
 .vs .sc .sep{color:var(--dim); font-weight:800; font-size:15px;}
 .vs .scst{display:block; font-size:9.5px; margin-top:2px; color:var(--mut);}
@@ -1289,7 +1289,7 @@ function refreshHeroScore(){
   var el=document.getElementById("heroScore"); if(!el || window._liveN===null) return;
   var sc=SC_CACHE[window._liveN];
   if(sc && sc.found){
-    el.innerHTML='<span style="direction:ltr;display:inline-block;letter-spacing:2px">'+sc.sh+' : '+sc.sa+'</span>'
+    el.innerHTML='<span style="direction:rtl;display:inline-block;letter-spacing:2px">'+sc.sh+' : '+sc.sa+'</span>'
       +(sc.status==="live"&&sc.minute?' <small style="font-size:13px;color:#ffb1b8">⏱ '+sc.minute+'</small>':'')
       +(sc.status==="ht"?' <small style="font-size:13px;color:#ffb1b8">استراحة</small>':'');
   }
