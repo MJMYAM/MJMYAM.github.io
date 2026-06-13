@@ -479,6 +479,9 @@ nav#bn button .ic{font-size:19px;}
 .cd-timer i{font-family:"Changa",sans-serif; font-style:normal; font-weight:800; font-size:18px; color:var(--gold2); font-variant-numeric:tabular-nums;}
 .cd-timer u{text-decoration:none; font-size:9px; color:var(--mut); margin:0 3px 0 1px;}
 .cd-live{font-size:12.5px; font-weight:700; color:#ff6b76; white-space:nowrap;}
+
+.st-source{font-size:11px; color:var(--mut); text-align:center; margin:0 2px 12px; padding:7px 12px; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:10px; line-height:1.7;}
+.st-source b{color:var(--gold2);}
 </style>
 </head>
 <body>
@@ -552,6 +555,7 @@ nav#bn button .ic{font-size:19px;}
   <!-- ============ GROUPS ============ -->
   <section id="tab-groups" class="tab">
     <div class="sec-t"><i></i>المجموعات الـ12 <span class="cnt">48 منتخبًا</span></div>
+    <div id="stSource" class="st-source">المصدر: حساب تلقائي من النتائج</div>
     <div class="ggrid" id="groupGrid"></div>
   </section>
 
@@ -1098,8 +1102,16 @@ function renderGroups(){
       +'<div id="st-'+g+'">'+initStandTable(g)+'</div>'
       +'<button class="gbtn" data-gomatches-group="'+g+'">📅 عرض مباريات المجموعة '+g+'</button></div>';
   }).join("");
-  // اجلب الترتيب المباشر تلقائيًا لكل المجموعات
-  loadStandingsESPN().catch(function(){});
+  var src=document.getElementById("stSource");
+  if(src) src.textContent="المصدر: حساب تلقائي من النتائج · جارٍ المزامنة مع ESPN…";
+  // اسحب الترتيب الرسمي من ESPN بالخلفية
+  loadStandingsESPN().then(function(){
+    var s2=document.getElementById("stSource");
+    if(s2) s2.innerHTML='✅ مصدر الترتيب: <b>ESPN</b> (محدّث رسميًا) — يتحدّث تلقائيًا';
+  }).catch(function(){
+    var s2=document.getElementById("stSource");
+    if(s2) s2.textContent="المصدر: حساب تلقائي من النتائج المؤكدة (تعذّرت مزامنة ESPN الآن)";
+  });
 }
 
 /* ===== حساب ترتيب المجموعة تلقائيًا من النتائج المنتهية ===== */
@@ -1547,17 +1559,32 @@ async function loadStandingsESPN(){
     var ents=((ch.standings||{}).entries)||[]; if(!ents.length) return;
     var rows=ents.map(function(en){
       var st={}; (en.stats||[]).forEach(function(x){if(x&&x.name) st[x.name]=x;});
-      function v(names,dv){
+      function v(names){
         for(var i=0;i<names.length;i++){var o=st[names[i]];
-          if(o) return dv ? (o.displayValue!=null?o.displayValue:o.value) : (o.value!=null?o.value:o.displayValue);}
+          if(o) return parseInt(o.value!=null?o.value:o.displayValue,10)||0;}
         return 0;
       }
       var nm=(en.team||{}).displayName||"";
-      var gd=String(v(["pointDifferential","goalDifferential","differential"],true));
-      if(/^\d/.test(gd)&&gd!=="0") gd="+"+gd;
-      return {t:arOf(nm)||nm, p:v(["gamesPlayed"]), w:v(["wins"]), d:v(["ties","draws"]), l:v(["losses"]), gd:gd, pts:v(["points"])};
+      return {t:arOf(nm)||nm, p:v(["gamesPlayed"]), w:v(["wins"]), d:v(["ties","draws"]), l:v(["losses"]),
+              gf:v(["pointsFor","goalsFor"]), ga:v(["pointsAgainst","goalsAgainst"]), pts:v(["points"])};
     });
-    ST_CACHE[g]={rows:rows}; got++;
+    // أعد الفرز بأنفسنا (نقاط ثم فارق ثم أهداف) لضمان الترتيب الصحيح
+    rows.sort(function(a,b){
+      if(b.pts!==a.pts) return b.pts-a.pts;
+      var gA=a.gf-a.ga, gB=b.gf-b.ga;
+      if(gB!==gA) return gB-gA;
+      return b.gf-a.gf;
+    });
+    // قارن مع المحسوب محليًا: استخدم أيهما عدد مبارياته أكبر (الأحدث)
+    var local=computeStanding(g);
+    var espnPlayed=rows.reduce(function(s,r){return s+r.p;},0);
+    var localPlayed=local.reduce(function(s,r){return s+r.p;},0);
+    if(espnPlayed>=localPlayed){
+      ST_CACHE[g]={rows:rows.map(function(r){var gd=r.gf-r.ga; return {t:r.t,p:r.p,w:r.w,d:r.d,l:r.l,gd:(gd>0?"+":"")+gd,pts:r.pts};})};
+    } else {
+      ST_CACHE[g]={rows:local};
+    }
+    got++;
   });
   if(!got) throw new Error("empty");
   Object.keys(GROUPS).forEach(function(g){ if(ST_CACHE[g]) renderStanding(g); });
@@ -1636,7 +1663,19 @@ async function fetchScore(n, btn){
 function renderStanding(g){
   var box=document.getElementById("st-"+g);
   if(!box) return;
-  box.innerHTML=initStandTable(g);
+  var c=ST_CACHE[g];
+  if(c && c.rows && c.rows.length){
+    // ترتيب رسمي من ESPN
+    var body=c.rows.slice(0,4).map(function(r,i){
+      var cls=i<2?"q":(i===2?"m3":"");
+      return '<tr class="'+cls+'"><td><span class="pos">'+(i+1)+'</span></td>'
+        +'<td class="t">'+flagImg(r.t)+' '+r.t+'</td><td>'+r.p+'</td><td>'+r.gd+'</td><td class="pts">'+r.pts+'</td></tr>';
+    }).join("");
+    box.innerHTML='<table class="sttbl"><tr><th>#</th><th class="t">المنتخب</th><th>لعب</th><th>+/-</th><th>نقاط</th></tr>'+body
+      +'</table><div class="stmeta">الأول والثاني للأدوار الإقصائية + أفضل 8 ثوالث</div>';
+  } else {
+    box.innerHTML=initStandTable(g);
+  }
 }
 async function fetchStanding(g, btn){
   var box=document.getElementById("st-"+g);
