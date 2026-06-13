@@ -1077,14 +1077,7 @@ var BEIN_CHANNEL_URL = "https://www.youtube.com/@beINSPORTS/videos";
 
 // عند الضغط على زر beIN: نفتح YouTube مباشرة مع بحث ذكي
 
-function beinSearchURL(m){
-  // بحث يوتيوب مُفلتر على قناة beIN SPORTS الرسمية + اسمي الفريقين + ملخص
-  var q = "ملخص "+m.h+" ضد "+m.a+" كأس العالم beIN SPORTS";
-  return "https://www.youtube.com/results?search_query="+encodeURIComponent(q);
-}
-function beinChannelURL(){
-  return "https://www.youtube.com/@beINSPORTS/search?query="+encodeURIComponent("كأس العالم 2026 ملخص");
-}
+function ytSearch(q){ return "https://www.youtube.com/results?search_query="+encodeURIComponent(q); }
 function openBeinMatch(btn){
   var card = btn.closest(".match");
   if(!card) return;
@@ -1095,24 +1088,24 @@ function openBeinMatch(btn){
   box.style.display = "block";
 
   var st = statusOf(m);
-  var stxt = st==="done" ? "شاهد ملخص المباراة وأهدافها" :
-             st==="live" ? "البث المباشر والتحديثات اللحظية" :
-                           "أخبار المباراة وتغطيتها قبل انطلاقها";
+  var sub = st==="done" ? "ملخص المباراة والأهداف" :
+            st==="live" ? "آخر تطورات المباراة الآن" :
+                          "تغطية المباراة قبل انطلاقها";
 
-  // كل الروابط تفتح يوتيوب/beIN مباشرة — تشتغل على الآيفون والأندرويد بدون أي مشاكل CORS
+  // روابط بحث يوتيوب — تشتغل على أي جهاز ولا تفشل أبدًا
   box.innerHTML =
     '<div class="behin-grid">'+
-      '<a class="behin-link primary" href="'+beinSearchURL(m)+'" target="_blank" rel="noopener">'+
+      '<a class="behin-link primary" href="'+ytSearch("ملخص "+m.h+" ضد "+m.a+" كأس العالم 2026 beIN SPORTS")+'" target="_blank" rel="noopener">'+
         '<strong>▶ ملخص '+m.h+' × '+m.a+'</strong>'+
-        '<span>'+stxt+' — نتائج beIN SPORTS على يوتيوب</span>'+
+        '<span>'+sub+' — beIN SPORTS على يوتيوب</span>'+
       '</a>'+
-      '<a class="behin-link" href="'+beinChannelURL()+'" target="_blank" rel="noopener">'+
-        '<strong>📺 قناة beIN SPORTS الرسمية</strong>'+
-        '<span>كل ملخصات وأهداف كأس العالم 2026</span>'+
+      '<a class="behin-link" href="'+ytSearch("beIN SPORTS كأس العالم 2026 ملخصات")+'" target="_blank" rel="noopener">'+
+        '<strong>📺 كل ملخصات كأس العالم على beIN</strong>'+
+        '<span>أحدث فيديوهات البطولة</span>'+
       '</a>'+
       '<a class="behin-link" href="https://tod.tv" target="_blank" rel="noopener">'+
-        '<strong>🔴 TOD / beIN — البث المباشر الرسمي</strong>'+
-        '<span>الناقل الحصري للبطولة في الشرق الأوسط</span>'+
+        '<strong>🔴 TOD — البث المباشر الرسمي</strong>'+
+        '<span>الناقل الحصري في الشرق الأوسط</span>'+
       '</a>'+
     '</div>';
   if(btn.classList.contains("bein-video-btn")) btn.style.display = "none";
