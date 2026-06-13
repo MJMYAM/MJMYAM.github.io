@@ -1201,28 +1201,14 @@ async function fetchGoals(n, box, btn){
 /* ================= beIN SPORTS Video (مباشر) ================= */
 var BEIN_CHANNEL_URL = "https://www.youtube.com/@beINSPORTS/videos";
 
-function ytEmbedSearch(q){
-  return "https://www.youtube.com/embed?listType=search&list="+encodeURIComponent(q)+"&rel=0&modestbranding=1&hl=ar";
-}
 function openBeinMatch(btn){
   var card = btn.closest(".match");
   if(!card) return;
-  var mn = card.dataset.mn;
-  var m = getM(+mn);
-  var box = document.getElementById("behin-"+mn);
-  if(!box || !m) return;
-  box.style.display = "block";
-  var st = statusOf(m);
-  var sub = st==="done" ? "ملخص المباراة والأهداف" :
-            st==="live" ? "آخر تطورات المباراة الآن" :
-                          "تغطية المباراة قبل انطلاقها";
-  var q = "ملخص "+m.h+" "+m.a+" كأس العالم 2026 beIN";
-  var qFull = "ملخص "+m.h+" ضد "+m.a+" كأس العالم 2026 beIN SPORTS";
-  box.innerHTML =
-    '<div class="behin-frame"><iframe src="'+ytEmbedSearch(q)+'" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>'+
-    '<div class="behin-cap">▶ ملخص '+m.h+' × '+m.a+' — beIN SPORTS</div>'+
-    '<a class="behin-link" href="https://www.youtube.com/results?search_query='+encodeURIComponent(qFull)+'" target="_blank" rel="noopener"><strong>↗ فتح الملخص في يوتيوب</strong><span>إن لم يظهر الفيديو بالأعلى، افتحه مباشرة</span></a>';
-  if(btn.classList.contains("bein-video-btn")) btn.style.display = "none";
+  var m = getM(+card.dataset.mn);
+  if(!m) return;
+  var q = "ملخص "+m.h+" ضد "+m.a+" كأس العالم 2026 beIN SPORTS";
+  // يحوّل مباشرة على يوتيوب (يفتح تطبيق يوتيوب على الجوال)
+  window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(q), "_blank", "noopener");
 }
 
 /* ================= LINEUPS & TV (live fetch) ================= */
