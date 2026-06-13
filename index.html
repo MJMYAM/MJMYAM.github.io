@@ -482,6 +482,13 @@ nav#bn button .ic{font-size:19px;}
 
 .st-source{font-size:11px; color:var(--mut); text-align:center; margin:0 2px 12px; padding:7px 12px; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:10px; line-height:1.7;}
 .st-source b{color:var(--gold2);}
+
+/* اليوم الذي فيه مباراة مباشرة الآن */
+.day.liveday{position:relative; background:linear-gradient(135deg,var(--gold2),var(--gold)); border-color:var(--gold); box-shadow:0 0 14px -2px rgba(240,194,75,.7); animation:dayglow 1.6s ease-in-out infinite;}
+.day.liveday .w,.day.liveday .d{color:#0b0f24;}
+.day.liveday.on{box-shadow:0 0 18px -1px rgba(240,194,75,.85);}
+.day .livedot{position:absolute; top:4px; left:6px; width:7px; height:7px; border-radius:50%; background:#e0273a; box-shadow:0 0 0 2px rgba(255,255,255,.7); animation:blink 1s infinite;}
+@keyframes dayglow{0%,100%{box-shadow:0 0 14px -2px rgba(240,194,75,.6);}50%{box-shadow:0 0 20px 1px rgba(240,194,75,.9);}}
 </style>
 </head>
 <body>
@@ -1014,7 +1021,10 @@ function buildDays(){
   ds.forEach(function(d){
     if(!r32done && d>"2026-06-28"){ html+='<div class="day" data-day="r32blk"><span class="w">دور</span><span class="d">الـ32</span></div>'; r32done=true; }
     var x=new Date(d+"T12:00:00");
-    html+='<div class="day'+(d===today?" tdy":"")+'" data-day="'+d+'"><span class="w">'+WD[x.getDay()]+'</span><span class="d">'+x.getDate()+'/'+(x.getMonth()+1)+'</span></div>';
+    var hasLive=M.some(function(mm){return mm.d===d && statusOf(mm)==="live";});
+    html+='<div class="day'+(d===today?" tdy":"")+(hasLive?" liveday":"")+'" data-day="'+d+'">'
+      +(hasLive?'<span class="livedot"></span>':'')
+      +'<span class="w">'+WD[x.getDay()]+'</span><span class="d">'+x.getDate()+'/'+(x.getMonth()+1)+'</span></div>';
   });
   var el=document.getElementById("dayStrip");
   el.innerHTML=html;
@@ -1213,7 +1223,7 @@ var FINAL_RESULTS={
 };
 /* ملاحظة: المباراة 2 في جدولنا = كوريا الجنوبية (h) ضد التشيك (a) => كوريا 2-1 التشيك */
 function applyFinals(){
-  setTimeout(function(){ if(document.getElementById('groupGrid')) Object.keys(GROUPS).forEach(renderStanding); },50);
+  setTimeout(function(){ if(document.getElementById('groupGrid')) Object.keys(GROUPS).forEach(renderStanding); if(document.getElementById('dayStrip')) buildDays(); },50);
   Object.keys(FINAL_RESULTS).forEach(function(k){
     var n=+k, f=FINAL_RESULTS[k];
     SC_CACHE[n]={found:true, sh:f.sh, sa:f.sa, status:f.status, minute:""};
@@ -1593,6 +1603,7 @@ async function loadStandingsESPN(){
 }
 async function pollScores(){
   if(document.hidden) return;
+  try{ if(document.getElementById('dayStrip')) buildDays(); }catch(e){}
   var now=Date.now();
   try{ await loadScoresESPN(ymd(new Date(now-36*3600000)), ymd(new Date(now+24*3600000))); }
   catch(e){ if(window._liveN!==null) fetchScore(window._liveN); }
