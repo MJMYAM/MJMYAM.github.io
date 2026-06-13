@@ -1084,14 +1084,23 @@ function resetFilters(){
 function renderGroups(){
   var el=document.getElementById("groupGrid");
   el.innerHTML=Object.keys(GROUPS).map(function(g){
-    var rows=GROUPS[g].map(function(t){
-      return '<div class="trow" data-team="'+t+'"><span class="fl">'+flagImg(t)+'</span><span class="tn">'+t+'</span><span class="go">‹ مبارياته</span></div>';
-    }).join("");
-    return '<div class="grp"><span class="big">'+g+'</span><h3><span class="ltr">'+g+'</span>المجموعة '+g+'</h3>'+rows
-      +'<button class="stbtn" data-st="'+g+'">📊 الترتيب المباشر للمجموعة '+g+'</button>'
-      +'<div id="st-'+g+'"></div>'
+    return '<div class="grp"><span class="big">'+g+'</span>'
+      +'<h3><span class="ltr">'+g+'</span>المجموعة '+g+'</h3>'
+      +'<div id="st-'+g+'">'+initStandTable(g)+'</div>'
       +'<button class="gbtn" data-gomatches-group="'+g+'">📅 عرض مباريات المجموعة '+g+'</button></div>';
   }).join("");
+  // اجلب الترتيب المباشر تلقائيًا لكل المجموعات
+  loadStandingsESPN().catch(function(){});
+}
+function initStandTable(g){
+  // جدول مبدئي بالمنتخبات بترتيب القرعة وأصفار، يُحدَّث تلقائيًا من المصدر المباشر
+  var rows=GROUPS[g].map(function(t,i){
+    var cls=i<2?"q":(i===2?"m3":"");
+    return '<tr class="'+cls+'"><td><span class="pos">'+(i+1)+'</span></td>'
+      +'<td class="t">'+flagImg(t)+' '+t+'</td><td>0</td><td>0</td><td class="pts">0</td></tr>';
+  }).join("");
+  return '<table class="sttbl"><tr><th>#</th><th class="t">المنتخب</th><th>لعب</th><th>+/-</th><th>نقاط</th></tr>'+rows
+    +'</table><div class="stmeta">الأول والثاني للأدوار الإقصائية + أفضل 8 ثوالث · يُحدَّث تلقائيًا</div>';
 }
 
 /* ================= KNOCKOUT TAB ================= */
