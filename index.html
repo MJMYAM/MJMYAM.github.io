@@ -1101,14 +1101,47 @@ function renderGroups(){
   // اجلب الترتيب المباشر تلقائيًا لكل المجموعات
   loadStandingsESPN().catch(function(){});
 }
+
+/* ===== حساب ترتيب المجموعة تلقائيًا من النتائج المنتهية ===== */
+function computeStanding(g){
+  var teams={};
+  GROUPS[g].forEach(function(t){ teams[t]={t:t,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}; });
+  // مرّ على مباريات المجموعة المنتهية واحسب
+  M.forEach(function(m){
+    if(m.g!==g) return;
+    var sc=SC_CACHE[m.n];
+    if(!sc || !sc.found) return;
+    if(sc.status!=="finished" && sc.status!=="live" && sc.status!=="ht") return;
+    var H=teams[m.h], A=teams[m.a];
+    if(!H||!A) return;
+    H.p++; A.p++;
+    H.gf+=sc.sh; H.ga+=sc.sa; A.gf+=sc.sa; A.ga+=sc.sh;
+    if(sc.sh>sc.sa){ H.w++; A.l++; H.pts+=3; }
+    else if(sc.sh<sc.sa){ A.w++; H.l++; A.pts+=3; }
+    else { H.d++; A.d++; H.pts++; A.pts++; }
+  });
+  var arr=GROUPS[g].map(function(t){return teams[t];});
+  arr.sort(function(a,b){
+    if(b.pts!==a.pts) return b.pts-a.pts;
+    var gdA=a.gf-a.ga, gdB=b.gf-b.ga;
+    if(gdB!==gdA) return gdB-gdA;
+    if(b.gf!==a.gf) return b.gf-a.gf;
+    return GROUPS[g].indexOf(a.t)-GROUPS[g].indexOf(b.t);
+  });
+  return arr.map(function(r){
+    var gd=r.gf-r.ga;
+    return {t:r.t, p:r.p, w:r.w, d:r.d, l:r.l, gd:(gd>0?"+":"")+gd, pts:r.pts};
+  });
+}
+
 function initStandTable(g){
-  // جدول مبدئي بالمنتخبات بترتيب القرعة وأصفار، يُحدَّث تلقائيًا من المصدر المباشر
-  var rows=GROUPS[g].map(function(t,i){
+  var rows=computeStanding(g);
+  var body=rows.map(function(r,i){
     var cls=i<2?"q":(i===2?"m3":"");
     return '<tr class="'+cls+'"><td><span class="pos">'+(i+1)+'</span></td>'
-      +'<td class="t">'+flagImg(t)+' '+t+'</td><td>0</td><td>0</td><td class="pts">0</td></tr>';
+      +'<td class="t">'+flagImg(r.t)+' '+r.t+'</td><td>'+r.p+'</td><td>'+r.gd+'</td><td class="pts">'+r.pts+'</td></tr>';
   }).join("");
-  return '<table class="sttbl"><tr><th>#</th><th class="t">المنتخب</th><th>لعب</th><th>+/-</th><th>نقاط</th></tr>'+rows
+  return '<table class="sttbl"><tr><th>#</th><th class="t">المنتخب</th><th>لعب</th><th>+/-</th><th>نقاط</th></tr>'+body
     +'</table><div class="stmeta">الأول والثاني للأدوار الإقصائية + أفضل 8 ثوالث · يُحدَّث تلقائيًا</div>';
 }
 
@@ -1161,10 +1194,14 @@ var FINAL_RESULTS={
      gh:[{who:"خوليان كينيونيس", min:"9"},{who:"راؤول خيمينيز", min:"62"}], ga:[]},
   2:{sh:2, sa:1, status:"finished",
      gh:[{who:"هوانغ إن-بيوم", min:"67"},{who:"أوه هيون-غيو", min:"80"}],
-     ga:[{who:"لاديسلاف كرايتشي", min:"59"}]}
+     ga:[{who:"لاديسلاف كرايتشي", min:"59"}]},
+  4:{sh:4, sa:1, status:"finished",
+     gh:[{who:"هدف عكسي (بوباديلا)", min:"7"},{who:"فولارين بالوغون", min:"31"},{who:"فولارين بالوغون", min:"45"},{who:"جيوفاني رينا", min:"90"}],
+     ga:[{who:"ماوريسيو", min:"73"}]}
 };
 /* ملاحظة: المباراة 2 في جدولنا = كوريا الجنوبية (h) ضد التشيك (a) => كوريا 2-1 التشيك */
 function applyFinals(){
+  setTimeout(function(){ if(document.getElementById('groupGrid')) Object.keys(GROUPS).forEach(renderStanding); },50);
   Object.keys(FINAL_RESULTS).forEach(function(k){
     var n=+k, f=FINAL_RESULTS[k];
     SC_CACHE[n]={found:true, sh:f.sh, sa:f.sa, status:f.status, minute:""};
@@ -1597,16 +1634,9 @@ async function fetchScore(n, btn){
   }
 }
 function renderStanding(g){
-  var box=document.getElementById("st-"+g), c=ST_CACHE[g];
-  if(!box || !c) return;
-  var html='<table class="sttbl"><tr><th>#</th><th class="t">المنتخب</th><th>لعب</th><th>+/-</th><th>نقاط</th></tr>';
-  c.rows.slice(0,4).forEach(function(r,i){
-    var cls=i<2?"q":(i===2?"m3":"");
-    html+='<tr class="'+cls+'"><td><span class="pos">'+(i+1)+'</span></td><td class="t">'+flagImg(r.t)+' '+r.t+'</td><td>'+r.p+'</td><td>'+r.gd+'</td><td class="pts">'+r.pts+'</td></tr>';
-  });
-  html+='</table><div class="stmeta">الأول والثاني يتأهلان مباشرة + أفضل 8 من أصحاب المركز الثالث · <button class="lu-alt" data-st="'+g+'">↻ تحديث الترتيب</button></div>';
-  box.innerHTML=html;
-  var b=document.querySelector('.stbtn[data-st="'+g+'"]'); if(b) b.style.display="none";
+  var box=document.getElementById("st-"+g);
+  if(!box) return;
+  box.innerHTML=initStandTable(g);
 }
 async function fetchStanding(g, btn){
   var box=document.getElementById("st-"+g);
