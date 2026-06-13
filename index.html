@@ -388,17 +388,56 @@ nav#bn button .ic{font-size:19px;}
 .flg{height:1em; width:auto; border-radius:.14em; box-shadow:0 1px 3px rgba(0,0,0,.45); vertical-align:-.12em;}
 
 
-/* ===== beIN روابط الفيديو (محدّثة) ===== */
-.behin-grid{display:flex; flex-direction:column; gap:7px; margin-top:8px;}
-.behin-link{display:block; padding:10px 12px; border-radius:11px; text-decoration:none;
-  background:rgba(255,255,255,.04); border:1px solid var(--line); transition:transform .15s, border-color .2s;}
-.behin-link:active{transform:scale(.98);}
-.behin-link.primary{background:linear-gradient(135deg,rgba(232,72,85,.28),rgba(232,72,85,.08)); border-color:rgba(232,72,85,.6);}
-.behin-link strong{display:block; color:var(--gold2); font-size:12.5px; font-weight:700; margin-bottom:2px;}
-.behin-link.primary strong{color:#ffb3ba;}
-.behin-link span{display:block; color:var(--mut); font-size:10.5px; line-height:1.6;}
-
+.behin-frame{position:relative; width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; margin-top:8px; border:1px solid var(--line); background:#000;}
+.behin-frame iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
 .behin-cap{font-size:11.5px; color:var(--gold2); font-weight:600; text-align:center; margin-top:7px;}
+.behin-link{display:block; padding:9px 12px; border-radius:11px; text-decoration:none; background:rgba(255,255,255,.04); border:1px solid var(--line); margin-top:8px;}
+.behin-link strong{display:block; color:var(--gold2); font-size:12px; font-weight:700;}
+.behin-link span{display:block; color:var(--mut); font-size:10.5px; margin-top:2px;}
+
+/* ===== INFO TAB ===== */
+.info-hero{position:relative; overflow:hidden; border-radius:20px; border:1px solid rgba(240,194,75,.28); padding:20px 16px; text-align:center;
+  background:radial-gradient(120% 140% at 80% -20%, rgba(240,194,75,.16), transparent 55%), linear-gradient(160deg,#101737,#090d22 70%); margin-bottom:6px;}
+.info-hero .ih-cup{font-size:46px; filter:drop-shadow(0 6px 16px rgba(240,194,75,.5));}
+.info-hero .ih-title{font-family:"Changa",sans-serif; font-weight:800; font-size:18px; margin-top:6px; color:#ffe9b0;}
+.info-hero .ih-sub{font-size:12px; color:var(--mut); margin-top:4px;}
+.info-hero .ih-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:14px;}
+.info-hero .ih-stats div{background:rgba(255,255,255,.06); border:1px solid var(--line); border-radius:13px; padding:9px 2px;}
+.info-hero .ih-stats b{display:block; font-family:"Changa",sans-serif; font-weight:800; font-size:19px; color:var(--gold2);}
+.info-hero .ih-stats span{font-size:10px; color:var(--mut);}
+
+.mascot-grid{display:grid; grid-template-columns:1fr; gap:10px;}
+@media(min-width:520px){.mascot-grid{grid-template-columns:repeat(3,1fr);}}
+.mascot{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; text-align:center;}
+.mascot .ms-em{font-size:38px;}
+.mascot .ms-nm{font-family:"Changa",sans-serif; font-weight:700; font-size:15px; margin-top:6px; display:flex; align-items:center; justify-content:center; gap:6px;}
+.mascot .ms-co{font-size:11px; color:var(--gold2); margin-top:2px;}
+.mascot .ms-ds{font-size:11px; color:var(--mut); margin-top:7px; line-height:1.8;}
+
+.host-wrap{display:flex; flex-direction:column; gap:10px;}
+.host-co{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:13px;}
+.host-co .hc-head{display:flex; align-items:center; gap:7px; font-size:14px; margin-bottom:9px;}
+.host-co .hc-head b{font-family:"Changa",sans-serif; font-weight:700;}
+.host-co .hc-n{margin-right:auto; font-size:10.5px; color:var(--mut); background:rgba(255,255,255,.06); padding:2px 9px; border-radius:99px;}
+.host-co .hc-cities{display:flex; flex-wrap:wrap; gap:6px;}
+.city-chip{font-size:11px; color:#cdd6f4; background:rgba(255,255,255,.05); border:1px solid var(--line); border-radius:99px; padding:4px 11px;}
+
+.ball-card{display:flex; align-items:center; gap:14px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px;}
+.ball-card .ball-ic{font-size:40px; flex-shrink:0;}
+.ball-card h4{margin:0 0 4px; font-family:"Changa",sans-serif; font-weight:700; font-size:15px; color:var(--gold2);}
+.ball-card p{margin:0; font-size:11.5px; color:var(--mut); line-height:1.9;}
+
+.ref-note{font-size:11.5px; color:var(--mut); background:rgba(255,255,255,.04); border:1px dashed var(--line); border-radius:12px; padding:9px 12px; margin-bottom:10px; line-height:1.8;}
+.ref-wrap{display:flex; flex-direction:column; gap:12px;}
+.ref-conf{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px;}
+.ref-conf .rc-head{font-family:"Changa",sans-serif; font-weight:700; font-size:13.5px; color:#ffe9b0; margin-bottom:9px; display:flex; align-items:center; gap:8px;}
+.ref-conf .rc-n{font-size:10.5px; font-weight:600; color:var(--mut); background:rgba(255,255,255,.06); padding:1px 9px; border-radius:99px;}
+.ref-row{display:flex; align-items:center; gap:9px; padding:6px 4px; border-bottom:1px dashed rgba(255,255,255,.07); font-size:12.5px;}
+.ref-row:last-child{border-bottom:none;}
+.ref-row .rf-n{flex:1; font-weight:600;}
+.ref-row .rf-c{font-size:10.5px; color:var(--mut);}
+
+.info-foot{text-align:center; font-size:10.5px; color:var(--dim); margin-top:16px; padding-top:12px; border-top:1px solid var(--line);}
 </style>
 </head>
 <body>
@@ -481,6 +520,45 @@ nav#bn button .ic{font-size:19px;}
     <div id="koList"></div>
   </section>
 
+
+  <!-- ============ INFO ============ -->
+  <section id="tab-info" class="tab">
+    <div class="sec-t"><i></i>عن البطولة <span class="cnt">كأس العالم 2026</span></div>
+
+    <div class="info-hero">
+      <div class="ih-cup">🏆</div>
+      <div class="ih-title">المونديال الأكبر في التاريخ</div>
+      <div class="ih-sub">أول نسخة بـ 48 منتخبًا · 3 دول مستضيفة · 16 مدينة</div>
+      <div class="ih-stats">
+        <div><b>104</b><span>مباراة</span></div>
+        <div><b>48</b><span>منتخبًا</span></div>
+        <div><b>16</b><span>ملعبًا</span></div>
+        <div><b>39</b><span>يومًا</span></div>
+      </div>
+    </div>
+
+    <div class="sec-t"><i></i>التعويذات الرسمية <span class="cnt">3 تمائم</span></div>
+    <div class="mascot-grid" id="mascotGrid"></div>
+
+    <div class="sec-t"><i></i>المدن المستضيفة <span class="cnt">16 مدينة · 3 دول</span></div>
+    <div class="host-wrap" id="hostWrap"></div>
+
+    <div class="sec-t"><i></i>الكرة الرسمية <span class="cnt">TRIONDA</span></div>
+    <div class="ball-card">
+      <div class="ball-ic">⚽</div>
+      <div class="ball-body">
+        <h4>تريوندا — TRIONDA</h4>
+        <p>الكرة الرسمية لكأس العالم 2026، صُممت بإلهام من روح البطولة في الدول الثلاث المستضيفة، وتحمل ألوان أعلامها الأحمر والأخضر والأزرق.</p>
+      </div>
+    </div>
+
+    <div class="sec-t"><i></i>حكام البطولة <span class="cnt">52 حكمًا معتمدًا</span></div>
+    <div class="ref-note">القائمة الرسمية بحسب FIFA — موزّعة على الاتحادات القارية الستة، مع تقنية الفيديو المساعد (VAR)</div>
+    <div class="ref-wrap" id="refWrap"></div>
+
+    <div class="info-foot">📋 المعلومات من الملحق الرسمي لجدول البطولة</div>
+  </section>
+
   <!-- ============ STADIUMS ============ -->
   <section id="tab-stadiums" class="tab">
     <div class="sec-t"><i></i>ملاعب البطولة <span class="cnt">16 ملعبًا · 3 دول</span></div>
@@ -498,6 +576,7 @@ nav#bn button .ic{font-size:19px;}
   <button data-tab="matches"><span class="ic">📅</span>المباريات</button>
   <button data-tab="groups"><span class="ic">🧩</span>المجموعات</button>
   <button data-tab="ko"><span class="ic">🏆</span>الإقصائيات</button>
+  <button data-tab="info"><span class="ic">ℹ️</span>البطولة</button>
   <button data-tab="stadiums"><span class="ic">🏟️</span>الملاعب</button>
 </nav>
 
@@ -687,6 +766,51 @@ var M = [
  {n:103,r:"third",h:"خاسر المباراة 101",a:"خاسر المباراة 102",d:"2026-07-19",t:"00:00",s:"hardrock"},
  {n:104,r:"final",h:"الفائز من المباراة 101",a:"الفائز من المباراة 102",d:"2026-07-19",t:"22:00",s:"metlife"}
 ];
+
+
+/* ===== معلومات البطولة (من الملحق البصري للجدول الرسمي) ===== */
+var HOST_CITIES = {
+  "الولايات المتحدة": {f:"الولايات المتحدة", n:11, cities:["نيويورك / نيوجيرسي","بوسطن","فيلادلفيا","أتلانتا","ميامي","هيوستن","دالاس","كانساس سيتي","سياتل","لوس أنجلوس","سان فرانسيسكو"]},
+  "المكسيك": {f:"المكسيك", n:3, cities:["مكسيكو سيتي","غوادالاخارا","مونتيري"]},
+  "كندا": {f:"كندا", n:2, cities:["تورونتو","فانكوفر"]}
+};
+var MASCOTS = [
+  {name:"مايل", co:"كندا", emoji:"🫎", desc:"مستوحى من حيوان الأَلْكَة الكندي، يرمز إلى القوة والصمود والروح الرياضية النبيلة"},
+  {name:"زايو", co:"المكسيك", emoji:"🐆", desc:"مستوحى من حيوان الجاغوار، رمز القوة والشجاعة والإرث الثقافي العريق للمكسيك"},
+  {name:"كلاتش", co:"الولايات المتحدة", emoji:"🦅", desc:"مستوحى من النسر الأمريكي الأصلع، يرمز إلى الحرية والطموح والقوة التي لا تُقهر"}
+];
+var REFEREES = {
+  "AFC (آسيا)": [
+    {n:"عبدالرحمن الجاسم", c:"قطر"},{n:"خالد التريس", c:"السعودية"},{n:"يوسكي أراكي", c:"اليابان"},
+    {n:"عليرضا فغاني", c:"أستراليا"},{n:"ما نينغ", c:"الصين"},{n:"أدهم مخادمة", c:"الأردن"},
+    {n:"عمر العلي", c:"الإمارات"},{n:"إلغيز تانتاشيف", c:"أوزبكستان"}
+  ],
+  "CAF (أفريقيا)": [
+    {n:"عمر عبدالقادر أرتان", c:"الصومال"},{n:"بيير أتشو", c:"الغابون"},{n:"دحان بيضا", c:"موريتانيا"},
+    {n:"مصطفى غربال", c:"الجزائر"},{n:"جلال جياد", c:"المغرب"},{n:"أمين محمد", c:"مصر"},{n:"أبونغيل توم", c:"جنوب أفريقيا"}
+  ],
+  "CONCACAF (أمريكا الشمالية)": [
+    {n:"إيفان بارتون", c:"السلفادور"},{n:"خوان كالديرون", c:"كوستاريكا"},{n:"إسماعيل الفتح", c:"الولايات المتحدة"},
+    {n:"درو فيشر", c:"كندا"},{n:"كاتيا غارسيا", c:"المكسيك"},{n:"هيكتور سعيد مارتينيز", c:"هندوراس"},
+    {n:"أوشاني نيشن", c:"جامايكا"},{n:"سيزار راموس", c:"المكسيك"},{n:"توري بينسو", c:"الولايات المتحدة"}
+  ],
+  "CONMEBOL (أمريكا الجنوبية)": [
+    {n:"خوان غابرييل بينيتيز", c:"باراغواي"},{n:"رافاييل كلاوس", c:"البرازيل"},{n:"ياييل فالكون بيريز", c:"الأرجنتين"},
+    {n:"كريستيان غاراي", c:"تشيلي"},{n:"داريو هيريرا", c:"الأرجنتين"},{n:"كيفين أورتيغا", c:"بيرو"},
+    {n:"رامون أباتي", c:"البرازيل"},{n:"أندريس روخاس", c:"كولومبيا"},{n:"غوستافو تيخيرا", c:"أوروغواي"},
+    {n:"فاكوندو تيو", c:"الأرجنتين"},{n:"خيسوس فالنزويلا", c:"فنزويلا"},{n:"ويلتون سامبايو", c:"البرازيل"}
+  ],
+  "UEFA (أوروبا)": [
+    {n:"إسبن إسكاس", c:"النرويج"},{n:"أليخاندرو هيرنانديز", c:"إسبانيا"},{n:"إستفان كوفاكس", c:"رومانيا"},
+    {n:"فرانسوا ليتيكسييه", c:"فرنسا"},{n:"داني ماكيلي", c:"هولندا"},{n:"شيمون مارتشينياك", c:"بولندا"},
+    {n:"ماوريتسيو مارياني", c:"إيطاليا"},{n:"سلافكو فينشيتش", c:"سلوفينيا"},{n:"غلين نيبرغ", c:"السويد"},
+    {n:"مايكل أوليفر", c:"إنجلترا"},{n:"جواو بينيرو", c:"البرتغال"},{n:"ساندرو شيرر", c:"سويسرا"},
+    {n:"أنتوني تايلور", c:"إنجلترا"},{n:"كليمان توربان", c:"فرنسا"},{n:"فيليكس تسفاير", c:"ألمانيا"}
+  ],
+  "OFC (أوقيانوسيا)": [
+    {n:"كامبل-كيرك كاوانا-وو", c:"نيوزيلندا"}
+  ]
+};
 
 /* ================= HELPERS ================= */
 var WD = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
@@ -1077,10 +1201,7 @@ async function fetchGoals(n, box, btn){
 /* ================= beIN SPORTS Video (مباشر) ================= */
 var BEIN_CHANNEL_URL = "https://www.youtube.com/@beINSPORTS/videos";
 
-// عند الضغط على زر beIN: نفتح YouTube مباشرة مع بحث ذكي
-
 function ytEmbedSearch(q){
-  // مشغّل يوتيوب يبدأ تلقائيًا بأول نتيجة لبحث الملخص (فيديو خاص بهذه المباراة)
   return "https://www.youtube.com/embed?listType=search&list="+encodeURIComponent(q)+"&rel=0&modestbranding=1&hl=ar";
 }
 function openBeinMatch(btn){
@@ -1091,25 +1212,18 @@ function openBeinMatch(btn){
   var box = document.getElementById("behin-"+mn);
   if(!box || !m) return;
   box.style.display = "block";
-
-  // بحث دقيق باسم الفريقين + الملخص + التاريخ ليجيب فيديو هذه المباراة بالذات
+  var st = statusOf(m);
+  var sub = st==="done" ? "ملخص المباراة والأهداف" :
+            st==="live" ? "آخر تطورات المباراة الآن" :
+                          "تغطية المباراة قبل انطلاقها";
   var q = "ملخص "+m.h+" "+m.a+" كأس العالم 2026 beIN";
   var qFull = "ملخص "+m.h+" ضد "+m.a+" كأس العالم 2026 beIN SPORTS";
-
   box.innerHTML =
-    '<div class="behin-frame">'+
-      '<iframe src="'+ytEmbedSearch(q)+'" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>'+
-    '</div>'+
+    '<div class="behin-frame"><iframe src="'+ytEmbedSearch(q)+'" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>'+
     '<div class="behin-cap">▶ ملخص '+m.h+' × '+m.a+' — beIN SPORTS</div>'+
-    '<a class="behin-link" href="https://www.youtube.com/results?search_query='+encodeURIComponent(qFull)+'" target="_blank" rel="noopener">'+
-      '<strong>↗ فتح الملخص في يوتيوب</strong>'+
-      '<span>إن لم يظهر الفيديو بالأعلى، افتحه مباشرة</span>'+
-    '</a>';
+    '<a class="behin-link" href="https://www.youtube.com/results?search_query='+encodeURIComponent(qFull)+'" target="_blank" rel="noopener"><strong>↗ فتح الملخص في يوتيوب</strong><span>إن لم يظهر الفيديو بالأعلى، افتحه مباشرة</span></a>';
   if(btn.classList.contains("bein-video-btn")) btn.style.display = "none";
 }
-
-
-
 
 /* ================= LINEUPS & TV (live fetch) ================= */
 var LU_CACHE = {};
@@ -1122,12 +1236,10 @@ function extShell(m){
   var goalsBlock='';
   // فيديو beIN SPORTS — يظهر لما المباراة منتهية
   var videoBlock='';
-  if(m.d && isReal(m)){
-    var st0=statusOf(m);
-    var blbl = st0==="done" ? "🎬 شاهد ملخص المباراة وأهدافها"
-             : st0==="live" ? "🔴 البث المباشر وتغطية beIN SPORTS"
-                            : "📺 تغطية المباراة على beIN SPORTS";
-    videoBlock='<button class="bein-video-btn" data-bein-q="1" data-bein-match="1">'+blbl+'</button>'
+  if(m.d && statusOf(m)==="done"){
+    var q=encodeURIComponent(m.h+" ضد "+m.a+" beIN Sports ملخص");
+    var qMatch=encodeURIComponent(m.h+" ضد "+m.a);
+    videoBlock='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button>'
       +'<div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div>'
       +'<div class="ext-div"></div>';
   }
@@ -1482,8 +1594,36 @@ async function fetchStanding(g, btn){
   }
 }
 
+
+/* ================= INFO TAB ================= */
+function renderInfo(){
+  // التعويذات
+  var mg=document.getElementById("mascotGrid");
+  if(mg) mg.innerHTML=MASCOTS.map(function(x){
+    return '<div class="mascot"><div class="ms-em">'+x.emoji+'</div>'
+      +'<div class="ms-nm">'+x.name+' '+flagImg(x.co)+'</div>'
+      +'<div class="ms-co">'+x.co+'</div>'
+      +'<div class="ms-ds">'+x.desc+'</div></div>';
+  }).join("");
+  // المدن
+  var hw=document.getElementById("hostWrap");
+  if(hw) hw.innerHTML=Object.keys(HOST_CITIES).map(function(co){
+    var h=HOST_CITIES[co];
+    var chips=h.cities.map(function(c){return '<span class="city-chip">'+c+'</span>';}).join("");
+    return '<div class="host-co"><div class="hc-head">'+flagImg(co)+' <b>'+co+'</b> <span class="hc-n">'+h.n+' مدن</span></div><div class="hc-cities">'+chips+'</div></div>';
+  }).join("");
+  // الحكام
+  var rw=document.getElementById("refWrap");
+  if(rw) rw.innerHTML=Object.keys(REFEREES).map(function(conf){
+    var list=REFEREES[conf];
+    var rows=list.map(function(r){return '<div class="ref-row">'+flagImg(r.c)+'<span class="rf-n">'+r.n+'</span><span class="rf-c">'+r.c+'</span></div>';}).join("");
+    return '<div class="ref-conf"><div class="rc-head">'+conf+' <span class="rc-n">'+list.length+'</span></div>'+rows+'</div>';
+  }).join("");
+}
+
 /* ================= NAV & EVENTS ================= */
 function goTab(id){
+  if(id==="info" && !window._infoDone){ renderInfo(); window._infoDone=true; }
   document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active", t.id==="tab-"+id);});
   document.querySelectorAll("#bn button").forEach(function(b){b.classList.toggle("on", b.dataset.tab===id);});
   if(id==="groups" && !window._stAt){ loadStandingsESPN().catch(function(){}); }
@@ -1501,12 +1641,6 @@ document.body.addEventListener("click", function(e){
   var gob=e.target.closest("[data-goals]");
   if(gob){
     var gn=+gob.dataset.goals, gcard=gob.closest(".match");
-    // زر beIN — لما يضغط يفتح beIN SPORTS YouTube مع البحث الذكي
-    var bvb = e.target.closest("[data-bein-q]");
-    if(bvb){
-      openBeinMatch(bvb);
-      return;
-    }
     var host=gcard?gcard.querySelector(".m-ext"):null;
     var slot=host?host.querySelector(".gl-wrap"):null;
     if(!slot && host){ var d=document.createElement("div"); d.className="gl-wrap"; host.insertBefore(d, host.firstChild); slot=d; }
@@ -1514,6 +1648,9 @@ document.body.addEventListener("click", function(e){
     fetchGoals(gn, slot, gob.classList.contains("goals-btn")?gob:null);
     return;
   }
+  // زر beIN SPORTS — منفصل (لما يضغط على data-bein-q مباشرة)
+  var bvb=e.target.closest("[data-bein-q]");
+  if(bvb){ openBeinMatch(bvb); return; }
   var lub=e.target.closest("[data-lu]");
   if(lub){
     var ln=+lub.dataset.lu, lcard=lub.closest(".match");
@@ -1551,6 +1688,21 @@ document.body.addEventListener("click", function(e){
     if(!was && mm){
       var bx=card.querySelector(".m-ext");
       if(bx && !bx.innerHTML) bx.innerHTML=extShell(mm);
+      // تحميل تلقائي للأهداف لما تفتح بطاقة مباراة منتهية/حية وما في cache
+      if(mm && statusOf(mm)!=="upcoming" && GOAL_CACHE[mn]==null){
+        var host=bx?bx.querySelector(".gl-wrap"):null;
+        // إذا ما في slot (الزر لسا موجود)، نخلي extShell ينشئه
+        if(!host && bx){
+          var d=document.createElement("div");
+          d.className="gl-wrap";
+          bx.insertBefore(d, bx.firstChild);
+          host=d;
+        }
+        if(host){
+          host.innerHTML='<div class="lu-note">⏳ جاري جلب الأهداف…</div>';
+          fetchGoals(mn, host, null);
+        }
+      }
     }
   }
 });
@@ -1582,6 +1734,7 @@ applyFilters();
 renderGroups();
 renderKO();
 renderStadiums();
+renderInfo();
 renderHero();
 renderHomeLists();
 tick();
