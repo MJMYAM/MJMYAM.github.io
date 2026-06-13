@@ -1691,7 +1691,6 @@ function renderCdFinal(){
       +'<div class="cf-box"><b>'+p.d+'</b><span>يوم</span></div>'
       +'<div class="cf-box"><b>'+pad(p.h)+'</b><span>ساعة</span></div>'
       +'<div class="cf-box"><b>'+pad(p.m)+'</b><span>دقيقة</span></div>'
-      +'<div class="cf-box"><b>'+pad(p.s)+'</b><span>ثانية</span></div>'
     +'</div>'
     +'<div class="cf-meta">'+fmtD(fin.d)+' · ملعب ميتلايف 🇺🇸</div>'
   +'</div>';
@@ -1710,7 +1709,7 @@ function renderCdList(){
     var r=ROUNDS[m.r];
     var timer = live ? '<span class="cd-live">🔴 مباشر الآن</span>'
       : '<span class="cd-timer" data-cdkick="'+m.n+'">'+
-          (p.d>0?'<i>'+p.d+'</i>ي ':'')+'<i>'+pad(p.h)+'</i>س <i>'+pad(p.m)+'</i>د <i>'+pad(p.s)+'</i>ث</span>';
+          (p.d>0?'<i>'+p.d+'</i>ي ':'')+'<i>'+pad(p.h)+'</i>س <i>'+pad(p.m)+'</i>د</span>';
     html+='<div class="cd-card" style="--rc:'+r.c+'">'
       +'<div class="cd-c-top"><span class="cd-rnd" style="color:'+r.c+'">'+r.l+'</span>'
         +'<span class="cd-time2">⏰ '+fmtT(m.t).t+' '+fmtT(m.t).ap+'</span></div>'
@@ -1730,7 +1729,7 @@ function tickCd(){
     var diff=dateObj(m).getTime()-now;
     if(diff<=0){ need=true; return; }
     var p=cdDiffParts(diff);
-    sp.innerHTML=(p.d>0?'<i>'+p.d+'</i>ي ':'')+'<i>'+pad(p.h)+'</i>س <i>'+pad(p.m)+'</i>د <i>'+pad(p.s)+'</i>ث';
+    sp.innerHTML=(p.d>0?'<i>'+p.d+'</i>ي ':'')+'<i>'+pad(p.h)+'</i>س <i>'+pad(p.m)+'</i>د';
   });
   if(need) renderCdList();
 }
@@ -1859,7 +1858,7 @@ renderHero();
 renderHomeLists();
 tick();
 setInterval(tick, 1000);
-setInterval(tickCd, 1000);
+setInterval(tickCd, 20000);
 setInterval(function(){renderHero(); renderHomeLists();}, 60000);
 setInterval(pollScores, 120000);
 applyFinals();
