@@ -438,6 +438,38 @@ nav#bn button .ic{font-size:19px;}
 .ref-row .rf-c{font-size:10.5px; color:var(--mut);}
 
 .info-foot{text-align:center; font-size:10.5px; color:var(--dim); margin-top:16px; padding-top:12px; border-top:1px solid var(--line);}
+
+/* ===== COUNTDOWN TAB ===== */
+.cd-final{position:relative; overflow:hidden; border-radius:20px; border:1px solid rgba(240,194,75,.4); padding:18px 16px; text-align:center; margin-bottom:14px;
+  background:radial-gradient(130% 150% at 50% -30%, rgba(240,194,75,.18), transparent 60%), linear-gradient(160deg,#141a3a,#090d22 70%); box-shadow:0 0 40px -12px rgba(240,194,75,.4);}
+.cd-final.done{font-family:"Changa",sans-serif; font-weight:700; font-size:16px; color:var(--gold2); padding:24px;}
+.cd-final .cf-top{font-family:"Changa",sans-serif; font-weight:700; font-size:13px; color:var(--gold);}
+.cd-final .cf-duel{font-family:"Changa",sans-serif; font-weight:800; font-size:19px; margin:6px 0 12px; color:#ffe9b0;}
+.cd-final .cf-cd{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+.cd-final .cf-box{background:rgba(255,255,255,.07); border:1px solid var(--line); border-radius:13px; padding:9px 2px;}
+.cd-final .cf-box b{display:block; font-family:"Changa",sans-serif; font-weight:800; font-size:24px; color:var(--gold2); font-variant-numeric:tabular-nums; line-height:1;}
+.cd-final .cf-box span{font-size:9.5px; color:var(--mut);}
+.cd-final .cf-meta{font-size:11px; color:var(--mut); margin-top:11px;}
+
+.cd-filters{display:flex; gap:7px; overflow-x:auto; padding:2px 1px 10px; scrollbar-width:none;}
+.cd-filters::-webkit-scrollbar{display:none;}
+.cd-pill{flex-shrink:0; font-family:inherit; font-size:12px; font-weight:600; color:var(--mut); background:var(--card); border:1px solid var(--line); border-radius:99px; padding:6px 14px; cursor:pointer; transition:.15s;}
+.cd-pill.on{color:#0b0f24; background:var(--gold); border-color:var(--gold); font-weight:700;}
+
+.cd-day{font-family:"Changa",sans-serif; font-weight:700; font-size:13.5px; color:#cdd6f4; margin:16px 2px 9px; display:flex; align-items:center; gap:8px;}
+.cd-rel{font-family:"IBM Plex Sans Arabic"; font-size:10.5px; font-weight:700; color:#0b0f24; background:var(--gold); padding:1px 9px; border-radius:99px;}
+.cd-card{position:relative; overflow:hidden; background:var(--card); border:1px solid var(--line); border-radius:15px; padding:11px 13px; margin-bottom:8px;}
+.cd-card::before{content:""; position:absolute; top:0; right:0; bottom:0; width:3px; background:var(--rc,var(--gold));}
+.cd-c-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+.cd-rnd{font-size:10.5px; font-weight:700;}
+.cd-time2{font-size:10.5px; color:var(--mut);}
+.cd-c-mid{display:flex; align-items:center; justify-content:center; gap:7px; font-size:13.5px; flex-wrap:wrap;}
+.cd-c-mid b{font-weight:600;}
+.cd-x{color:var(--dim); font-size:11px;}
+.cd-c-bot{text-align:center; margin-top:9px; padding-top:8px; border-top:1px dashed var(--line);}
+.cd-timer{font-family:"IBM Plex Sans Arabic"; font-size:12px; color:var(--mut); letter-spacing:.3px;}
+.cd-timer i{font-family:"Changa",sans-serif; font-style:normal; font-weight:800; font-size:15px; color:var(--gold2); font-variant-numeric:tabular-nums; margin:0 1px;}
+.cd-live{font-size:12.5px; font-weight:700; color:#ff6b76;}
 </style>
 </head>
 <body>
@@ -521,6 +553,15 @@ nav#bn button .ic{font-size:19px;}
   </section>
 
 
+
+  <!-- ============ COUNTDOWN ============ -->
+  <section id="tab-cd" class="tab">
+    <div class="sec-t"><i></i>العدّ التنازلي <span class="cnt">لكل المباريات</span></div>
+    <div id="cdFinal"></div>
+    <div class="cd-filters" id="cdFilters"></div>
+    <div id="cdList"></div>
+  </section>
+
   <!-- ============ INFO ============ -->
   <section id="tab-info" class="tab">
     <div class="sec-t"><i></i>عن البطولة <span class="cnt">كأس العالم 2026</span></div>
@@ -574,6 +615,7 @@ nav#bn button .ic{font-size:19px;}
 <nav id="bn">
   <button data-tab="home" class="on"><span class="ic">📡</span>اليوم</button>
   <button data-tab="matches"><span class="ic">📅</span>المباريات</button>
+  <button data-tab="cd"><span class="ic">⏳</span>العدّاد</button>
   <button data-tab="groups"><span class="ic">🧩</span>المجموعات</button>
   <button data-tab="ko"><span class="ic">🏆</span>الإقصائيات</button>
   <button data-tab="info"><span class="ic">ℹ️</span>البطولة</button>
@@ -1608,8 +1650,95 @@ function renderInfo(){
   }).join("");
 }
 
+
+/* ================= COUNTDOWN TAB ================= */
+var cdScope="all";
+function cdDiffParts(ms){
+  if(ms<0) ms=0;
+  return {d:Math.floor(ms/86400000), h:Math.floor(ms%86400000/3600000),
+          m:Math.floor(ms%3600000/60000), s:Math.floor(ms%60000/1000)};
+}
+function buildCdFilters(){
+  var el=document.getElementById("cdFilters"); if(!el) return;
+  var opts=[["all","الكل"],["today","اليوم"],["r1","الجولة 1"],["r2","الجولة 2"],["r3","الجولة 3"],
+            ["r32","دور 32"],["r16","دور 16"],["qf","ربع"],["sf","نصف"],["final","النهائي"]];
+  el.innerHTML=opts.map(function(o){
+    return '<button class="cd-pill'+(o[0]===cdScope?" on":"")+'" data-cdscope="'+o[0]+'">'+o[1]+'</button>';
+  }).join("");
+}
+function cdUpcoming(){
+  var now=Date.now();
+  var arr=M.filter(function(m){
+    if(!m.d) return false;
+    if(dateObj(m).getTime()+125*60000 < now) return false; // انتهت
+    if(cdScope==="all") return true;
+    if(cdScope==="today"){ return m.d===isoOf(new Date()); }
+    return m.r===cdScope;
+  });
+  arr.sort(function(a,b){return dateObj(a)-dateObj(b);});
+  return arr;
+}
+function renderCdFinal(){
+  var el=document.getElementById("cdFinal"); if(!el) return;
+  var fin=getM(104), now=Date.now();
+  var st=dateObj(fin).getTime();
+  if(now>=st){ el.innerHTML='<div class="cd-final done">🏆 انتهت البطولة — نلتقي في مونديال 2030</div>'; return; }
+  var p=cdDiffParts(st-now);
+  el.innerHTML='<div class="cd-final">'
+    +'<div class="cf-top">🏆 النهائي الكبير</div>'
+    +'<div class="cf-duel">'+fin.h+' × '+fin.a+'</div>'
+    +'<div class="cf-cd">'
+      +'<div class="cf-box"><b>'+p.d+'</b><span>يوم</span></div>'
+      +'<div class="cf-box"><b>'+pad(p.h)+'</b><span>ساعة</span></div>'
+      +'<div class="cf-box"><b>'+pad(p.m)+'</b><span>دقيقة</span></div>'
+      +'<div class="cf-box"><b>'+pad(p.s)+'</b><span>ثانية</span></div>'
+    +'</div>'
+    +'<div class="cf-meta">'+fmtD(fin.d)+' · ملعب ميتلايف 🇺🇸</div>'
+  +'</div>';
+}
+function renderCdList(){
+  var el=document.getElementById("cdList"); if(!el) return;
+  var arr=cdUpcoming(), now=Date.now();
+  if(!arr.length){ el.innerHTML='<div class="empty"><span class="e">🏁</span>لا توجد مباريات قادمة بهذا الفلتر</div>'; return; }
+  var html="", lastDay=null;
+  arr.forEach(function(m){
+    if(m.d!==lastDay){ lastDay=m.d; var rel=relTag(m.d);
+      html+='<div class="cd-day">'+fmtD(m.d)+(rel?' <span class="cd-rel">'+rel+'</span>':'')+'</div>'; }
+    var diff=dateObj(m).getTime()-now;
+    var live = diff<=0 && diff>-125*60000;
+    var p=cdDiffParts(diff);
+    var r=ROUNDS[m.r];
+    var timer = live ? '<span class="cd-live">🔴 مباشر الآن</span>'
+      : '<span class="cd-timer" data-cdkick="'+m.n+'">'+
+          (p.d>0?'<i>'+p.d+'</i>ي ':'')+'<i>'+pad(p.h)+'</i>س <i>'+pad(p.m)+'</i>د <i>'+pad(p.s)+'</i>ث</span>';
+    html+='<div class="cd-card" style="--rc:'+r.c+'">'
+      +'<div class="cd-c-top"><span class="cd-rnd" style="color:'+r.c+'">'+r.l+'</span>'
+        +'<span class="cd-time2">⏰ '+fmtT(m.t).t+' '+fmtT(m.t).ap+'</span></div>'
+      +'<div class="cd-c-mid">'+(TEAMS[m.h]?flagImg(m.h):'')+' <b>'+m.h+'</b>'
+        +'<span class="cd-x">×</span><b>'+m.a+'</b> '+(TEAMS[m.a]?flagImg(m.a):'')+'</div>'
+      +'<div class="cd-c-bot">'+timer+'</div>'
+    +'</div>';
+  });
+  el.innerHTML=html;
+}
+function tickCd(){
+  if(!document.getElementById("tab-cd").classList.contains("active")) return;
+  renderCdFinal();
+  var now=Date.now(), need=false;
+  document.querySelectorAll("[data-cdkick]").forEach(function(sp){
+    var m=getM(+sp.dataset.cdkick); if(!m) return;
+    var diff=dateObj(m).getTime()-now;
+    if(diff<=0){ need=true; return; }
+    var p=cdDiffParts(diff);
+    sp.innerHTML=(p.d>0?'<i>'+p.d+'</i>ي ':'')+'<i>'+pad(p.h)+'</i>س <i>'+pad(p.m)+'</i>د <i>'+pad(p.s)+'</i>ث';
+  });
+  if(need) renderCdList();
+}
+function renderCd(){ buildCdFilters(); renderCdFinal(); renderCdList(); }
+
 /* ================= NAV & EVENTS ================= */
 function goTab(id){
+  if(id==="cd"){ renderCd(); }
   if(id==="info" && !window._infoDone){ renderInfo(); window._infoDone=true; }
   document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active", t.id==="tab-"+id);});
   document.querySelectorAll("#bn button").forEach(function(b){b.classList.toggle("on", b.dataset.tab===id);});
@@ -1621,6 +1750,10 @@ document.getElementById("bn").addEventListener("click", function(e){
   if(b) goTab(b.dataset.tab);
 });
 document.body.addEventListener("click", function(e){
+  var cdp=e.target.closest("[data-cdscope]");
+  if(cdp){ cdScope=cdp.dataset.cdscope;
+    document.querySelectorAll("#cdFilters .cd-pill").forEach(function(x){x.classList.toggle("on",x===cdp);});
+    renderCdList(); return; }
   var scb=e.target.closest("[data-sc]");
   if(scb){ fetchScore(+scb.dataset.sc, scb); return; }
   var stb=e.target.closest("[data-st]");
@@ -1726,6 +1859,7 @@ renderHero();
 renderHomeLists();
 tick();
 setInterval(tick, 1000);
+setInterval(tickCd, 1000);
 setInterval(function(){renderHero(); renderHomeLists();}, 60000);
 setInterval(pollScores, 120000);
 applyFinals();
