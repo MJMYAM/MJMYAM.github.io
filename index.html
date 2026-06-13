@@ -223,6 +223,34 @@ main{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:16px 
 /* ===== الأهداف والهدّافون ===== */
 .goals-btn{width:100%; background:linear-gradient(135deg,rgba(46,204,113,.2),rgba(46,204,113,.05)); border:1px solid rgba(46,204,113,.5); color:#9af0c2; font-family:inherit; font-size:12.5px; font-weight:700; border-radius:12px; padding:10px; cursor:pointer;}
 .goals-btn:disabled{opacity:.6; cursor:wait;}
+
+/* ===== beIN SPORTS Video Button ===== */
+.bein-video-btn{
+  width:100%; margin-top:8px;
+  background:linear-gradient(135deg,rgba(232,72,85,.30),rgba(232,72,85,.10));
+  border:1px solid rgba(232,72,85,.65);
+  color:#ff9aa3; font-family:inherit; font-size:13px; font-weight:700;
+  border-radius:12px; padding:11px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  transition:transform .15s;
+}
+.bein-video-btn:active{transform:scale(.98)}
+.bein-video-btn:disabled{opacity:.6; cursor:wait}
+.behin-empty{
+  margin-top:8px; padding:14px;
+  background:rgba(255,255,255,.03); border:1px dashed var(--line);
+  border-radius:12px; text-align:center; color:var(--mut); font-size:12px; line-height:1.9;
+}
+.behin-frame{
+  margin-top:8px; position:relative; padding-bottom:56.25%; height:0; overflow:hidden;
+  border-radius:12px; background:#000; border:1px solid var(--line);
+}
+.behin-frame iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:0}
+.behin-link{display:block; margin-top:6px; padding:8px 10px; text-decoration:none;
+  color:var(--txt); background:rgba(255,255,255,.04); border:1px solid var(--line);
+  border-radius:10px; font-size:12px; line-height:1.5; text-align:right;
+}
+.behin-link strong{color:var(--gold2); font-weight:700; display:block; margin-bottom:2px; font-size:12.5px}
 .gl-wrap{margin-bottom:2px;}
 .ext-div{height:11px; margin:11px 0; border-bottom:1px solid var(--line);}
 .gl-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
@@ -359,6 +387,16 @@ nav#bn button .ic{font-size:19px;}
 /* أعلام كصور */
 .flg{height:1em; width:auto; border-radius:.14em; box-shadow:0 1px 3px rgba(0,0,0,.45); vertical-align:-.12em;}
 
+
+/* ===== beIN روابط الفيديو (محدّثة) ===== */
+.behin-grid{display:flex; flex-direction:column; gap:7px; margin-top:8px;}
+.behin-link{display:block; padding:10px 12px; border-radius:11px; text-decoration:none;
+  background:rgba(255,255,255,.04); border:1px solid var(--line); transition:transform .15s, border-color .2s;}
+.behin-link:active{transform:scale(.98);}
+.behin-link.primary{background:linear-gradient(135deg,rgba(232,72,85,.28),rgba(232,72,85,.08)); border-color:rgba(232,72,85,.6);}
+.behin-link strong{display:block; color:var(--gold2); font-size:12.5px; font-weight:700; margin-bottom:2px;}
+.behin-link.primary strong{color:#ffb3ba;}
+.behin-link span{display:block; color:var(--mut); font-size:10.5px; line-height:1.6;}
 </style>
 </head>
 <body>
@@ -1034,6 +1072,55 @@ async function fetchGoals(n, box, btn){
   }
 }
 
+/* ================= beIN SPORTS Video (مباشر) ================= */
+var BEIN_CHANNEL_URL = "https://www.youtube.com/@beINSPORTS/videos";
+
+// عند الضغط على زر beIN: نفتح YouTube مباشرة مع بحث ذكي
+
+function beinSearchURL(m){
+  // بحث يوتيوب مُفلتر على قناة beIN SPORTS الرسمية + اسمي الفريقين + ملخص
+  var q = "ملخص "+m.h+" ضد "+m.a+" كأس العالم beIN SPORTS";
+  return "https://www.youtube.com/results?search_query="+encodeURIComponent(q);
+}
+function beinChannelURL(){
+  return "https://www.youtube.com/@beINSPORTS/search?query="+encodeURIComponent("كأس العالم 2026 ملخص");
+}
+function openBeinMatch(btn){
+  var card = btn.closest(".match");
+  if(!card) return;
+  var mn = card.dataset.mn;
+  var m = getM(+mn);
+  var box = document.getElementById("behin-"+mn);
+  if(!box || !m) return;
+  box.style.display = "block";
+
+  var st = statusOf(m);
+  var stxt = st==="done" ? "شاهد ملخص المباراة وأهدافها" :
+             st==="live" ? "البث المباشر والتحديثات اللحظية" :
+                           "أخبار المباراة وتغطيتها قبل انطلاقها";
+
+  // كل الروابط تفتح يوتيوب/beIN مباشرة — تشتغل على الآيفون والأندرويد بدون أي مشاكل CORS
+  box.innerHTML =
+    '<div class="behin-grid">'+
+      '<a class="behin-link primary" href="'+beinSearchURL(m)+'" target="_blank" rel="noopener">'+
+        '<strong>▶ ملخص '+m.h+' × '+m.a+'</strong>'+
+        '<span>'+stxt+' — نتائج beIN SPORTS على يوتيوب</span>'+
+      '</a>'+
+      '<a class="behin-link" href="'+beinChannelURL()+'" target="_blank" rel="noopener">'+
+        '<strong>📺 قناة beIN SPORTS الرسمية</strong>'+
+        '<span>كل ملخصات وأهداف كأس العالم 2026</span>'+
+      '</a>'+
+      '<a class="behin-link" href="https://tod.tv" target="_blank" rel="noopener">'+
+        '<strong>🔴 TOD / beIN — البث المباشر الرسمي</strong>'+
+        '<span>الناقل الحصري للبطولة في الشرق الأوسط</span>'+
+      '</a>'+
+    '</div>';
+  if(btn.classList.contains("bein-video-btn")) btn.style.display = "none";
+}
+
+
+
+
 /* ================= LINEUPS & TV (live fetch) ================= */
 var LU_CACHE = {};
 function isReal(m){return !!(TEAMS[m.h] && TEAMS[m.a]);}
@@ -1043,6 +1130,17 @@ function gLink(m){return "https://www.google.com/search?q="+encodeURIComponent("
 function extShell(m){
   if(!isReal(m)) return '<div class="lu-note">🔒 طرفا المباراة يتحددان بعد اكتمال الدور السابق</div>';
   var goalsBlock='';
+  // فيديو beIN SPORTS — يظهر لما المباراة منتهية
+  var videoBlock='';
+  if(m.d && isReal(m)){
+    var st0=statusOf(m);
+    var blbl = st0==="done" ? "🎬 شاهد ملخص المباراة وأهدافها"
+             : st0==="live" ? "🔴 البث المباشر وتغطية beIN SPORTS"
+                            : "📺 تغطية المباراة على beIN SPORTS";
+    videoBlock='<button class="bein-video-btn" data-bein-q="1" data-bein-match="1">'+blbl+'</button>'
+      +'<div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div>'
+      +'<div class="ext-div"></div>';
+  }
   if(m.d){
     var stx=statusOf(m);
     if(stx==="live"||stx==="done"){
@@ -1051,8 +1149,8 @@ function extShell(m){
         + '<div class="ext-div"></div>';
     }
   }
-  if(LU_CACHE[m.n]) return goalsBlock+LU_CACHE[m.n];
-  return goalsBlock
+  if(LU_CACHE[m.n]) return videoBlock+goalsBlock+LU_CACHE[m.n];
+  return videoBlock+goalsBlock
     + '<button class="lu-btn" data-lu="'+m.n+'">⚡ جلب التشكيلة والقناة الناقلة الآن</button>'
     +'<div class="lu-note">يبحث مباشرة لحظة الضغط — التشكيلات تُعلن عادة قبل المباراة بساعة تقريبًا</div>';
 }
@@ -1413,6 +1511,12 @@ document.body.addEventListener("click", function(e){
   var gob=e.target.closest("[data-goals]");
   if(gob){
     var gn=+gob.dataset.goals, gcard=gob.closest(".match");
+    // زر beIN — لما يضغط يفتح beIN SPORTS YouTube مع البحث الذكي
+    var bvb = e.target.closest("[data-bein-q]");
+    if(bvb){
+      openBeinMatch(bvb);
+      return;
+    }
     var host=gcard?gcard.querySelector(".m-ext"):null;
     var slot=host?host.querySelector(".gl-wrap"):null;
     if(!slot && host){ var d=document.createElement("div"); d.className="gl-wrap"; host.insertBefore(d, host.firstChild); slot=d; }
