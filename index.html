@@ -440,36 +440,45 @@ nav#bn button .ic{font-size:19px;}
 .info-foot{text-align:center; font-size:10.5px; color:var(--dim); margin-top:16px; padding-top:12px; border-top:1px solid var(--line);}
 
 /* ===== COUNTDOWN TAB ===== */
-.cd-final{position:relative; overflow:hidden; border-radius:20px; border:1px solid rgba(240,194,75,.4); padding:18px 16px; text-align:center; margin-bottom:14px;
-  background:radial-gradient(130% 150% at 50% -30%, rgba(240,194,75,.18), transparent 60%), linear-gradient(160deg,#141a3a,#090d22 70%); box-shadow:0 0 40px -12px rgba(240,194,75,.4);}
-.cd-final.done{font-family:"Changa",sans-serif; font-weight:700; font-size:16px; color:var(--gold2); padding:24px;}
-.cd-final .cf-top{font-family:"Changa",sans-serif; font-weight:700; font-size:13px; color:var(--gold);}
-.cd-final .cf-duel{font-family:"Changa",sans-serif; font-weight:800; font-size:19px; margin:6px 0 12px; color:#ffe9b0;}
-.cd-final .cf-cd{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
-.cd-final .cf-box{background:rgba(255,255,255,.07); border:1px solid var(--line); border-radius:13px; padding:9px 2px;}
-.cd-final .cf-box b{display:block; font-family:"Changa",sans-serif; font-weight:800; font-size:24px; color:var(--gold2); font-variant-numeric:tabular-nums; line-height:1;}
-.cd-final .cf-box span{font-size:9.5px; color:var(--mut);}
-.cd-final .cf-meta{font-size:11px; color:var(--mut); margin-top:11px;}
+.cd-final{position:relative; overflow:hidden; border-radius:22px; border:1px solid rgba(240,194,75,.45); padding:20px 16px 18px; text-align:center; margin-bottom:8px;
+  background:radial-gradient(130% 150% at 50% -30%, rgba(240,194,75,.2), transparent 60%), linear-gradient(160deg,#15193c,#090d22 72%); box-shadow:0 14px 44px -16px rgba(240,194,75,.45);}
+.cd-final::after{content:"🏆"; position:absolute; left:-10px; bottom:-26px; font-size:120px; opacity:.06; transform:rotate(-12deg);}
+.cd-final.done{font-family:"Changa",sans-serif; font-weight:700; font-size:16px; color:var(--gold2); padding:26px;}
+.cd-final .cf-top{display:inline-block; font-family:"Changa",sans-serif; font-weight:700; font-size:11.5px; color:#0b0f24; background:linear-gradient(135deg,var(--gold2),var(--gold)); padding:3px 14px; border-radius:99px;}
+.cd-final .cf-duel{font-family:"Changa",sans-serif; font-weight:800; font-size:18px; margin:11px 0 14px; color:#ffe9b0;}
+.cd-final .cf-cd{display:flex; align-items:center; justify-content:center; gap:6px; direction:rtl;}
+.cd-final .cf-box{flex:1; max-width:88px; background:rgba(255,255,255,.07); border:1px solid rgba(240,194,75,.25); border-radius:14px; padding:11px 2px;}
+.cd-final .cf-box b{display:block; font-family:"Changa",sans-serif; font-weight:800; font-size:28px; color:var(--gold2); font-variant-numeric:tabular-nums; line-height:1;}
+.cd-final .cf-box span{font-size:10px; color:var(--mut); margin-top:3px; display:block;}
+.cd-final .cf-sep{font-family:"Changa",sans-serif; font-weight:800; font-size:22px; color:rgba(240,194,75,.4);}
+.cd-final .cf-meta{font-size:11px; color:var(--mut); margin-top:13px;}
 
-.cd-filters{display:flex; gap:7px; overflow-x:auto; padding:2px 1px 10px; scrollbar-width:none;}
+.cd-filters{display:flex; gap:7px; overflow-x:auto; padding:12px 1px 12px; scrollbar-width:none; position:sticky; top:calc(57px + env(safe-area-inset-top)); z-index:30; background:linear-gradient(180deg,var(--bg) 70%,transparent);}
 .cd-filters::-webkit-scrollbar{display:none;}
 .cd-pill{flex-shrink:0; font-family:inherit; font-size:12px; font-weight:600; color:var(--mut); background:var(--card); border:1px solid var(--line); border-radius:99px; padding:6px 14px; cursor:pointer; transition:.15s;}
 .cd-pill.on{color:#0b0f24; background:var(--gold); border-color:var(--gold); font-weight:700;}
 
-.cd-day{font-family:"Changa",sans-serif; font-weight:700; font-size:13.5px; color:#cdd6f4; margin:16px 2px 9px; display:flex; align-items:center; gap:8px;}
-.cd-rel{font-family:"IBM Plex Sans Arabic"; font-size:10.5px; font-weight:700; color:#0b0f24; background:var(--gold); padding:1px 9px; border-radius:99px;}
-.cd-card{position:relative; overflow:hidden; background:var(--card); border:1px solid var(--line); border-radius:15px; padding:11px 13px; margin-bottom:8px;}
+.cd-day{display:flex; align-items:center; gap:9px; margin:18px 2px 10px;}
+.cd-day-dot{width:8px; height:8px; border-radius:50%; background:var(--gold); flex-shrink:0; box-shadow:0 0 0 4px rgba(240,194,75,.12);}
+.cd-day-name{font-family:"Changa",sans-serif; font-weight:700; font-size:14px; color:#e9eeff;}
+.cd-rel{font-family:"IBM Plex Sans Arabic"; font-size:10px; font-weight:700; color:#0b0f24; background:var(--mut); padding:1px 9px; border-radius:99px;}
+.cd-rel.tdy{background:var(--gold);}
+.cd-day-n{margin-right:auto; font-size:10.5px; color:var(--mut); background:rgba(255,255,255,.05); border:1px solid var(--line); padding:2px 10px; border-radius:99px;}
+
+.cd-card{position:relative; overflow:hidden; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 14px; margin-bottom:9px; display:grid; grid-template-columns:1fr auto; grid-template-areas:"side timer" "teams timer"; gap:8px 12px; align-items:center;}
 .cd-card::before{content:""; position:absolute; top:0; right:0; bottom:0; width:3px; background:var(--rc,var(--gold));}
-.cd-c-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
-.cd-rnd{font-size:10.5px; font-weight:700;}
+.cd-card.islive{border-color:rgba(255,71,87,.5); box-shadow:0 0 22px -8px rgba(255,71,87,.4);}
+.cd-c-side{grid-area:side; display:flex; align-items:center; gap:8px;}
+.cd-rnd{font-size:10px; font-weight:700; padding:2px 9px; border-radius:99px;}
 .cd-time2{font-size:10.5px; color:var(--mut);}
-.cd-c-mid{display:flex; align-items:center; justify-content:center; gap:7px; font-size:13.5px; flex-wrap:wrap;}
-.cd-c-mid b{font-weight:600;}
-.cd-x{color:var(--dim); font-size:11px;}
-.cd-c-bot{text-align:center; margin-top:9px; padding-top:8px; border-top:1px dashed var(--line);}
-.cd-timer{font-family:"IBM Plex Sans Arabic"; font-size:12px; color:var(--mut); letter-spacing:.3px;}
-.cd-timer i{font-family:"Changa",sans-serif; font-style:normal; font-weight:800; font-size:15px; color:var(--gold2); font-variant-numeric:tabular-nums; margin:0 1px;}
-.cd-live{font-size:12.5px; font-weight:700; color:#ff6b76;}
+.cd-c-teams{grid-area:teams; display:flex; align-items:center; gap:8px; font-size:14px; flex-wrap:wrap;}
+.cd-tm{display:flex; align-items:center; gap:5px; font-weight:600;}
+.cd-x{font-family:"Changa",sans-serif; font-weight:800; font-size:10px; color:var(--dim);}
+.cd-c-timer{grid-area:timer; text-align:center; min-width:74px; padding:8px 10px; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:13px;}
+.cd-timer{display:inline-block; line-height:1.3; direction:rtl;}
+.cd-timer i{font-family:"Changa",sans-serif; font-style:normal; font-weight:800; font-size:18px; color:var(--gold2); font-variant-numeric:tabular-nums;}
+.cd-timer u{text-decoration:none; font-size:9px; color:var(--mut); margin:0 3px 0 1px;}
+.cd-live{font-size:12.5px; font-weight:700; color:#ff6b76; white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -1698,7 +1707,9 @@ function renderCdFinal(){
     +'<div class="cf-duel">'+fin.h+' × '+fin.a+'</div>'
     +'<div class="cf-cd">'
       +'<div class="cf-box"><b>'+p.d+'</b><span>يوم</span></div>'
+      +'<span class="cf-sep">:</span>'
       +'<div class="cf-box"><b>'+pad(p.h)+'</b><span>ساعة</span></div>'
+      +'<span class="cf-sep">:</span>'
       +'<div class="cf-box"><b>'+pad(p.m)+'</b><span>دقيقة</span></div>'
     +'</div>'
     +'<div class="cf-meta">'+fmtD(fin.d)+' · ملعب ميتلايف 🇺🇸</div>'
@@ -1708,26 +1719,42 @@ function renderCdList(){
   var el=document.getElementById("cdList"); if(!el) return;
   var arr=cdUpcoming(), now=Date.now();
   if(!arr.length){ el.innerHTML='<div class="empty"><span class="e">🏁</span>لا توجد مباريات قادمة بهذا الفلتر</div>'; return; }
-  var html="", lastDay=null;
-  arr.forEach(function(m){
-    if(m.d!==lastDay){ lastDay=m.d; var rel=relTag(m.d);
-      html+='<div class="cd-day">'+fmtD(m.d)+(rel?' <span class="cd-rel">'+rel+'</span>':'')+'</div>'; }
-    var diff=dateObj(m).getTime()-now;
-    var live = diff<=0 && diff>-125*60000;
-    var p=cdDiffParts(diff);
-    var r=ROUNDS[m.r];
-    var timer = live ? '<span class="cd-live">🔴 مباشر الآن</span>'
-      : '<span class="cd-timer" data-cdkick="'+m.n+'">'+
-          (p.d>0?'<i>'+p.d+'</i>ي ':'')+'<i>'+pad(p.h)+'</i>س <i>'+pad(p.m)+'</i>د</span>';
-    html+='<div class="cd-card" style="--rc:'+r.c+'">'
-      +'<div class="cd-c-top"><span class="cd-rnd" style="color:'+r.c+'">'+r.l+'</span>'
-        +'<span class="cd-time2">⏰ '+fmtT(m.t).t+' '+fmtT(m.t).ap+'</span></div>'
-      +'<div class="cd-c-mid">'+(TEAMS[m.h]?flagImg(m.h):'')+' <b>'+m.h+'</b>'
-        +'<span class="cd-x">×</span><b>'+m.a+'</b> '+(TEAMS[m.a]?flagImg(m.a):'')+'</div>'
-      +'<div class="cd-c-bot">'+timer+'</div>'
-    +'</div>';
+  // جمّع حسب اليوم
+  var days={}, order=[];
+  arr.forEach(function(m){ if(!days[m.d]){days[m.d]=[]; order.push(m.d);} days[m.d].push(m); });
+  var html="";
+  order.forEach(function(d){
+    var list=days[d], rel=relTag(d);
+    var relHtml = rel ? '<span class="cd-rel '+(rel==="اليوم"?"tdy":"")+'">'+rel+'</span>' : '';
+    html+='<div class="cd-day"><span class="cd-day-dot"></span><span class="cd-day-name">'+fmtD(d)+'</span>'+relHtml
+      +'<span class="cd-day-n">'+list.length+' '+(list.length===1?"مباراة":"مباريات")+'</span></div>';
+    list.forEach(function(m){
+      var diff=dateObj(m).getTime()-now;
+      var live = diff<=0 && diff>-125*60000;
+      var p=cdDiffParts(diff);
+      var r=ROUNDS[m.r], tm=fmtT(m.t);
+      var timer = live
+        ? '<span class="cd-live">🔴 مباشر الآن</span>'
+        : '<span class="cd-timer" data-cdkick="'+m.n+'">'+cdTimerHTML(p)+'</span>';
+      html+='<div class="cd-card'+(live?" islive":"")+'" style="--rc:'+r.c+'">'
+        +'<div class="cd-c-side">'
+          +'<span class="cd-rnd" style="background:'+r.c+'22;color:'+r.c+'">'+r.l+'</span>'
+          +'<span class="cd-time2">⏰ '+tm.t+' '+tm.ap+'</span>'
+        +'</div>'
+        +'<div class="cd-c-teams">'
+          +'<span class="cd-tm">'+(TEAMS[m.h]?flagImg(m.h):'')+' '+m.h+'</span>'
+          +'<span class="cd-x">VS</span>'
+          +'<span class="cd-tm">'+m.a+' '+(TEAMS[m.a]?flagImg(m.a):'')+'</span>'
+        +'</div>'
+        +'<div class="cd-c-timer">'+timer+'</div>'
+      +'</div>';
+    });
   });
   el.innerHTML=html;
+}
+function cdTimerHTML(p){
+  if(p.d>0) return '<i>'+p.d+'</i><u>يوم</u> <i>'+pad(p.h)+'</i><u>س</u> <i>'+pad(p.m)+'</i><u>د</u>';
+  return '<i>'+pad(p.h)+'</i><u>س</u> <i>'+pad(p.m)+'</i><u>د</u>';
 }
 function tickCd(){
   if(!document.getElementById("tab-cd").classList.contains("active")) return;
@@ -1737,8 +1764,7 @@ function tickCd(){
     var m=getM(+sp.dataset.cdkick); if(!m) return;
     var diff=dateObj(m).getTime()-now;
     if(diff<=0){ need=true; return; }
-    var p=cdDiffParts(diff);
-    sp.innerHTML=(p.d>0?'<i>'+p.d+'</i>ي ':'')+'<i>'+pad(p.h)+'</i>س <i>'+pad(p.m)+'</i>د';
+    sp.innerHTML=cdTimerHTML(cdDiffParts(diff));
   });
   if(need) renderCdList();
 }
