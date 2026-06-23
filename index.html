@@ -560,7 +560,7 @@ nav#bn button .ic{font-size:19px;}
 /* ===== الشجرة الأفقية ===== */
 .ko-tree-hint{font-size:10.5px; color:var(--dim); text-align:center; margin-bottom:8px;}
 .ko-tree-wrap{}
-.ko-tree{display:flex; gap:14px; overflow-x:auto; padding-bottom:12px; scrollbar-width:thin; -webkit-overflow-scrolling:touch;}
+.ko-tree{display:flex; gap:42px; overflow-x:auto; padding-bottom:12px; scrollbar-width:thin; -webkit-overflow-scrolling:touch;}
 .ko-tree::-webkit-scrollbar{height:5px;}
 .ko-tree::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2); border-radius:99px;}
 .ko-col{flex:0 0 auto; width:172px; display:flex; flex-direction:column;}
@@ -1345,41 +1345,47 @@ function koRangeNum(rk){
 function drawKOLinks(){
   var tree=document.getElementById("koTree"), svg=document.getElementById("koLinks");
   if(!tree||!svg) return;
-  var rect=tree.getBoundingClientRect();
-  svg.setAttribute("width", tree.scrollWidth);
-  svg.setAttribute("height", tree.scrollHeight);
-  svg.style.width=tree.scrollWidth+"px"; svg.style.height=tree.scrollHeight+"px";
+  var trect=tree.getBoundingClientRect();
+  var W=tree.scrollWidth, H=tree.scrollHeight;
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  svg.style.width=W+"px"; svg.style.height=H+"px";
+
   var pairs=[
-    // [مباراتان في الدور] -> [مباراة الدور التالي]
-    // r32 (73-88) -> r16 (89-96): كل مباراتين متتاليتين
     [[73,74],89],[[75,76],90],[[77,78],91],[[79,80],92],[[81,82],93],[[83,84],94],[[85,86],95],[[87,88],96],
-    // r16 (89-96) -> qf (97-100)
     [[89,90],97],[[91,92],98],[[93,94],99],[[95,96],100],
-    // qf (97-100) -> sf (101-102)
     [[97,98],101],[[99,100],102],
-    // sf (101-102) -> final (104)
     [[101,102],104]
   ];
-  function center(n){
+  // إحداثيات عنصر بالنسبة لإطار الشجرة (مع مراعاة التمرير)
+  function box(n){
     var s=tree.querySelector('.ko-slot[data-mn="'+n+'"]');
     if(!s) return null;
     var r=s.getBoundingClientRect();
-    return {x:r.left-rect.left+tree.scrollLeft, xr:r.right-rect.left+tree.scrollLeft,
-            y:r.top-rect.top+tree.scrollTop + r.height/2, xl:r.left-rect.left+tree.scrollLeft};
+    return {
+      left:  r.left  - trect.left + tree.scrollLeft,
+      right: r.right - trect.left + tree.scrollLeft,
+      midY:  r.top   - trect.top  + tree.scrollTop + r.height/2
+    };
   }
-  var path="";
+  var segs=[];
   pairs.forEach(function(pr){
-    var a=center(pr[0][0]), b=center(pr[0][1]), t=center(pr[1]);
+    var a=box(pr[0][0]), b=box(pr[0][1]), t=box(pr[1]);
     if(!a||!b||!t) return;
-    // في RTL: الدور التالي على اليسار. نصل من الحافة اليسرى للمباراتين إلى الحافة اليمنى للتالية
-    var x1=a.xl, x2=t.xr;
-    var midX=(x1+x2)/2;
-    [a,b].forEach(function(p){
-      path+='M'+p.xl+','+p.y+' H'+midX+' V'+t.y+' ';
-    });
-    path+='M'+midX+','+t.y+' H'+t.xr+' ';
+    // في RTL الدور التالي (t) يقع يسار المصدر (a,b).
+    // نصل من الحافة اليسرى لكل مباراة مصدر، عموديًا لمنتصف الهدف، ثم أفقيًا لحافة الهدف اليمنى.
+    var srcEdge = Math.min(a.left, b.left);     // الحافة اليسرى للمصدر
+    var tgtEdge = t.right;                       // الحافة اليمنى للهدف
+    var midX = (srcEdge + tgtEdge)/2;            // نقطة الالتقاء الأفقية
+    // خط من كل مباراة مصدر: أفقي حتى midX
+    segs.push('M'+a.left+','+a.midY+' H'+midX);
+    segs.push('M'+b.left+','+b.midY+' H'+midX);
+    // خط رأسي عند midX يربط منتصفي المصدرين
+    segs.push('M'+midX+','+a.midY+' V'+b.midY);
+    // خط أفقي من midX (عند منتصف الهدف) حتى حافة الهدف
+    segs.push('M'+midX+','+t.midY+' H'+tgtEdge);
   });
-  svg.innerHTML='<path d="'+path+'" fill="none" stroke="rgba(240,194,75,.45)" stroke-width="1.5"/>';
+  svg.innerHTML='<path d="'+segs.join(" ")+'" fill="none" stroke="rgba(240,194,75,.5)" stroke-width="1.6" stroke-linejoin="round"/>';
 }
 
 /* ================= STADIUMS TAB ================= */
