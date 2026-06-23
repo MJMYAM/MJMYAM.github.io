@@ -1443,27 +1443,20 @@ function renderLU(m, j){
 }
 /* يوزّع 11 لاعبًا على صفوف حسب نظام اللعب */
 function rowsFromFormation(players, formation){
-  // رتّب حسب formationPlace
   var ps=players.slice().sort(function(a,b){return (a.fp||99)-(b.fp||99);});
-  // حاول تفسير نظام اللعب "4-2-3-1"
+  // فصل الحارس
+  var gk=ps[0], rest=ps.slice(1);
+  // فسّر النظام: "4-2-3-1" => [4,2,3,1]
   var lines=[];
   if(formation && /\d/.test(formation)){
-    var nums=formation.split(/[^0-9]+/).filter(Boolean).map(Number);
-    var sum=nums.reduce(function(a,b){return a+b;},0);
-    if(sum===10){ lines=nums; } // عدا الحارس
+    var nums=String(formation).split(/[^0-9]+/).filter(Boolean).map(Number);
+    if(nums.reduce(function(a,b){return a+b;},0)===10) lines=nums;
   }
-  var rows=[];
-  var gk=ps[0]; // الأول حارس عادةً (formationPlace=1)
-  rows.push([gk]);
-  var rest=ps.slice(1);
-  if(lines.length){
-    var idx=0;
-    lines.forEach(function(c){ rows.push(rest.slice(idx, idx+c)); idx+=c; });
-  } else {
-    // توزيع افتراضي 4-3-3 إن لم يُعرف النظام
-    var def=[4,3,3], idx2=0;
-    def.forEach(function(c){ rows.push(rest.slice(idx2, idx2+c)); idx2+=c; });
-  }
+  if(!lines.length) lines=[4,3,3]; // افتراضي
+  var rows=[[gk]], idx=0;
+  lines.forEach(function(c){ rows.push(rest.slice(idx, idx+c)); idx+=c; });
+  // أضف أي لاعبين فائضين لآخر صف (احتياط)
+  if(idx<rest.length) rows[rows.length-1]=rows[rows.length-1].concat(rest.slice(idx));
   return rows;
 }
 function playerDot(p, co){
@@ -1512,23 +1505,13 @@ function teamTag(team, formation){
   return '<div class="half-tag">'+flagImg(team)+' <b>'+team+'</b>'+(formation?'<span class="frm">'+formation+'</span>':'')+'</div>';
 }
 function pitchHTML(m, j){
-  var useCoordsH=hasCoords(j.home), useCoordsA=hasCoords(j.away);
-  var inner;
-  if(useCoordsH && useCoordsA){
-    inner='<div class="pitch-abs">'
-      + halfPitchCoords(m.h, j.home, j.fH, false)
-      + halfPitchCoords(m.a, j.away, j.fA, true)
-      + '</div>';
-  } else {
-    // احتياط: صفوف
-    inner='<div class="half home">'+halfPitch(m.h,j.home,j.fH,false)+'</div>'
-         +'<div class="half away">'+halfPitch(m.a,j.away,j.fA,true)+'</div>';
-  }
+  // التوزيع بالصفوف من نظام اللعب = الأوضح والأدق (نفس أسلوب livescore/BBC)
   return '<div class="pitch">'
     + teamTag(m.h, j.fH)
-    + '<div class="pitch-grass'+((useCoordsH&&useCoordsA)?" abs":"")+'">'
+    + '<div class="pitch-grass">'
       + '<div class="midline"></div><div class="centercircle"></div>'
-      + inner
+      + '<div class="half home">'+halfPitch(m.h, j.home, j.fH, false)+'</div>'
+      + '<div class="half away">'+halfPitch(m.a, j.away, j.fA, true)+'</div>'
     + '</div>'
     + teamTag(m.a, j.fA)
   + '</div>';
@@ -1560,10 +1543,14 @@ async function fetchLU(n, box, btn){
           var arr=xi.map(function(p){
             var nm=((p.athlete||{}).displayName)||((p.athlete||{}).fullName)||"";
             var pos=((p.position||{}).abbreviation)||((p.athlete||{}).position||{}).abbreviation||"";
-            var fx=(p.formationPlace!=null && p.formationX!=null)?parseFloat(p.formationX):null;
-            var fy=(p.formationY!=null)?parseFloat(p.formationY):null;
+            function gv(){ for(var i=0;i<arguments.length;i++){ if(arguments[i]!=null && arguments[i]!==""){ var n=parseFloat(arguments[i]); if(!isNaN(n)) return n; } } return null; }
+            var rawX=gv(p.formationX, (p.formation&&p.formation.x), p.x);
+            var rawY=gv(p.formationY, (p.formation&&p.formation.y), p.y);
+            // وحّد المقياس إلى 0..100 (ESPN أحيانًا 0..1)
+            if(rawX!=null && rawX<=1) rawX=rawX*100;
+            if(rawY!=null && rawY<=1) rawY=rawY*100;
             return {nm:nm, num:p.jersey||"", pos:pos, fp:parseInt(p.formationPlace,10)||99,
-                    x:isNaN(fx)?null:fx, y:isNaN(fy)?null:fy};
+                    x:rawX, y:rawY};
           });
           var formation = (rt.formation && (rt.formation.name||rt.formation.text)) || "";
           if(side==="h"){ home=arr; window._fH=formation; } else { away=arr; window._fA=formation; }
