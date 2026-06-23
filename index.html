@@ -551,6 +551,37 @@ nav#bn button .ic{font-size:19px;}
 .hero.hero-clickable:active{transform:scale(.99);}
 .hero.hero-clickable::after{content:"اضغط لعرض التفاصيل ‹"; position:absolute; bottom:9px; left:50%; transform:translateX(-50%); font-size:10px; color:var(--gold2); background:rgba(240,194,75,.12); border:1px solid rgba(240,194,75,.35); padding:2px 12px; border-radius:99px; white-space:nowrap; pointer-events:none;}
 .hero{position:relative;}
+
+/* ===== مفتاح تبديل الإقصائيات ===== */
+.ko-switch{display:flex; gap:8px; margin-bottom:14px;}
+.ko-mode{flex:1; font-family:inherit; font-size:12.5px; font-weight:700; color:var(--mut); background:var(--card); border:1px solid var(--line); border-radius:12px; padding:9px; cursor:pointer; transition:.15s;}
+.ko-mode.on{color:#0b0f24; background:linear-gradient(135deg,var(--gold2),var(--gold)); border-color:var(--gold);}
+
+/* ===== الشجرة الأفقية ===== */
+.ko-tree-hint{font-size:10.5px; color:var(--dim); text-align:center; margin-bottom:8px;}
+.ko-tree-wrap{}
+.ko-tree{display:flex; gap:14px; overflow-x:auto; padding-bottom:12px; scrollbar-width:thin; -webkit-overflow-scrolling:touch;}
+.ko-tree::-webkit-scrollbar{height:5px;}
+.ko-tree::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2); border-radius:99px;}
+.ko-col{flex:0 0 auto; width:172px; display:flex; flex-direction:column;}
+.ko-col-h{font-family:"Changa",sans-serif; font-weight:800; font-size:13px; color:#fff; text-align:center; padding:8px; border-radius:11px; background:var(--rc,#444); margin-bottom:10px; position:sticky; top:0;}
+.ko-col-h small{display:block; font-size:9px; font-weight:600; opacity:.85; margin-top:1px;}
+.ko-col-body{display:flex; flex-direction:column; justify-content:space-around; gap:10px; flex:1;}
+.ko-m{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:8px 9px; cursor:pointer; transition:.15s;}
+.ko-m:active{transform:scale(.98); border-color:var(--gold);}
+.km-head{display:flex; align-items:center; gap:6px; margin-bottom:6px; font-size:9px; color:var(--mut);}
+.km-n{color:var(--gold2); font-weight:700;}
+.km-date{flex:1;}
+.km-t{font-weight:700; color:#cdd6f4;}
+.km-row{display:flex; align-items:center; gap:6px; font-size:11.5px; padding:2px 0;}
+.km-row .kt-nm{font-weight:600;}
+.km-row .kt-ph{font-size:10px; color:var(--mut);}
+.km-vs{text-align:center; font-size:8.5px; color:var(--dim); margin:1px 0;}
+.ko-third{margin-top:14px; padding:11px; background:rgba(240,194,75,.08); border:1px solid rgba(240,194,75,.3); border-radius:14px; font-size:12px; color:var(--gold2); font-weight:600;}
+.ko-third .ko-m{margin-top:8px; cursor:default;}
+
+/* العمودي يستخدم تنسيق ko-h الموجود */
+.ko-vertical .ko-h{margin-top:18px;}
 </style>
 </head>
 <body>
@@ -631,6 +662,10 @@ nav#bn button .ic{font-size:19px;}
   <!-- ============ KNOCKOUT ============ -->
   <section id="tab-ko" class="tab">
     <div class="sec-t"><i></i>مشوار خروج المغلوب <span class="cnt">32 مباراة</span></div>
+    <div class="ko-switch">
+      <button class="ko-mode on" data-komode="tree">🗺️ شجرة أفقية</button>
+      <button class="ko-mode" data-komode="list">📋 عرض عمودي</button>
+    </div>
     <div id="koList"></div>
   </section>
 
@@ -1235,8 +1270,28 @@ function initStandTable(g){
 }
 
 /* ================= KNOCKOUT TAB ================= */
+var koMode="tree";
+function koTeam(name){
+  // اسم الفريق: لو منتخب حقيقي ضع علمه، لو placeholder اعرضه كما هو
+  if(TEAMS[name]) return flagImg(name)+' <span class="kt-nm">'+name+'</span>';
+  return '<span class="kt-ph">'+name+'</span>';
+}
+function koMatchMini(m){
+  var t=fmtT(m.t);
+  var dd = m.d ? ('<span class="km-date">'+fmtD(m.d)+'</span>') : '';
+  return '<div class="ko-m" data-mn="'+m.n+'">'
+    +'<div class="km-head"><span class="km-n">#'+m.n+'</span>'+dd+'<span class="km-t">'+t.t+'</span></div>'
+    +'<div class="km-row">'+koTeam(m.h)+'</div>'
+    +'<div class="km-vs">×</div>'
+    +'<div class="km-row">'+koTeam(m.a)+'</div>'
+  +'</div>';
+}
 function renderKO(){
   var el=document.getElementById("koList");
+  if(koMode==="list"){ el.className="ko-vertical"; renderKOList(el); }
+  else { el.className="ko-tree-wrap"; renderKOTree(el); }
+}
+function renderKOList(el){
   var order=["r32","r16","qf","sf","third","final"];
   el.innerHTML=order.map(function(rk){
     var arr=M.filter(function(m){return m.r===rk;}).sort(function(a,b){return a.n-b.n;});
@@ -1245,6 +1300,29 @@ function renderKO(){
     if(rk==="r32") h+='<div class="ko-sub">يتأهل متصدر ووصيف كل مجموعة + أفضل 8 منتخبات من أصحاب المركز الثالث</div>';
     return h+arr.map(function(m){return matchCard(m,{showDate:true});}).join("");
   }).join("");
+}
+function renderKOTree(el){
+  var cols=[
+    {rk:"r32", l:"دور الـ32"},
+    {rk:"r16", l:"دور الـ16"},
+    {rk:"qf",  l:"ربع النهائي"},
+    {rk:"sf",  l:"نصف النهائي"},
+    {rk:"final", l:"النهائي"}
+  ];
+  var colsHtml=cols.map(function(col){
+    var r=ROUNDS[col.rk];
+    var arr=M.filter(function(m){return m.r===col.rk;}).sort(function(a,b){return a.n-b.n;});
+    var matches=arr.map(function(m){return koMatchMini(m);}).join("");
+    return '<div class="ko-col" data-round="'+col.rk+'">'
+      +'<div class="ko-col-h" style="--rc:'+r.c+'">'+col.l+'<small>'+KO_DATES[col.rk]+'</small></div>'
+      +'<div class="ko-col-body">'+matches+'</div>'
+    +'</div>';
+  }).join("");
+  // مباراة المركز الثالث منفصلة بالأسفل
+  var third=M.filter(function(m){return m.r==="third";})[0];
+  var thirdHtml = third ? '<div class="ko-third">🥉 مباراة المركز الثالث: '+koMatchMini(third)+'</div>' : '';
+  el.innerHTML='<div class="ko-tree-hint">↔ اسحب يمين/يسار لتصفّح الأدوار</div>'
+    +'<div class="ko-tree">'+colsHtml+'</div>'+thirdHtml;
 }
 
 /* ================= STADIUMS TAB ================= */
@@ -2109,6 +2187,7 @@ function openMatchFull(mn){
 
 /* ================= NAV & EVENTS ================= */
 function goTab(id){
+  if(id==="ko"){ renderKO(); }
   if(id==="cd"){ renderCd(); }
   if(id==="info" && !window._infoDone){ renderInfo(); window._infoDone=true; }
   document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active", t.id==="tab-"+id);});
@@ -2173,6 +2252,14 @@ document.body.addEventListener("click", function(e){
     document.getElementById("selStadium").value=state.stadium;
     applyFilters(); goTab("matches"); return;
   }
+  var kmode=e.target.closest("[data-komode]");
+  if(kmode){
+    koMode=kmode.dataset.komode;
+    document.querySelectorAll(".ko-mode").forEach(function(x){x.classList.toggle("on",x===kmode);});
+    renderKO(); return;
+  }
+  var koMini=e.target.closest(".ko-tree .ko-m[data-mn]");
+  if(koMini){ openMatchFull(+koMini.dataset.mn); return; }
   var heroHit=e.target.closest(".hero-clickable");
   if(heroHit && heroHit.dataset.heroMn){
     openMatchFull(+heroHit.dataset.heroMn);
