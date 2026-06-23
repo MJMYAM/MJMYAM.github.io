@@ -1342,6 +1342,15 @@ function koRangeNum(rk){
   var map={r32:"28/6 – 3/7", r16:"4/7 – 7/7", qf:"9/7 – 12/7", sf:"14/7 – 15/7", final:"19/7"};
   return map[rk]||"";
 }
+function koFeeders(m){
+  // ارجع أرقام المباريات التي تغذّي هذه المباراة (من نص "الفائز من المباراة N")
+  var res=[];
+  [m.h, m.a].forEach(function(side){
+    var mt=/المباراة\s*(\d+)/.exec(side||"");
+    if(mt) res.push(parseInt(mt[1],10));
+  });
+  return res;
+}
 function drawKOLinks(){
   var tree=document.getElementById("koTree"), svg=document.getElementById("koLinks");
   if(!tree||!svg) return;
@@ -1351,17 +1360,10 @@ function drawKOLinks(){
   svg.setAttribute("viewBox","0 0 "+W+" "+H);
   svg.style.width=W+"px"; svg.style.height=H+"px";
 
-  var pairs=[
-    [[73,74],89],[[75,76],90],[[77,78],91],[[79,80],92],[[81,82],93],[[83,84],94],[[85,86],95],[[87,88],96],
-    [[89,90],97],[[91,92],98],[[93,94],99],[[95,96],100],
-    [[97,98],101],[[99,100],102],
-    [[101,102],104]
-  ];
-  // إحداثيات عنصر بالنسبة لإطار الشجرة (مع مراعاة التمرير)
   function box(n){
-    var s=tree.querySelector('.ko-slot[data-mn="'+n+'"]');
-    if(!s) return null;
-    var r=s.getBoundingClientRect();
+    var sl=tree.querySelector('.ko-slot[data-mn="'+n+'"]');
+    if(!sl) return null;
+    var r=sl.getBoundingClientRect();
     return {
       left:  r.left  - trect.left + tree.scrollLeft,
       right: r.right - trect.left + tree.scrollLeft,
@@ -1369,20 +1371,21 @@ function drawKOLinks(){
     };
   }
   var segs=[];
-  pairs.forEach(function(pr){
-    var a=box(pr[0][0]), b=box(pr[0][1]), t=box(pr[1]);
-    if(!a||!b||!t) return;
-    // في RTL الدور التالي (t) يقع يسار المصدر (a,b).
-    // نصل من الحافة اليسرى لكل مباراة مصدر، عموديًا لمنتصف الهدف، ثم أفقيًا لحافة الهدف اليمنى.
-    var srcEdge = Math.min(a.left, b.left);     // الحافة اليسرى للمصدر
-    var tgtEdge = t.right;                       // الحافة اليمنى للهدف
-    var midX = (srcEdge + tgtEdge)/2;            // نقطة الالتقاء الأفقية
-    // خط من كل مباراة مصدر: أفقي حتى midX
+  // مرّ على مباريات r16..final واربط كل واحدة بمغذّياتها (التزاوج الحقيقي من البيانات)
+  var targetRounds=["r16","qf","sf","final"];
+  M.forEach(function(m){
+    if(targetRounds.indexOf(m.r)===-1) return;
+    var feeders=koFeeders(m);
+    if(feeders.length<2) return;
+    var t=box(m.n); if(!t) return;
+    var a=box(feeders[0]), b=box(feeders[1]);
+    if(!a||!b) return;
+    var srcEdge=Math.min(a.left, b.left);  // الحافة اليسرى للمصدرين
+    var tgtEdge=t.right;                    // الحافة اليمنى للهدف (RTL: الهدف يسار)
+    var midX=(srcEdge+tgtEdge)/2;
     segs.push('M'+a.left+','+a.midY+' H'+midX);
     segs.push('M'+b.left+','+b.midY+' H'+midX);
-    // خط رأسي عند midX يربط منتصفي المصدرين
     segs.push('M'+midX+','+a.midY+' V'+b.midY);
-    // خط أفقي من midX (عند منتصف الهدف) حتى حافة الهدف
     segs.push('M'+midX+','+t.midY+' H'+tgtEdge);
   });
   svg.innerHTML='<path d="'+segs.join(" ")+'" fill="none" stroke="rgba(240,194,75,.5)" stroke-width="1.6" stroke-linejoin="round"/>';
