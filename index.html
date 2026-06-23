@@ -546,6 +546,11 @@ nav#bn button .ic{font-size:19px;}
 .half.away .pl-badge{border-color:#f0c24b;}
 .pl-shirt.has-img.noimg{display:grid; place-items:center;}
 @media(max-width:360px){.pl-shirt.has-img{width:32px;height:32px;}}
+
+.hero.hero-clickable{cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .12s, box-shadow .2s;}
+.hero.hero-clickable:active{transform:scale(.99);}
+.hero.hero-clickable::after{content:"اضغط لعرض التفاصيل ‹"; position:absolute; bottom:9px; left:50%; transform:translateX(-50%); font-size:10px; color:var(--gold2); background:rgba(240,194,75,.12); border:1px solid rgba(240,194,75,.35); padding:2px 12px; border-radius:99px; white-space:nowrap; pointer-events:none;}
+.hero{position:relative;}
 </style>
 </head>
 <body>
@@ -999,6 +1004,11 @@ function renderHero(){
     if(st==="up"){ if(!next || dateObj(m)<dateObj(next)) next=m; }
   }
   var target = live || next;
+  var heroCard=document.getElementById("heroCard")||document.querySelector(".hero");
+  if(heroCard){
+    if(target){ heroCard.dataset.heroMn=target.n; heroCard.classList.add("hero-clickable"); }
+    else { heroCard.removeAttribute("data-hero-mn"); heroCard.classList.remove("hero-clickable"); }
+  }
   var eb=document.getElementById("heroEyebrow"), lbl=document.getElementById("heroLabel");
   var duel=document.getElementById("heroDuel"), meta=document.getElementById("heroMeta"), cd=document.getElementById("heroCd");
   if(!target){
@@ -2072,6 +2082,31 @@ function openLiveTV(btn){
     +'<div class="livetv-note">⚠️ مواقع بث خارجية مستقلة · قد تظهر بها إعلانات · الروابط قد تتغير</div>';
 }
 
+
+function openMatchFull(mn){
+  var mm=getM(mn); if(!mm) return;
+  // تأكد أن المباراة ضمن الفلاتر الظاهرة
+  if(typeof resetFilters==="function") resetFilters();
+  if(typeof applyFilters==="function") applyFilters();
+  goTab("matches");
+  setTimeout(function(){
+    var card=document.querySelector('.match[data-mn="'+mn+'"]');
+    if(!card) return;
+    if(!card.classList.contains("open")){
+      card.classList.add("open");
+      var bx=card.querySelector(".m-ext");
+      if(bx && !bx.innerHTML) bx.innerHTML=extShell(mm);
+      // تحميل الأهداف تلقائيًا للمباريات الحية/المنتهية
+      if(statusOf(mm)!=="up" && GOAL_CACHE[mn]==null){
+        var slot=bx?bx.querySelector(".gl-wrap"):null;
+        if(!slot && bx){ var d=document.createElement("div"); d.className="gl-wrap"; bx.insertBefore(d,bx.firstChild); slot=d; }
+        if(slot) fetchGoals(mn, slot, null);
+      }
+    }
+    card.scrollIntoView({behavior:"smooth", block:"start"});
+  }, 120);
+}
+
 /* ================= NAV & EVENTS ================= */
 function goTab(id){
   if(id==="cd"){ renderCd(); }
@@ -2137,6 +2172,11 @@ document.body.addEventListener("click", function(e){
     state.stadium=s.dataset.gomatchesStadium;
     document.getElementById("selStadium").value=state.stadium;
     applyFilters(); goTab("matches"); return;
+  }
+  var heroHit=e.target.closest(".hero-clickable");
+  if(heroHit && heroHit.dataset.heroMn){
+    openMatchFull(+heroHit.dataset.heroMn);
+    return;
   }
   var card=e.target.closest(".match");
   if(card && !e.target.closest(".m-ext")){
