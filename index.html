@@ -1299,6 +1299,27 @@ function koMatchMini(m){
   +'</div>';
 }
 window.addEventListener("resize", function(){ if(koMode==="tree") drawKOLinks(); });
+
+function koFeedersOf(n){
+  var m=getM(n); if(!m) return [];
+  var res=[];
+  [m.h, m.a].forEach(function(side){
+    var mt=/المباراة\s*(\d+)/.exec(side||"");
+    if(mt) res.push(parseInt(mt[1],10));
+  });
+  return res;
+}
+function koBracketOrder(){
+  // تتبّع من النهائي للخلف لترتيب كل دور بحيث المتزاوجات متجاورة
+  var order={final:[104]};
+  function back(targets){ var src=[]; targets.forEach(function(t){ src=src.concat(koFeedersOf(t)); }); return src; }
+  order.sf=back(order.final);
+  order.qf=back(order.sf);
+  order.r16=back(order.qf);
+  order.r32=back(order.r16);
+  return order;
+}
+
 function renderKO(){
   var el=document.getElementById("koList");
   if(koMode==="list"){ el.className="ko-vertical"; renderKOList(el); }
@@ -1324,7 +1345,9 @@ function renderKOTree(el){
   ];
   var colsHtml=cols.map(function(col){
     var r=ROUNDS[col.rk];
-    var arr=M.filter(function(m){return m.r===col.rk;}).sort(function(a,b){return a.n-b.n;});
+    var bo=koBracketOrder();
+    var ordIds = bo[col.rk] || M.filter(function(m){return m.r===col.rk;}).map(function(m){return m.n;});
+    var arr = ordIds.map(function(id){return getM(id);}).filter(Boolean);
     var matches=arr.map(function(m){return '<div class="ko-slot" data-mn="'+m.n+'">'+koMatchMini(m)+'</div>';}).join("");
     return '<div class="ko-col" data-round="'+col.rk+'">'
       +'<div class="ko-col-h" style="--rc:'+r.c+'">'+col.l+'<small>'+koRangeNum(col.rk)+'</small></div>'
