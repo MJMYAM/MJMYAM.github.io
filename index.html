@@ -593,6 +593,9 @@ nav#bn button .ic{font-size:19px;}
 .km-arrow{margin-top:7px; padding-top:6px; border-top:1px dashed rgba(240,194,75,.3); font-size:9.5px; color:var(--gold2); text-align:center; font-weight:600;}
 .km-arrow b{font-family:"Changa",sans-serif; font-size:11px;}
 .ko-col-body{justify-content:flex-start; gap:12px;}
+
+.km-bronze{font-size:9.5px; color:#e6b958; font-weight:700; text-align:center; margin-bottom:5px;}
+.ko-col[data-round="third"] .ko-m{border-color:rgba(201,150,46,.45); background:rgba(201,150,46,.07);}
 </style>
 </head>
 <body>
@@ -1304,11 +1307,13 @@ function koNextMatch(n){
 }
 function koMatchMini(m){
   var t=fmtT(m.t);
+  var bronze = m.r==="third" ? '<div class="km-bronze">🥉 تحديد المركز الثالث</div>' : '';
   var dd = m.d ? ('<span class="km-date">'+koDateNum(m.d)+'</span>') : '';
   var nxt = koNextMatch(m.n);
   var arrow = nxt ? ('<div class="km-arrow">الفائز ← مباراة <b>#'+nxt+'</b> ➜</div>') : '';
   return '<div class="ko-m" data-mn="'+m.n+'">'
     +'<div class="km-head"><span class="km-n">#'+m.n+'</span>'+dd+'<span class="km-t">'+t.t+'</span></div>'
+    +bronze
     +'<div class="km-row">'+koTeam(m.h)+'</div>'
     +'<div class="km-vs">×</div>'
     +'<div class="km-row">'+koTeam(m.a)+'</div>'
@@ -1333,6 +1338,8 @@ function koBracketOrder(){
   order.qf=back(order.sf);
   order.r16=back(order.qf);
   order.r32=back(order.r16);
+  // المركز الثالث: مباراته الوحيدة
+  order.third=M.filter(function(m){return m.r==="third";}).map(function(m){return m.n;});
   return order;
 }
 
@@ -1357,6 +1364,7 @@ function renderKOTree(el){
     {rk:"r16", l:"دور الـ16"},
     {rk:"qf",  l:"ربع النهائي"},
     {rk:"sf",  l:"نصف النهائي"},
+    {rk:"third", l:"المركز الثالث"},
     {rk:"final", l:"النهائي"}
   ];
   var colsHtml=cols.map(function(col){
@@ -1370,8 +1378,7 @@ function renderKOTree(el){
       +'<div class="ko-col-body">'+matches+'</div>'
     +'</div>';
   }).join("");
-  var third=M.filter(function(m){return m.r==="third";})[0];
-  var thirdHtml = third ? '<div class="ko-third">🥉 مباراة المركز الثالث:'+koMatchMini(third)+'</div>' : '';
+  var thirdHtml = '';
   el.innerHTML='<div class="ko-tree-hint">↔ اسحب يمين/يسار لتصفّح الأدوار</div>'
     +'<div class="ko-tree" id="koTree">'+colsHtml+'</div>'+thirdHtml;
   // ارسم الخطوط بعد رسم العناصر
