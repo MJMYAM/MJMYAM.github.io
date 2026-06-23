@@ -489,6 +489,21 @@ nav#bn button .ic{font-size:19px;}
 .day.liveday.on{box-shadow:0 0 18px -1px rgba(240,194,75,.85);}
 .day .livedot{position:absolute; top:4px; left:6px; width:7px; height:7px; border-radius:50%; background:#e0273a; box-shadow:0 0 0 2px rgba(255,255,255,.7); animation:blink 1s infinite;}
 @keyframes dayglow{0%,100%{box-shadow:0 0 14px -2px rgba(240,194,75,.6);}50%{box-shadow:0 0 20px 1px rgba(240,194,75,.9);}}
+
+/* ===== أزرار وروابط البث المباشر ===== */
+.live-tv-btn{width:100%; margin-top:8px; background:linear-gradient(135deg,rgba(46,204,113,.2),rgba(46,204,113,.05)); border:1px solid rgba(46,204,113,.5); color:#9af0c2; font-family:inherit; font-size:12.5px; font-weight:700; border-radius:12px; padding:10px; cursor:pointer;}
+.live-tv-btn.islive{background:linear-gradient(135deg,rgba(232,72,85,.28),rgba(232,72,85,.08)); border-color:rgba(232,72,85,.6); color:#ff9aa3; animation:ltpulse 1.6s ease-in-out infinite;}
+@keyframes ltpulse{50%{box-shadow:0 0 16px -2px rgba(232,72,85,.6);}}
+.livetv-box{margin-top:8px;}
+.livetv-head{font-size:11px; color:var(--gold2); font-weight:600; text-align:center; margin-bottom:8px;}
+.livetv-link{display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:12px; text-decoration:none; background:rgba(255,255,255,.04); border:1px solid var(--line); margin-bottom:7px; transition:.15s;}
+.livetv-link:active{transform:scale(.98);}
+.lt-num{display:grid; place-items:center; width:24px; height:24px; border-radius:8px; background:rgba(46,204,113,.18); color:#7ee2ab; font-family:"Changa",sans-serif; font-weight:800; font-size:13px; flex-shrink:0;}
+.lt-info{flex:1; display:flex; flex-direction:column;}
+.lt-info b{color:#e9eeff; font-size:13px; font-weight:700;}
+.lt-info small{color:var(--mut); font-size:10px;}
+.lt-go{font-size:11px; color:var(--gold2); font-weight:700; white-space:nowrap;}
+.livetv-note{font-size:9.5px; color:var(--dim); text-align:center; margin-top:4px; line-height:1.7;}
 </style>
 </head>
 <body>
@@ -1342,12 +1357,20 @@ function extShell(m){
   var goalsBlock='';
   // فيديو beIN SPORTS — يظهر لما المباراة منتهية
   var videoBlock='';
-  if(m.d && statusOf(m)==="done"){
-    var q=encodeURIComponent(m.h+" ضد "+m.a+" beIN Sports ملخص");
-    var qMatch=encodeURIComponent(m.h+" ضد "+m.a);
-    videoBlock='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button>'
-      +'<div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div>'
-      +'<div class="ext-div"></div>';
+  if(m.d && isReal(m)){
+    var stxV=statusOf(m);
+    if(stxV==="done"){
+      var q=encodeURIComponent(m.h+" ضد "+m.a+" beIN Sports ملخص");
+      var qMatch=encodeURIComponent(m.h+" ضد "+m.a);
+      videoBlock+='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button>'
+        +'<div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div>';
+    }
+    if(stxV==="live" || stxV==="up"){
+      var llbl = stxV==="live" ? "🔴 شاهد المباراة بثًّا مباشرًا الآن" : "📺 روابط بث المباراة المباشر";
+      videoBlock+='<button class="live-tv-btn'+(stxV==="live"?" islive":"")+'" data-livetv="'+m.n+'">'+llbl+'</button>'
+        +'<div class="livetv-box" id="livetv-'+m.n+'" style="display:none"></div>';
+    }
+    if(videoBlock) videoBlock+='<div class="ext-div"></div>';
   }
   if(m.d){
     var stx=statusOf(m);
@@ -1850,6 +1873,31 @@ function tickCd(){
 }
 function renderCd(){ buildCdFilters(); renderCdFinal(); renderCdList(); }
 
+
+/* ===== روابط البث المباشر (مواقع متعددة) ===== */
+var LIVE_TV_SITES=[
+  {name:"LiveHD7", url:"https://www.livehd7top.com/", desc:"بث مباشر HD"},
+  {name:"LivaHD7", url:"https://livahd7.live/sport/", desc:"قسم الرياضة"},
+  {name:"LiveHD2", url:"https://www.livehd2.live/", desc:"بث مباشر بديل"}
+];
+function openLiveTV(btn){
+  var card=btn.closest(".match"); if(!card) return;
+  var mn=card.dataset.mn, m=getM(+mn);
+  var box=document.getElementById("livetv-"+mn);
+  if(!box || !m) return;
+  if(box.style.display!=="none"){ box.style.display="none"; return; }
+  box.style.display="block";
+  var links=LIVE_TV_SITES.map(function(st,i){
+    return '<a class="livetv-link" href="'+st.url+'" target="_blank" rel="noopener noreferrer">'
+      +'<span class="lt-num">'+(i+1)+'</span>'
+      +'<span class="lt-info"><b>'+st.name+'</b><small>'+st.desc+'</small></span>'
+      +'<span class="lt-go">فتح ↗</span></a>';
+  }).join("");
+  box.innerHTML='<div class="livetv-head">📡 اختر موقع البث — إن لم يعمل الأول جرّب البديل</div>'
+    +links
+    +'<div class="livetv-note">⚠️ مواقع بث خارجية مستقلة · قد تظهر بها إعلانات · الروابط قد تتغير</div>';
+}
+
 /* ================= NAV & EVENTS ================= */
 function goTab(id){
   if(id==="cd"){ renderCd(); }
@@ -1883,6 +1931,8 @@ document.body.addEventListener("click", function(e){
     return;
   }
   // زر beIN SPORTS — منفصل (لما يضغط على data-bein-q مباشرة)
+  var ltv=e.target.closest("[data-livetv]");
+  if(ltv){ openLiveTV(ltv); return; }
   var bvb=e.target.closest("[data-bein-q]");
   if(bvb){ openBeinMatch(bvb); return; }
   var lub=e.target.closest("[data-lu]");
