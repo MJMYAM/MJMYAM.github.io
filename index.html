@@ -582,6 +582,13 @@ nav#bn button .ic{font-size:19px;}
 
 /* العمودي يستخدم تنسيق ko-h الموجود */
 .ko-vertical .ko-h{margin-top:18px;}
+
+/* خطوط ربط البراكيت */
+.ko-tree{position:relative;}
+.ko-links{position:absolute; inset:0; pointer-events:none; z-index:0; overflow:visible;}
+.ko-col{position:relative; z-index:1;}
+.ko-slot{display:flex;}
+.ko-col-body{justify-content:space-around;}
 </style>
 </head>
 <body>
@@ -1276,9 +1283,14 @@ function koTeam(name){
   if(TEAMS[name]) return flagImg(name)+' <span class="kt-nm">'+name+'</span>';
   return '<span class="kt-ph">'+name+'</span>';
 }
+function koDateNum(d){
+  if(!d) return "";
+  var x=new Date(d+"T12:00:00");
+  return x.getDate()+'/'+(x.getMonth()+1);
+}
 function koMatchMini(m){
   var t=fmtT(m.t);
-  var dd = m.d ? ('<span class="km-date">'+fmtD(m.d)+'</span>') : '';
+  var dd = m.d ? ('<span class="km-date">'+koDateNum(m.d)+'</span>') : '';
   return '<div class="ko-m" data-mn="'+m.n+'">'
     +'<div class="km-head"><span class="km-n">#'+m.n+'</span>'+dd+'<span class="km-t">'+t.t+'</span></div>'
     +'<div class="km-row">'+koTeam(m.h)+'</div>'
@@ -1286,6 +1298,7 @@ function koMatchMini(m){
     +'<div class="km-row">'+koTeam(m.a)+'</div>'
   +'</div>';
 }
+window.addEventListener("resize", function(){ if(koMode==="tree") drawKOLinks(); });
 function renderKO(){
   var el=document.getElementById("koList");
   if(koMode==="list"){ el.className="ko-vertical"; renderKOList(el); }
@@ -1312,17 +1325,61 @@ function renderKOTree(el){
   var colsHtml=cols.map(function(col){
     var r=ROUNDS[col.rk];
     var arr=M.filter(function(m){return m.r===col.rk;}).sort(function(a,b){return a.n-b.n;});
-    var matches=arr.map(function(m){return koMatchMini(m);}).join("");
+    var matches=arr.map(function(m){return '<div class="ko-slot" data-mn="'+m.n+'">'+koMatchMini(m)+'</div>';}).join("");
     return '<div class="ko-col" data-round="'+col.rk+'">'
-      +'<div class="ko-col-h" style="--rc:'+r.c+'">'+col.l+'<small>'+KO_DATES[col.rk]+'</small></div>'
+      +'<div class="ko-col-h" style="--rc:'+r.c+'">'+col.l+'<small>'+koRangeNum(col.rk)+'</small></div>'
       +'<div class="ko-col-body">'+matches+'</div>'
     +'</div>';
   }).join("");
-  // مباراة المركز الثالث منفصلة بالأسفل
   var third=M.filter(function(m){return m.r==="third";})[0];
-  var thirdHtml = third ? '<div class="ko-third">🥉 مباراة المركز الثالث: '+koMatchMini(third)+'</div>' : '';
+  var thirdHtml = third ? '<div class="ko-third">🥉 مباراة المركز الثالث:'+koMatchMini(third)+'</div>' : '';
   el.innerHTML='<div class="ko-tree-hint">↔ اسحب يمين/يسار لتصفّح الأدوار</div>'
-    +'<div class="ko-tree">'+colsHtml+'</div>'+thirdHtml;
+    +'<div class="ko-tree" id="koTree">'+colsHtml+'<svg class="ko-links" id="koLinks"></svg></div>'+thirdHtml;
+  // ارسم الخطوط بعد رسم العناصر
+  setTimeout(drawKOLinks, 60);
+}
+function koRangeNum(rk){
+  var map={r32:"28/6 – 3/7", r16:"4/7 – 7/7", qf:"9/7 – 12/7", sf:"14/7 – 15/7", final:"19/7"};
+  return map[rk]||"";
+}
+function drawKOLinks(){
+  var tree=document.getElementById("koTree"), svg=document.getElementById("koLinks");
+  if(!tree||!svg) return;
+  var rect=tree.getBoundingClientRect();
+  svg.setAttribute("width", tree.scrollWidth);
+  svg.setAttribute("height", tree.scrollHeight);
+  svg.style.width=tree.scrollWidth+"px"; svg.style.height=tree.scrollHeight+"px";
+  var pairs=[
+    // [مباراتان في الدور] -> [مباراة الدور التالي]
+    // r32 (73-88) -> r16 (89-96): كل مباراتين متتاليتين
+    [[73,74],89],[[75,76],90],[[77,78],91],[[79,80],92],[[81,82],93],[[83,84],94],[[85,86],95],[[87,88],96],
+    // r16 (89-96) -> qf (97-100)
+    [[89,90],97],[[91,92],98],[[93,94],99],[[95,96],100],
+    // qf (97-100) -> sf (101-102)
+    [[97,98],101],[[99,100],102],
+    // sf (101-102) -> final (104)
+    [[101,102],104]
+  ];
+  function center(n){
+    var s=tree.querySelector('.ko-slot[data-mn="'+n+'"]');
+    if(!s) return null;
+    var r=s.getBoundingClientRect();
+    return {x:r.left-rect.left+tree.scrollLeft, xr:r.right-rect.left+tree.scrollLeft,
+            y:r.top-rect.top+tree.scrollTop + r.height/2, xl:r.left-rect.left+tree.scrollLeft};
+  }
+  var path="";
+  pairs.forEach(function(pr){
+    var a=center(pr[0][0]), b=center(pr[0][1]), t=center(pr[1]);
+    if(!a||!b||!t) return;
+    // في RTL: الدور التالي على اليسار. نصل من الحافة اليسرى للمباراتين إلى الحافة اليمنى للتالية
+    var x1=a.xl, x2=t.xr;
+    var midX=(x1+x2)/2;
+    [a,b].forEach(function(p){
+      path+='M'+p.xl+','+p.y+' H'+midX+' V'+t.y+' ';
+    });
+    path+='M'+midX+','+t.y+' H'+t.xr+' ';
+  });
+  svg.innerHTML='<path d="'+path+'" fill="none" stroke="rgba(240,194,75,.45)" stroke-width="1.5"/>';
 }
 
 /* ================= STADIUMS TAB ================= */
