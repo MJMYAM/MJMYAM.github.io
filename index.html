@@ -504,6 +504,29 @@ nav#bn button .ic{font-size:19px;}
 .lt-info small{color:var(--mut); font-size:10px;}
 .lt-go{font-size:11px; color:var(--gold2); font-weight:700; white-space:nowrap;}
 .livetv-note{font-size:9.5px; color:var(--dim); text-align:center; margin-top:4px; line-height:1.7;}
+
+/* ===== التشكيلة على أرض الملعب ===== */
+.pitch{margin-top:10px;}
+.pitch-grass{position:relative; border-radius:16px; overflow:hidden; padding:10px 6px;
+  background:repeating-linear-gradient(180deg,#1f7a44 0 34px,#1c6f3e 34px 68px);
+  border:1px solid rgba(255,255,255,.16); box-shadow:inset 0 0 40px rgba(0,0,0,.3);}
+.pitch-grass::before{content:""; position:absolute; inset:6px; border:2px solid rgba(255,255,255,.18); border-radius:10px; pointer-events:none;}
+.midline{position:absolute; left:6px; right:6px; top:50%; height:2px; background:rgba(255,255,255,.18);}
+.centercircle{position:absolute; left:50%; top:50%; width:62px; height:62px; transform:translate(-50%,-50%); border:2px solid rgba(255,255,255,.18); border-radius:50%;}
+.half{position:relative; z-index:2; display:flex; flex-direction:column; gap:9px; padding:8px 2px;}
+.half.home{padding-bottom:14px;}
+.half.away{padding-top:14px;}
+.half-tag{display:flex; align-items:center; gap:7px; font-size:12.5px; justify-content:center; margin-bottom:2px;}
+.half-tag b{font-family:"Changa",sans-serif; font-weight:700;}
+.half-tag .frm{font-size:10px; color:#0b0f24; background:rgba(255,255,255,.85); padding:1px 8px; border-radius:99px; font-weight:800;}
+.half-field{display:flex; flex-direction:column; gap:10px;}
+.pl-row{display:flex; justify-content:space-evenly; gap:4px;}
+.pl{display:flex; flex-direction:column; align-items:center; gap:2px; width:60px;}
+.pl-shirt{position:relative; width:30px; height:30px; border-radius:50%; background:linear-gradient(160deg,#fff,#dfe6ff); border:2px solid rgba(0,0,0,.25); display:grid; place-items:center; box-shadow:0 3px 7px rgba(0,0,0,.4);}
+.pl-num{font-family:"Changa",sans-serif; font-weight:800; font-size:13px; color:#0b1130;}
+.pl-nm{font-size:9px; color:#fff; text-align:center; line-height:1.2; max-width:62px; text-shadow:0 1px 2px rgba(0,0,0,.9); direction:ltr; unicode-bidi:embed; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.half.away .pl-shirt{background:linear-gradient(160deg,#ffe09a,#f0c24b);}
+@media(max-width:360px){.pl{width:52px;}.pl-shirt{width:26px;height:26px;}.pl-num{font-size:11px;}}
 </style>
 </head>
 <body>
@@ -1390,7 +1413,16 @@ function renderLU(m, j){
   if(j.channel) chips+='<span class="chip tv">📺 '+j.channel+'</span>';
   if(j.commentator) chips+='<span class="chip">🎙️ '+j.commentator+'</span>';
   if(chips) html+='<div class="chips">'+chips+'</div>';
-  if(j.status==="ok" && j.home && j.home.length && j.away && j.away.length){
+
+  var ok = j.status==="ok" && j.home && j.home.length>=7 && j.away && j.away.length>=7;
+  // دعم النوعين: بيانات منظّمة (كائنات) أو نصوص قديمة
+  var structured = ok && typeof j.home[0]==="object";
+
+  if(structured){
+    html+=pitchHTML(m, j);
+    if(j.note) html+='<div class="lu-note">'+j.note+'</div>';
+  } else if(ok){
+    // احتياط: عرض قائمة (نصوص)
     html+='<div class="lu-grid">'
       +'<div class="lu-col"><h5>'+flagImg(m.h)+' '+m.h+'</h5><ol>'+j.home.map(function(p){return '<li>'+p+'</li>';}).join("")+'</ol></div>'
       +'<div class="lu-col"><h5>'+flagImg(m.a)+' '+m.a+'</h5><ol>'+j.away.map(function(p){return '<li>'+p+'</li>';}).join("")+'</ol></div>'
@@ -1401,6 +1433,58 @@ function renderLU(m, j){
   }
   html+='<div style="text-align:center"><button class="lu-alt" data-lu="'+m.n+'">↻ تحديث</button></div>';
   return html;
+}
+/* يوزّع 11 لاعبًا على صفوف حسب نظام اللعب */
+function rowsFromFormation(players, formation){
+  // رتّب حسب formationPlace
+  var ps=players.slice().sort(function(a,b){return (a.fp||99)-(b.fp||99);});
+  // حاول تفسير نظام اللعب "4-2-3-1"
+  var lines=[];
+  if(formation && /\d/.test(formation)){
+    var nums=formation.split(/[^0-9]+/).filter(Boolean).map(Number);
+    var sum=nums.reduce(function(a,b){return a+b;},0);
+    if(sum===10){ lines=nums; } // عدا الحارس
+  }
+  var rows=[];
+  var gk=ps[0]; // الأول حارس عادةً (formationPlace=1)
+  rows.push([gk]);
+  var rest=ps.slice(1);
+  if(lines.length){
+    var idx=0;
+    lines.forEach(function(c){ rows.push(rest.slice(idx, idx+c)); idx+=c; });
+  } else {
+    // توزيع افتراضي 4-3-3 إن لم يُعرف النظام
+    var def=[4,3,3], idx2=0;
+    def.forEach(function(c){ rows.push(rest.slice(idx2, idx2+c)); idx2+=c; });
+  }
+  return rows;
+}
+function playerDot(p, co){
+  var num=p.num?('<span class="pl-num">'+p.num+'</span>'):'';
+  var nm=p.nm||"";
+  // اختصر الاسم: آخر كلمة (اسم العائلة) للوضوح
+  var shortNm=nm.split(" ").slice(-1)[0]||nm;
+  return '<div class="pl"><div class="pl-shirt">'+num+'</div><div class="pl-nm" title="'+nm+'">'+shortNm+'</div></div>';
+}
+function halfPitch(team, players, formation, flip){
+  var rows=rowsFromFormation(players, formation);
+  if(flip) rows.reverse(); // الفريق الضيف معكوس ليلتقي بالمنتصف
+  var rowsHtml=rows.map(function(line){
+    return '<div class="pl-row">'+line.map(function(p){return playerDot(p,team);}).join("")+'</div>';
+  }).join("");
+  return '<div class="half '+(flip?"away":"home")+'">'
+    +'<div class="half-tag">'+flagImg(team)+' <b>'+team+'</b>'+(formation?'<span class="frm">'+formation+'</span>':'')+'</div>'
+    +'<div class="half-field">'+rowsHtml+'</div>'
+  +'</div>';
+}
+function pitchHTML(m, j){
+  return '<div class="pitch">'
+    +'<div class="pitch-grass">'
+      +'<div class="midline"></div><div class="centercircle"></div>'
+      +halfPitch(m.h, j.home, j.fH, false)
+      +halfPitch(m.a, j.away, j.fA, true)
+    +'</div>'
+  +'</div>';
 }
 async function fetchLU(n, box, btn){
   var m=getM(n); if(!m || !box) return;
@@ -1427,13 +1511,14 @@ async function fetchLU(n, box, btn){
           xi.sort(function(a,b){return (parseInt(a.formationPlace,10)||99)-(parseInt(b.formationPlace,10)||99);});
           var arr=xi.map(function(p){
             var nm=((p.athlete||{}).displayName)||((p.athlete||{}).fullName)||"";
-            var jn=p.jersey?(" ("+p.jersey+")"):"";
-            return '<span style="direction:ltr;unicode-bidi:embed">'+nm+jn+'</span>';
+            var pos=((p.position||{}).abbreviation)||((p.athlete||{}).position||{}).abbreviation||"";
+            return {nm:nm, num:p.jersey||"", pos:pos, fp:parseInt(p.formationPlace,10)||99};
           });
-          if(side==="h") home=arr; else away=arr;
+          var formation = (rt.formation && (rt.formation.name||rt.formation.text)) || "";
+          if(side==="h"){ home=arr; window._fH=formation; } else { away=arr; window._fA=formation; }
         });
         if(home.length>=7 && away.length>=7){
-          var jj={status:"ok", home:home, away:away, channel:"شبكة beIN Sports", note:"التشكيلات من المصدر المباشر (الأرقام بين الأقواس أرقام القمصان)"};
+          var jj={status:"ok", home:home, away:away, fH:window._fH||"", fA:window._fA||"", channel:"شبكة beIN Sports", note:"التشكيلات الرسمية من المصدر المباشر"};
           var html=renderLU(m,jj); LU_CACHE[n]=html; box.innerHTML=html; return;
         }
         if(home.length===0 && away.length===0){
