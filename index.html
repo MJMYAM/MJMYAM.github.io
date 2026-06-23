@@ -537,6 +537,15 @@ nav#bn button .ic{font-size:19px;}
 
 .pl-pos{display:inline-block; font-family:"Changa",sans-serif; font-weight:800; font-size:8px; color:#0b0f24; background:rgba(255,255,255,.78); padding:0 5px; border-radius:99px; margin-top:1px; letter-spacing:.3px;}
 .half.away .pl-pos{background:rgba(240,194,75,.85);}
+
+/* صور اللاعبين */
+.pl-shirt.has-img{width:38px; height:38px; padding:0; overflow:visible; background:linear-gradient(160deg,#fff,#dfe6ff); border:2px solid rgba(255,255,255,.85);}
+.half.away .pl-shirt.has-img{background:linear-gradient(160deg,#ffe09a,#f0c24b); border-color:rgba(240,194,75,.9);}
+.pl-face{width:100%; height:100%; border-radius:50%; object-fit:cover; object-position:top center; background:#0c1330; display:block;}
+.pl-badge{position:absolute; bottom:-3px; right:-3px; min-width:15px; height:15px; padding:0 3px; border-radius:99px; background:#0b1130; color:#fff; font-family:"Changa",sans-serif; font-weight:800; font-size:9px; display:grid; place-items:center; border:1.5px solid #fff; line-height:1;}
+.half.away .pl-badge{border-color:#f0c24b;}
+.pl-shirt.has-img.noimg{display:grid; place-items:center;}
+@media(max-width:360px){.pl-shirt.has-img{width:32px;height:32px;}}
 </style>
 </head>
 <body>
@@ -1513,14 +1522,23 @@ function halfPitchCoords(team, players, formation, flip){
   return dots;
 }
 function playerInner(p){
-  var num=p.num?('<span class="pl-num">'+p.num+'</span>'):'';
   var nm=p.nm||"";
   var shortNm=nm.split(" ").slice(-1)[0]||nm;
   var pos=(p.pos||"").toUpperCase();
-  var posHtml=pos?('<span class="pl-pos">'+pos+'</span>'):'';
-  return '<div class="pl-shirt">'+num+'</div>'
+  var num=p.num||"";
+  var shirt;
+  if(p.img){
+    shirt='<div class="pl-shirt has-img">'
+      +'<img class="pl-face" loading="lazy" src="'+p.img+'" alt="" '
+      +'onerror="this.parentNode.classList.add(\'noimg\'); this.parentNode.innerHTML=\'<span class=&quot;pl-num&quot;>'+num+'</span>\';">'
+      +(num?'<span class="pl-badge">'+num+'</span>':'')
+    +'</div>';
+  } else {
+    shirt='<div class="pl-shirt">'+(num?'<span class="pl-num">'+num+'</span>':'')+'</div>';
+  }
+  return shirt
     +'<div class="pl-nm" title="'+nm+'">'+shortNm+'</div>'
-    +posHtml;
+    +(pos?'<span class="pl-pos">'+pos+'</span>':'');
 }
 function halfPitch(team, players, formation, flip){
   var rows=rowsFromFormation(players, formation);
@@ -1570,15 +1588,19 @@ async function fetchLU(n, box, btn){
           var xi=(rt.roster||[]).filter(function(p){return p && p.starter;});
           xi.sort(function(a,b){return (parseInt(a.formationPlace,10)||99)-(parseInt(b.formationPlace,10)||99);});
           var arr=xi.map(function(p){
-            var nm=((p.athlete||{}).displayName)||((p.athlete||{}).fullName)||"";
-            var pos=((p.position||{}).abbreviation)||((p.athlete||{}).position||{}).abbreviation||"";
+            var ath=p.athlete||{};
+            var nm=ath.displayName||ath.fullName||"";
+            var pos=((p.position||{}).abbreviation)||(ath.position||{}).abbreviation||"";
+            var img="";
+            if(ath.headshot && ath.headshot.href) img=ath.headshot.href;
+            else if(ath.id) img="https://a.espncdn.com/i/headshots/soccer/players/full/"+ath.id+".png";
             function gv(){ for(var i=0;i<arguments.length;i++){ if(arguments[i]!=null && arguments[i]!==""){ var n=parseFloat(arguments[i]); if(!isNaN(n)) return n; } } return null; }
             var rawX=gv(p.formationX, (p.formation&&p.formation.x), p.x);
             var rawY=gv(p.formationY, (p.formation&&p.formation.y), p.y);
             // وحّد المقياس إلى 0..100 (ESPN أحيانًا 0..1)
             if(rawX!=null && rawX<=1) rawX=rawX*100;
             if(rawY!=null && rawY<=1) rawY=rawY*100;
-            return {nm:nm, num:p.jersey||"", pos:pos, fp:parseInt(p.formationPlace,10)||99,
+            return {nm:nm, num:p.jersey||"", pos:pos, img:img, fp:parseInt(p.formationPlace,10)||99,
                     x:rawX, y:rawY};
           });
           var formation = (rt.formation && (rt.formation.name||rt.formation.text)) || "";
