@@ -527,6 +527,13 @@ nav#bn button .ic{font-size:19px;}
 .pl-nm{font-size:9px; color:#fff; text-align:center; line-height:1.2; max-width:62px; text-shadow:0 1px 2px rgba(0,0,0,.9); direction:ltr; unicode-bidi:embed; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .half.away .pl-shirt{background:linear-gradient(160deg,#ffe09a,#f0c24b);}
 @media(max-width:360px){.pl{width:52px;}.pl-shirt{width:26px;height:26px;}.pl-num{font-size:11px;}}
+
+/* تشكيلة بإحداثيات حقيقية */
+.pitch-grass.abs{position:relative; min-height:430px; padding:0;}
+.pitch-abs{position:absolute; inset:0;}
+.pl-abs{position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:2px; width:56px;}
+.pl-abs .pl-nm{max-width:60px;}
+@media(max-width:360px){.pitch-grass.abs{min-height:380px;}.pl-abs{width:48px;}}
 </style>
 </head>
 <body>
@@ -1466,26 +1473,67 @@ function playerDot(p, co){
   var shortNm=nm.split(" ").slice(-1)[0]||nm;
   return '<div class="pl"><div class="pl-shirt">'+num+'</div><div class="pl-nm" title="'+nm+'">'+shortNm+'</div></div>';
 }
+function hasCoords(players){
+  return players.length>=11 && players.every(function(p){return p.x!=null && p.y!=null;});
+}
+function halfPitchCoords(team, players, formation, flip){
+  // ESPN: x =0..100 عرض الملعب، y =0..100 من خط مرمى الفريق لخط المنتصف
+  var dots=players.map(function(p){
+    // y: 0 عند المرمى، 100 عند المنتصف. للمضيف (أسفل) نضعه من الأسفل لأعلى.
+    var top, left;
+    var yy=Math.max(0,Math.min(100,p.y));
+    var xx=Math.max(0,Math.min(100,p.x));
+    if(flip){ // الضيف: نصف علوي، المرمى فوق
+      top = yy*0.5;            // 0..50%
+      left = 100-xx;           // اقلب العرض ليتطابق الاتجاه
+    } else {  // المضيف: نصف سفلي، المرمى تحت
+      top = 100 - yy*0.5;      // 100..50%
+      left = xx;
+    }
+    return '<div class="pl-abs" style="top:'+top.toFixed(1)+'%; left:'+left.toFixed(1)+'%">'+playerInner(p)+'</div>';
+  }).join("");
+  return dots;
+}
+function playerInner(p){
+  var num=p.num?('<span class="pl-num">'+p.num+'</span>'):'';
+  var nm=p.nm||"";
+  var shortNm=nm.split(" ").slice(-1)[0]||nm;
+  return '<div class="pl-shirt">'+num+'</div><div class="pl-nm" title="'+nm+'">'+shortNm+'</div>';
+}
 function halfPitch(team, players, formation, flip){
   var rows=rowsFromFormation(players, formation);
-  if(flip) rows.reverse(); // الفريق الضيف معكوس ليلتقي بالمنتصف
+  if(flip) rows.reverse();
   var rowsHtml=rows.map(function(line){
-    return '<div class="pl-row">'+line.map(function(p){return playerDot(p,team);}).join("")+'</div>';
+    return '<div class="pl-row">'+line.map(function(p){return '<div class="pl">'+playerInner(p)+'</div>';}).join("")+'</div>';
   }).join("");
-  return '<div class="half '+(flip?"away":"home")+'">'
-    +'<div class="half-tag">'+flagImg(team)+' <b>'+team+'</b>'+(formation?'<span class="frm">'+formation+'</span>':'')+'</div>'
-    +'<div class="half-field">'+rowsHtml+'</div>'
-  +'</div>';
+  return '<div class="half-field">'+rowsHtml+'</div>';
+}
+function teamTag(team, formation){
+  return '<div class="half-tag">'+flagImg(team)+' <b>'+team+'</b>'+(formation?'<span class="frm">'+formation+'</span>':'')+'</div>';
 }
 function pitchHTML(m, j){
+  var useCoordsH=hasCoords(j.home), useCoordsA=hasCoords(j.away);
+  var inner;
+  if(useCoordsH && useCoordsA){
+    inner='<div class="pitch-abs">'
+      + halfPitchCoords(m.h, j.home, j.fH, false)
+      + halfPitchCoords(m.a, j.away, j.fA, true)
+      + '</div>';
+  } else {
+    // احتياط: صفوف
+    inner='<div class="half home">'+halfPitch(m.h,j.home,j.fH,false)+'</div>'
+         +'<div class="half away">'+halfPitch(m.a,j.away,j.fA,true)+'</div>';
+  }
   return '<div class="pitch">'
-    +'<div class="pitch-grass">'
-      +'<div class="midline"></div><div class="centercircle"></div>'
-      +halfPitch(m.h, j.home, j.fH, false)
-      +halfPitch(m.a, j.away, j.fA, true)
-    +'</div>'
-  +'</div>';
+    + teamTag(m.h, j.fH)
+    + '<div class="pitch-grass'+((useCoordsH&&useCoordsA)?" abs":"")+'">'
+      + '<div class="midline"></div><div class="centercircle"></div>'
+      + inner
+    + '</div>'
+    + teamTag(m.a, j.fA)
+  + '</div>';
 }
+
 async function fetchLU(n, box, btn){
   var m=getM(n); if(!m || !box) return;
   if(btn){btn.disabled=true; btn.innerHTML='جارٍ البحث عن التشكيلة والقناة <span class="spin"></span>';}
@@ -1512,7 +1560,10 @@ async function fetchLU(n, box, btn){
           var arr=xi.map(function(p){
             var nm=((p.athlete||{}).displayName)||((p.athlete||{}).fullName)||"";
             var pos=((p.position||{}).abbreviation)||((p.athlete||{}).position||{}).abbreviation||"";
-            return {nm:nm, num:p.jersey||"", pos:pos, fp:parseInt(p.formationPlace,10)||99};
+            var fx=(p.formationPlace!=null && p.formationX!=null)?parseFloat(p.formationX):null;
+            var fy=(p.formationY!=null)?parseFloat(p.formationY):null;
+            return {nm:nm, num:p.jersey||"", pos:pos, fp:parseInt(p.formationPlace,10)||99,
+                    x:isNaN(fx)?null:fx, y:isNaN(fy)?null:fy};
           });
           var formation = (rt.formation && (rt.formation.name||rt.formation.text)) || "";
           if(side==="h"){ home=arr; window._fH=formation; } else { away=arr; window._fA=formation; }
