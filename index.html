@@ -560,7 +560,7 @@ nav#bn button .ic{font-size:19px;}
 /* ===== الشجرة الأفقية ===== */
 .ko-tree-hint{font-size:10.5px; color:var(--dim); text-align:center; margin-bottom:8px;}
 .ko-tree-wrap{}
-.ko-tree{display:flex; gap:42px; overflow-x:auto; padding-bottom:12px; scrollbar-width:thin; -webkit-overflow-scrolling:touch;}
+.ko-tree{display:flex; gap:16px; overflow-x:auto; padding-bottom:12px; scrollbar-width:thin; -webkit-overflow-scrolling:touch;}
 .ko-tree::-webkit-scrollbar{height:5px;}
 .ko-tree::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2); border-radius:99px;}
 .ko-col{flex:0 0 auto; width:172px; display:flex; flex-direction:column;}
@@ -589,6 +589,10 @@ nav#bn button .ic{font-size:19px;}
 .ko-col{position:relative; z-index:1;}
 .ko-slot{display:flex;}
 .ko-col-body{justify-content:space-around;}
+
+.km-arrow{margin-top:7px; padding-top:6px; border-top:1px dashed rgba(240,194,75,.3); font-size:9.5px; color:var(--gold2); text-align:center; font-weight:600;}
+.km-arrow b{font-family:"Changa",sans-serif; font-size:11px;}
+.ko-col-body{justify-content:flex-start; gap:12px;}
 </style>
 </head>
 <body>
@@ -1288,17 +1292,29 @@ function koDateNum(d){
   var x=new Date(d+"T12:00:00");
   return x.getDate()+'/'+(x.getMonth()+1);
 }
+function koNextMatch(n){
+  // ابحث عن المباراة التي يغذّيها رقم n
+  for(var i=0;i<M.length;i++){
+    var mm=M[i];
+    if(mm.r==="r32"||mm.r==="r1"||mm.r==="r2"||mm.r==="r3") continue;
+    var fs=koFeedersOf(mm.n);
+    if(fs.indexOf(n)!==-1) return mm.n;
+  }
+  return null;
+}
 function koMatchMini(m){
   var t=fmtT(m.t);
   var dd = m.d ? ('<span class="km-date">'+koDateNum(m.d)+'</span>') : '';
+  var nxt = koNextMatch(m.n);
+  var arrow = nxt ? ('<div class="km-arrow">الفائز ← مباراة <b>#'+nxt+'</b> ➜</div>') : '';
   return '<div class="ko-m" data-mn="'+m.n+'">'
     +'<div class="km-head"><span class="km-n">#'+m.n+'</span>'+dd+'<span class="km-t">'+t.t+'</span></div>'
     +'<div class="km-row">'+koTeam(m.h)+'</div>'
     +'<div class="km-vs">×</div>'
     +'<div class="km-row">'+koTeam(m.a)+'</div>'
+    +arrow
   +'</div>';
 }
-window.addEventListener("resize", function(){ if(koMode==="tree") drawKOLinks(); });
 
 function koFeedersOf(n){
   var m=getM(n); if(!m) return [];
@@ -1357,9 +1373,9 @@ function renderKOTree(el){
   var third=M.filter(function(m){return m.r==="third";})[0];
   var thirdHtml = third ? '<div class="ko-third">🥉 مباراة المركز الثالث:'+koMatchMini(third)+'</div>' : '';
   el.innerHTML='<div class="ko-tree-hint">↔ اسحب يمين/يسار لتصفّح الأدوار</div>'
-    +'<div class="ko-tree" id="koTree">'+colsHtml+'<svg class="ko-links" id="koLinks"></svg></div>'+thirdHtml;
+    +'<div class="ko-tree" id="koTree">'+colsHtml+'</div>'+thirdHtml;
   // ارسم الخطوط بعد رسم العناصر
-  setTimeout(drawKOLinks, 60);
+  
 }
 function koRangeNum(rk){
   var map={r32:"28/6 – 3/7", r16:"4/7 – 7/7", qf:"9/7 – 12/7", sf:"14/7 – 15/7", final:"19/7"};
@@ -1374,45 +1390,7 @@ function koFeeders(m){
   });
   return res;
 }
-function drawKOLinks(){
-  var tree=document.getElementById("koTree"), svg=document.getElementById("koLinks");
-  if(!tree||!svg) return;
-  var trect=tree.getBoundingClientRect();
-  var W=tree.scrollWidth, H=tree.scrollHeight;
-  svg.setAttribute("width", W); svg.setAttribute("height", H);
-  svg.setAttribute("viewBox","0 0 "+W+" "+H);
-  svg.style.width=W+"px"; svg.style.height=H+"px";
-
-  function box(n){
-    var sl=tree.querySelector('.ko-slot[data-mn="'+n+'"]');
-    if(!sl) return null;
-    var r=sl.getBoundingClientRect();
-    return {
-      left:  r.left  - trect.left + tree.scrollLeft,
-      right: r.right - trect.left + tree.scrollLeft,
-      midY:  r.top   - trect.top  + tree.scrollTop + r.height/2
-    };
-  }
-  var segs=[];
-  // مرّ على مباريات r16..final واربط كل واحدة بمغذّياتها (التزاوج الحقيقي من البيانات)
-  var targetRounds=["r16","qf","sf","final"];
-  M.forEach(function(m){
-    if(targetRounds.indexOf(m.r)===-1) return;
-    var feeders=koFeeders(m);
-    if(feeders.length<2) return;
-    var t=box(m.n); if(!t) return;
-    var a=box(feeders[0]), b=box(feeders[1]);
-    if(!a||!b) return;
-    var srcEdge=Math.min(a.left, b.left);  // الحافة اليسرى للمصدرين
-    var tgtEdge=t.right;                    // الحافة اليمنى للهدف (RTL: الهدف يسار)
-    var midX=(srcEdge+tgtEdge)/2;
-    segs.push('M'+a.left+','+a.midY+' H'+midX);
-    segs.push('M'+b.left+','+b.midY+' H'+midX);
-    segs.push('M'+midX+','+a.midY+' V'+b.midY);
-    segs.push('M'+midX+','+t.midY+' H'+tgtEdge);
-  });
-  svg.innerHTML='<path d="'+segs.join(" ")+'" fill="none" stroke="rgba(240,194,75,.5)" stroke-width="1.6" stroke-linejoin="round"/>';
-}
+function drawKOLinks(){}
 
 /* ================= STADIUMS TAB ================= */
 function renderStadiums(){
