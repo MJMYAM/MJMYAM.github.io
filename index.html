@@ -2274,26 +2274,31 @@ function openLiveTV(btn){
 
 function openMatchFull(mn){
   var mm=getM(mn); if(!mm) return;
-  // تأكد أن المباراة ضمن الفلاتر الظاهرة
-  if(typeof resetFilters==="function") resetFilters();
-  if(typeof applyFilters==="function") applyFilters();
+  // صفّر كل الفلاتر لضمان ظهور المباراة (resetFilters يستدعي applyFilters داخليًا)
+  if(typeof resetFilters==="function"){ resetFilters(); }
   goTab("matches");
-  setTimeout(function(){
+  // جرّب فتح البطاقة بعد إعادة الرسم — مع إعادة محاولة إن لزم
+  var tries=0;
+  function tryOpen(){
+    tries++;
     var card=document.querySelector('.match[data-mn="'+mn+'"]');
-    if(!card) return;
+    if(!card){
+      if(tries<8){ setTimeout(tryOpen, 80); }
+      return;
+    }
     if(!card.classList.contains("open")){
       card.classList.add("open");
       var bx=card.querySelector(".m-ext");
       if(bx && !bx.innerHTML) bx.innerHTML=extShell(mm);
-      // تحميل الأهداف تلقائيًا للمباريات الحية/المنتهية
       if(statusOf(mm)!=="up" && GOAL_CACHE[mn]==null){
         var slot=bx?bx.querySelector(".gl-wrap"):null;
         if(!slot && bx){ var d=document.createElement("div"); d.className="gl-wrap"; bx.insertBefore(d,bx.firstChild); slot=d; }
-        if(slot) fetchGoals(mn, slot, null);
+        if(slot){ slot.innerHTML='<div class="lu-note">⏳ جاري جلب الأهداف…</div>'; fetchGoals(mn, slot, null); }
       }
     }
-    card.scrollIntoView({behavior:"smooth", block:"start"});
-  }, 120);
+    card.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  setTimeout(tryOpen, 100);
 }
 
 /* ================= NAV & EVENTS ================= */
