@@ -2285,9 +2285,10 @@ function openMatchFull(mn){
   var tries=0;
   function tryOpen(){
     tries++;
-    var card=document.querySelector('.match[data-mn="'+mn+'"]');
-    if(!card){
-      if(tries<8){ setTimeout(tryOpen, 80); }
+    // ابحث عن البطaقة داخل تبويب المباريات تحديدًا (النسخة المرئية)
+    var card=document.querySelector('#tab-matches .match[data-mn="'+mn+'"]');
+    if(!card || card.offsetHeight===0){
+      if(tries<10){ setTimeout(tryOpen, 80); }
       return;
     }
     if(!card.classList.contains("open")){
