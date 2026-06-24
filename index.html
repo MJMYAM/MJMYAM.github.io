@@ -1628,14 +1628,50 @@ function renderStadiums(){
 
 /* ===== نتائج مؤكدة للمباريات المنتهية (تصحيح يدوي موثّق يتجاوز أخطاء المصدر) ===== */
 var FINAL_RESULTS={
-  1:{sh:2, sa:0, status:"finished",
-     gh:[{who:"خوليان كينيونيس", min:"9"},{who:"راؤول خيمينيز", min:"62"}], ga:[]},
-  2:{sh:2, sa:1, status:"finished",
-     gh:[{who:"هوانغ إن-بيوم", min:"67"},{who:"أوه هيون-غيو", min:"80"}],
-     ga:[{who:"لاديسلاف كرايتشي", min:"59"}]},
-  4:{sh:4, sa:1, status:"finished",
-     gh:[{who:"هدف عكسي (بوباديلا)", min:"7"},{who:"فولارين بالوغون", min:"31"},{who:"فولارين بالوغون", min:"45"},{who:"جيوفاني رينا", min:"90"}],
-     ga:[{who:"ماوريسيو", min:"73"}]}
+  1:{sh:2, sa:0, status:"finished", gh:[{who:"خوليان كينيونيس", min:"5"},{who:"راؤول خيمينيز", min:"45"}], ga:[]},
+  2:{sh:2, sa:1, status:"finished", gh:[{who:"هوانغ إن-بيوم", min:"67"},{who:"أوه هيون-غيو", min:"80"}], ga:[{who:"لاديسلاف كرايتشي", min:"59"}]},
+  3:{sh:1, sa:1, status:"finished"},
+  4:{sh:4, sa:1, status:"finished", gh:[{who:"هدف عكسي (بوباديلا)", min:"7"},{who:"فولارين بالوغون", min:"31"},{who:"فولارين بالوغون", min:"45"},{who:"جيوفاني رينا", min:"90"}], ga:[{who:"ماوريسيو", min:"73"}]},
+  5:{sh:1, sa:1, status:"finished"},
+  6:{sh:1, sa:1, status:"finished"},
+  7:{sh:0, sa:1, status:"finished"},
+  8:{sh:2, sa:0, status:"finished"},
+  9:{sh:7, sa:1, status:"finished"},
+  10:{sh:2, sa:2, status:"finished"},
+  11:{sh:1, sa:0, status:"finished"},
+  12:{sh:1, sa:5, status:"finished"},
+  13:{sh:0, sa:0, status:"finished"},
+  15:{sh:1, sa:1, status:"finished"},
+  17:{sh:3, sa:1, status:"finished"},
+  18:{sh:1, sa:4, status:"finished"},
+  19:{sh:3, sa:0, status:"finished"},
+  20:{sh:1, sa:3, status:"finished"},
+  21:{sh:1, sa:1, status:"finished"},
+  22:{sh:4, sa:2, status:"finished"},
+  23:{sh:1, sa:0, status:"finished"},
+  24:{sh:1, sa:3, status:"finished"},
+  25:{sh:1, sa:1, status:"finished"},
+  26:{sh:4, sa:1, status:"finished"},
+  27:{sh:6, sa:0, status:"finished"},
+  28:{sh:1, sa:0, status:"finished"},
+  29:{sh:2, sa:0, status:"finished"},
+  30:{sh:1, sa:0, status:"finished"},
+  31:{sh:3, sa:0, status:"finished"},
+  32:{sh:0, sa:1, status:"finished"},
+  33:{sh:5, sa:1, status:"finished"},
+  34:{sh:2, sa:1, status:"finished"},
+  35:{sh:0, sa:0, status:"finished"},
+  36:{sh:0, sa:4, status:"finished"},
+  37:{sh:4, sa:0, status:"finished"},
+  39:{sh:2, sa:2, status:"finished"},
+  41:{sh:1, sa:0, status:"finished"},
+  42:{sh:3, sa:0, status:"finished"},
+  43:{sh:3, sa:2, status:"finished"},
+  44:{sh:1, sa:2, status:"finished"},
+  45:{sh:5, sa:0, status:"finished"},
+  46:{sh:0, sa:0, status:"finished"},
+  47:{sh:0, sa:1, status:"finished"},
+  48:{sh:1, sa:0, status:"finished"}
 };
 /* ملاحظة: المباراة 2 في جدولنا = كوريا الجنوبية (h) ضد التشيك (a) => كوريا 2-1 التشيك */
 function applyFinals(){
@@ -2504,6 +2540,34 @@ function openMatchFull(mn){
 
 
 /* ================= STATS (الهدّافون وصنّاع الأهداف) ================= */
+
+/* الهدّافون الحقيقيون (مُحدّث 24 يونيو 2026 — مصدر رسمي) */
+var REAL_SCORERS=[
+  {who:"ليونيل ميسي", team:"الأرجنتين", goals:5},
+  {who:"إيرلينغ هالاند", team:"النرويج", goals:4},
+  {who:"كيليان مبابي", team:"فرنسا", goals:4},
+  {who:"دينيز أونداف", team:"ألمانيا", goals:3},
+  {who:"جوناثان ديفيد", team:"كندا", goals:3},
+  {who:"أياسي أويدا", team:"اليابان", goals:2},
+  {who:"براين بروبي", team:"هولندا", goals:2},
+  {who:"كودي خاكبو", team:"هولندا", goals:2},
+  {who:"كريسينسيو سامرفيل", team:"هولندا", goals:2},
+  {who:"كايل لارين", team:"كندا", goals:2},
+  {who:"دايتشي كامادا", team:"اليابان", goals:2},
+  {who:"إيليجا جست", team:"نيوزيلندا", goals:2},
+  {who:"فولارين بالوغون", team:"الولايات المتحدة", goals:2},
+  {who:"هاري كين", team:"إنجلترا", goals:2},
+  {who:"إسماعيل صيباري", team:"المغرب", goals:2},
+  {who:"إسماعيلا سار", team:"السنغال", goals:2},
+  {who:"يوهان مانزامبي", team:"سويسرا", goals:2},
+  {who:"كاي هافيرتز", team:"ألمانيا", goals:2},
+  {who:"ماتيوس كونيا", team:"البرازيل", goals:2},
+  {who:"ماكسيميليانو أراوخو", team:"أوروغواي", goals:2},
+  {who:"ميكل أويارزابال", team:"إسبانيا", goals:2},
+  {who:"فينيسيوس جونيور", team:"البرازيل", goals:2},
+  {who:"ياسين أياري", team:"السويد", goals:2}
+];
+
 var statsMode="scorers";
 var STATS_CACHE={scorers:null, assists:null};
 
@@ -2566,10 +2630,10 @@ async function fetchTopScorers(){
       if(as && as.length) STATS_CACHE.assists=as;
     }
   }catch(e){}
-  // احتياط محلي للهدّافين فقط
-  if(!STATS_CACHE.scorers || !STATS_CACHE.scorers.length){
-    STATS_CACHE.scorers=scorersFromFinals();
-    window._statsSource='حساب محلي من النتائج المؤكدة';
+  // أساس مضمون: القائمة الحقيقية المثبّتة (تُستبدل بـ ESPN إن نجح وكان أشمل)
+  if(!STATS_CACHE.scorers || STATS_CACHE.scorers.length < REAL_SCORERS.length){
+    STATS_CACHE.scorers=REAL_SCORERS.slice();
+    window._statsSource='بيانات رسمية (24 يونيو) — تُحدّث مع ESPN';
   }
 }
 
