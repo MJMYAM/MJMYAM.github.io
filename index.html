@@ -1036,8 +1036,8 @@ function norm(s){return (s||"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").re
 function statusOf(m){
   if(!m.d) return "up";
   var st=dateObj(m).getTime(), now=Date.now();
-  if(now>=st && now<=st+125*60000) return "live";
-  if(now>st+125*60000) return "done";
+  if(now>=st && now<=st+150*60000) return "live";
+  if(now>st+150*60000) return "done";
   return "up";
 }
 function relTag(d){
@@ -1601,11 +1601,12 @@ function extShell(m){
       videoBlock+='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button>'
         +'<div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div>';
     }
-    if(stxV==="live" || stxV==="up"){
-      var llbl = stxV==="live" ? "🔴 شاهد المباراة بثًّا مباشرًا الآن" : "📺 روابط بث المباراة المباشر";
-      videoBlock+='<button class="live-tv-btn'+(stxV==="live"?" islive":"")+'" data-livetv="'+m.n+'">'+llbl+'</button>'
-        +'<div class="livetv-box" id="livetv-'+m.n+'" style="display:none"></div>';
-    }
+    // زر البث المباشر يظهر دائمًا للمباريات الحقيقية (حية/قادمة/منتهية)
+    var llbl = stxV==="live" ? "🔴 شاهد المباراة بثًّا مباشرًا الآن"
+             : stxV==="done" ? "📺 إعادة وملخص المباراة"
+                             : "📺 روابط بث المباراة المباشر";
+    videoBlock+='<button class="live-tv-btn'+(stxV==="live"?" islive":"")+'" data-livetv="'+m.n+'">'+llbl+'</button>'
+      +'<div class="livetv-box" id="livetv-'+m.n+'" style="display:none"></div>';
     if(videoBlock) videoBlock+='<div class="ext-div"></div>';
   }
   if(m.d){
