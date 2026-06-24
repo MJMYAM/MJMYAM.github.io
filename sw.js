@@ -1,4 +1,4 @@
-const CACHE="wc2026-v4";
+const CACHE="wc2026-v5";
 const ASSETS=["./","./index.html","./icon-192.png","./icon-512.png","./manifest.json"];
 self.addEventListener("install", e=>{
   self.skipWaiting();  // فعّل النسخة الجديدة فورًا بدون انتظار
