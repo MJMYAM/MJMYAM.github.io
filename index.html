@@ -873,6 +873,7 @@ if("serviceWorker" in navigator){
 
 
   <footer>
+    <span data-ver style="display:block;font-size:9px;color:var(--mut);opacity:.6;margin-top:6px">إصدار v16 · 25 يونيو</span>
     جميع الأوقات بتوقيت الكويت <img class="flg" src="https://flagcdn.com/h24/kw.png" alt="🇰🇼" onerror="this.replaceWith(this.alt)"><br>
     <span class="credit">إعداد وتنفيذ: مبارك المعتوق ⚽</span>
   </footer>
@@ -2822,6 +2823,16 @@ if("serviceWorker" in navigator){
     navigator.serviceWorker.register("sw.js").catch(function(e){console.log("SW:",e);});
   });
 }
+
+/* تحديث حالات المباريات كل دقيقة (منتهية/جارية/قادمة) */
+function refreshStatuses(){
+  try{
+    if(typeof renderHero==="function") renderHero();
+    if(document.getElementById("tab-matches") && document.getElementById("tab-matches").classList.contains("active") && typeof applyFilters==="function") applyFilters();
+  }catch(e){}
+}
+setInterval(refreshStatuses, 60000);
+
 </script>
 </body>
 </html>
