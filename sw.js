@@ -1,5 +1,5 @@
 // إصدار جديد يجبر مسح كل الكاش القديم
-const CACHE="wc2026-v17";
+const CACHE="wc2026-v18";
 self.addEventListener("install", e=>{ self.skipWaiting(); });
 self.addEventListener("activate", e=>{
   e.waitUntil(
