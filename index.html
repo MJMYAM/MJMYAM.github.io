@@ -2395,7 +2395,7 @@ document.body.addEventListener("click", function(e){
       var bx=card.querySelector(".m-ext");
       if(bx && !bx.innerHTML) bx.innerHTML=extShell(mm);
       // تحميل تلقائي للأهداف لما تفتح بطاقة مباراة منتهية/حية وما في cache
-      if(mm && statusOf(mm)!=="upcoming" && GOAL_CACHE[mn]==null){
+      if(mm && statusOf(mm)!=="up" && GOAL_CACHE[mn]==null){
         var host=bx?bx.querySelector(".gl-wrap"):null;
         // إذا ما في slot (الزر لسا موجود)، نخلي extShell ينشئه
         if(!host && bx){
