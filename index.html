@@ -1023,7 +1023,11 @@ var MO = ["يناير","فبراير","مارس","أبريل","مايو","يون
 
 function pad(x){return String(x).padStart(2,"0");}
 function isoOf(dt){return dt.getFullYear()+"-"+pad(dt.getMonth()+1)+"-"+pad(dt.getDate());}
-function dateObj(m){return new Date(m.d+"T"+m.t+":00");}
+function dateObj(m){
+  // أوقات المباريات بتوقيت الكويت (UTC+3) — نبنيها صراحةً بهذا الإزاحة
+  // ليُحسب الوقت صحيحًا على أي جهاز بأي منطقة زمنية
+  return new Date(m.d+"T"+m.t+":00+03:00");
+}
 function fmtD(d){var x=new Date(d+"T12:00:00");return WD[x.getDay()]+" "+x.getDate()+" "+MO[x.getMonth()];}
 function fmtT(t){
   var p=t.split(":"), h=+p[0], mn=p[1];
