@@ -1329,18 +1329,21 @@ function renderGroups(){
 function computeStanding(g){
   var teams={};
   GROUPS[g].forEach(function(t){ teams[t]={t:t,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}; });
-  // مرّ على مباريات المجموعة المنتهية واحسب
   M.forEach(function(m){
     if(m.g!==g) return;
-    var sc=SC_CACHE[m.n];
-    if(!sc || !sc.found) return;
-    if(sc.status!=="finished" && sc.status!=="live" && sc.status!=="ht") return;
+    // ادمج المصدرين: النتيجة المثبّتة (FINAL_RESULTS) أو نتيجة ESPN (SC_CACHE)
+    var fr = (typeof FINAL_RESULTS!=="undefined") ? FINAL_RESULTS[m.n] : null;
+    var sc = SC_CACHE[m.n];
+    var res=null;
+    if(fr && fr.status==="finished"){ res={sh:fr.sh, sa:fr.sa, done:true}; }
+    else if(sc && sc.found && (sc.status==="finished"||sc.status==="live"||sc.status==="ht")){ res={sh:sc.sh, sa:sc.sa, done:sc.status==="finished"}; }
+    if(!res) return;
     var H=teams[m.h], A=teams[m.a];
     if(!H||!A) return;
     H.p++; A.p++;
-    H.gf+=sc.sh; H.ga+=sc.sa; A.gf+=sc.sa; A.ga+=sc.sh;
-    if(sc.sh>sc.sa){ H.w++; A.l++; H.pts+=3; }
-    else if(sc.sh<sc.sa){ A.w++; H.l++; A.pts+=3; }
+    H.gf+=res.sh; H.ga+=res.sa; A.gf+=res.sa; A.ga+=res.sh;
+    if(res.sh>res.sa){ H.w++; A.l++; H.pts+=3; }
+    else if(res.sh<res.sa){ A.w++; H.l++; A.pts+=3; }
     else { H.d++; A.d++; H.pts++; A.pts++; }
   });
   var arr=GROUPS[g].map(function(t){return teams[t];});
@@ -1355,6 +1358,17 @@ function computeStanding(g){
     var gd=r.gf-r.ga;
     return {t:r.t, p:r.p, w:r.w, d:r.d, l:r.l, gd:(gd>0?"+":"")+gd, pts:r.pts};
   });
+}
+// عدد المباريات المنتهية في مجموعة (لقياس "الأحدث")
+function groupPlayedCount(g){
+  var n=0;
+  M.forEach(function(m){
+    if(m.g!==g) return;
+    var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null;
+    var sc=SC_CACHE[m.n];
+    if((fr&&fr.status==="finished")||(sc&&sc.found&&sc.status==="finished")) n++;
+  });
+  return n;
 }
 
 function initStandTable(g){
@@ -2052,6 +2066,7 @@ async function pollScores(){
   var now=Date.now();
   try{ await loadScoresESPN(ymd(new Date(now-36*3600000)), ymd(new Date(now+24*3600000))); }
   catch(e){ if(window._liveN!==null) fetchScore(window._liveN); }
+  try{ if(document.getElementById("groupGrid")) Object.keys(GROUPS).forEach(renderStanding); }catch(e){}
 }
 
 function vsHTML(m, tm, st){
@@ -2074,6 +2089,11 @@ function refreshCards(n){
   var m=getM(n); if(!m) return;
   var tm=fmtT(m.t), st=statusOf(m);
   document.querySelectorAll('.match[data-mn="'+n+'"] .vs').forEach(function(vs){ vs.innerHTML=vsHTML(m,tm,st); });
+  // حدّث ترتيب مجموعة هذه المباراة فورًا
+  try{
+    var mm=getM(n);
+    if(mm && mm.g && document.getElementById("groupGrid")){ renderStanding(mm.g); }
+  }catch(e){}
 }
 function refreshHeroScore(){
   if(!window._heroGroup) return;
@@ -2123,19 +2143,19 @@ async function fetchScore(n, btn){
 function renderStanding(g){
   var box=document.getElementById("st-"+g);
   if(!box) return;
-  var c=ST_CACHE[g];
-  if(c && c.rows && c.rows.length){
-    // ترتيب رسمي من ESPN
-    var body=c.rows.slice(0,4).map(function(r,i){
-      var cls=i<2?"q":(i===2?"m3":"");
-      return '<tr class="'+cls+'"><td><span class="pos">'+(i+1)+'</span></td>'
-        +'<td class="t">'+flagImg(r.t)+' '+r.t+'</td><td>'+r.p+'</td><td>'+r.gd+'</td><td class="pts">'+r.pts+'</td></tr>';
-    }).join("");
-    box.innerHTML='<table class="sttbl"><tr><th>#</th><th class="t">المنتخب</th><th>لعب</th><th>+/-</th><th>نقاط</th></tr>'+body
-      +'</table><div class="stmeta">الأول والثاني للأدوار الإقصائية + أفضل 8 ثوالث</div>';
-  } else {
-    box.innerHTML=initStandTable(g);
-  }
+  var espn=ST_CACHE[g];
+  var local=computeStanding(g);
+  var localPlayed=local.reduce(function(s,r){return s+r.p;},0);
+  var espnPlayed = (espn&&espn.rows)? espn.rows.reduce(function(s,r){return s+(r.p||0);},0) : -1;
+  // اختر المصدر الأحدث (الأكثر مباريات منتهية) — يضمن أن المباريات الأخيرة تنعكس
+  var rows = (espnPlayed>=localPlayed && espn&&espn.rows&&espn.rows.length) ? espn.rows.slice(0,4) : local;
+  var body=rows.map(function(r,i){
+    var cls=i<2?"q":(i===2?"m3":"");
+    return '<tr class="'+cls+'"><td><span class="pos">'+(i+1)+'</span></td>'
+      +'<td class="t">'+flagImg(r.t)+' '+r.t+'</td><td>'+r.p+'</td><td>'+r.gd+'</td><td class="pts">'+r.pts+'</td></tr>';
+  }).join("");
+  box.innerHTML='<table class="sttbl"><tr><th>#</th><th class="t">المنتخب</th><th>لعب</th><th>+/-</th><th>نقاط</th></tr>'+body
+    +'</table><div class="stmeta">الأول والثاني للأدوار الإقصائية + أفضل 8 ثوالث · يُحدَّث تلقائيًا</div>';
 }
 async function fetchStanding(g, btn){
   var box=document.getElementById("st-"+g);
