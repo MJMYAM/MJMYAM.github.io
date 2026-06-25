@@ -1264,6 +1264,11 @@ function teamHTML(name){
 function matchCard(m, opts){
   opts=opts||{};
   var s=STADIUMS[m.s], r=ROUNDS[m.r], st=statusOf(m), tm=fmtT(m.t);
+  // حُلّ أسماء فرق الإقصائيات (متصدر/وصيف المجموعة → الفريق الفعلي)
+  var teamH=m.h, teamA=m.a;
+  if(typeof resolveKOTeam==="function" && m.r && m.r!=="group"){
+    teamH=resolveKOTeam(m.h); teamA=resolveKOTeam(m.a);
+  }
   var cls="match "+st+(m.r==="final"?" is-final":"");
   var badges="";
   if(st==="live") badges='<span class="tag live"><i></i> مباشر الآن</span>';
@@ -1273,9 +1278,9 @@ function matchCard(m, opts){
   var dline = (opts.showDate && m.d) ? '<span class="tag">'+fmtD(m.d)+'</span>' : "";
   return '<div class="'+cls+'" data-mn="'+m.n+'" style="--rc:'+r.c+'">'
     +'<div class="m-top"><span class="tag num">مباراة '+m.n+'</span>'+grp+'<span class="tag rnd">'+r.l+'</span>'+dline+'<span class="grow"></span>'+badges+'</div>'
-    +'<div class="m-mid">'+teamHTML(m.h)
+    +'<div class="m-mid">'+teamHTML(teamH)
     +'<div class="vs">'+vsHTML(m,tm,st)+'</div>'
-    +teamHTML(m.a)+'</div>'
+    +teamHTML(teamA)+'</div>'
     +'<div class="m-bot">🏟️ <b>'+(s.sn||s.n)+'</b><span>·</span>📍 '+s.c+' <span>'+flagImg(s.co)+'</span><span>·</span>👥 <span class="cap">'+nf(s.cap)+'</span></div>'
     +'<div class="m-tv"><span>📺 <span class="bein">شبكة beIN Sports</span> — الناقل الحصري</span><span class="chev">التشكيلة والقناة ▾</span></div>'
     +'<div class="m-ext"></div>'
@@ -1546,17 +1551,16 @@ function thirdPlaceTable(){
     var st=computeStanding(g);
     if(st.length>=3){
       var t=st[2]; // صاحب المركز الثالث
+      // احسب النقاط والفارق والأهداف من الصف
       var gdNum=parseInt(String(t.gd).replace("+",""),10)||0;
-      var gfNum=(typeof t.gf==="number")?t.gf:0;
-      thirds.push({g:g, t:t.t, p:t.p, pts:t.pts, gd:gdNum, gdStr:t.gd, gf:gfNum, played:t.p});
+      thirds.push({g:g, t:t.t, p:t.p, pts:t.pts, gd:gdNum, gdStr:t.gd, played:t.p});
     }
   });
-  // معايير فيفا: النقاط ← فارق الأهداف ← الأهداف المسجّلة ← (السلوك/التصنيف غير متاحين) ← أبجدي ثابت
+  // رتّب: نقاط ← فارق ← (الأهداف غير متوفرة مباشرة، نكتفي بالفارق) ← اسم
   thirds.sort(function(a,b){
     if(b.pts!==a.pts) return b.pts-a.pts;
     if(b.gd!==a.gd) return b.gd-a.gd;
-    if(b.gf!==a.gf) return b.gf-a.gf;
-    return a.t<b.t?-1:(a.t>b.t?1:0);
+    return 0;
   });
   return thirds;
 }
@@ -1610,7 +1614,7 @@ function computeStanding(g){
   });
   return arr.map(function(r){
     var gd=r.gf-r.ga;
-    return {t:r.t, p:r.p, w:r.w, d:r.d, l:r.l, gf:r.gf, ga:r.ga, gd:(gd>0?"+":"")+gd, pts:r.pts};
+    return {t:r.t, p:r.p, w:r.w, d:r.d, l:r.l, gd:(gd>0?"+":"")+gd, pts:r.pts};
   });
 }
 // عدد المباريات المنتهية في مجموعة (لقياس "الأحدث")
@@ -1643,81 +1647,10 @@ function initStandTable(g){
 
 /* ================= KNOCKOUT TAB ================= */
 var koMode="tree";
-/* ===== حلّ خانات خروج المغلوب لأسماء المنتخبات الفعلية ===== */
-var THIRD_SLOTS=[
-  {m:74, elig:["A","B","C","D","F"]},
-  {m:77, elig:["C","D","F","G","H"]},
-  {m:79, elig:["C","E","F","H","I"]},
-  {m:80, elig:["E","H","I","J","K"]},
-  {m:81, elig:["B","E","F","I","J"]},
-  {m:82, elig:["A","E","H","I","J"]},
-  {m:85, elig:["E","F","G","I","J"]},
-  {m:87, elig:["D","E","I","J","L"]}
-];
-function groupComplete(g){
-  var done=0;
-  M.forEach(function(m){
-    if(m.g!==g) return;
-    var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null;
-    var sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
-    if((fr&&fr.status==="finished")||(sc&&sc.found&&sc.status==="finished")) done++;
-  });
-  return done>=6; // 4 منتخبات = 6 مباريات لكل مجموعة
-}
-function allGroupsComplete(){ return Object.keys(GROUPS).every(groupComplete); }
-function allocateThirds(){
-  var ranked=thirdPlaceTable();
-  if(ranked.length<12) return null;        // لازم تكتمل كل المجموعات الـ12
-  var qg=ranked.slice(0,8).map(function(x){return x.g;}); // مجموعات أفضل 8 ثوالث
-  var solutions=[], used={}, assign={};
-  function bt(si){
-    if(solutions.length>1) return; // وجود حلّين يكفي لإثبات عدم التفرّد
-    if(si===THIRD_SLOTS.length){ var c={}; for(var k in assign) c[k]=assign[k]; solutions.push(c); return; }
-    var elig=THIRD_SLOTS[si].elig;
-    for(var i=0;i<elig.length;i++){
-      var g=elig[i];
-      if(qg.indexOf(g)!==-1 && !used[g]){
-        used[g]=1; assign[si]=g; bt(si+1); used[g]=0; delete assign[si];
-      }
-    }
-  }
-  bt(0);
-  if(solutions.length!==1) return null;    // غير محدّد بشكل وحيد → لا نُخمّن، نُبقي الـ combo
-  var sol=solutions[0], out={};
-  for(var si=0;si<THIRD_SLOTS.length;si++){ out[THIRD_SLOTS[si].m]=sol[si]; }
-  return out; // {رقم_المباراة: حرف_المجموعة}
-}
-function koResolve(name){
-  if(typeof name!=="string") return name;
-  if(TEAMS[name]) return name; // منتخب حقيقي أصلاً
-  var m;
-  if((m=/متصدر المجموعة\s*([A-L])/.exec(name))){
-    if(groupComplete(m[1])){ var s=computeStanding(m[1]); if(s[0]) return s[0].t; }
-    return name;
-  }
-  if((m=/وصيف المجموعة\s*([A-L])/.exec(name))){
-    if(groupComplete(m[1])){ var s2=computeStanding(m[1]); if(s2[1]) return s2[1].t; }
-    return name;
-  }
-  if(/أفضل ثالث/.test(name)){
-    if(!allGroupsComplete()) return name;
-    var alloc=allocateThirds(); if(!alloc) return name;
-    var elig=(name.match(/[A-L]/g)||[]);
-    for(var si=0;si<THIRD_SLOTS.length;si++){
-      var se=THIRD_SLOTS[si].elig;
-      if(se.length===elig.length && se.every(function(x){return elig.indexOf(x)!==-1;})){
-        var grp=alloc[THIRD_SLOTS[si].m];
-        if(grp){ var s3=computeStanding(grp); if(s3[2]) return s3[2].t; }
-      }
-    }
-    return name;
-  }
-  return name;
-}
 function koTeam(name){
-  var r=koResolve(name);
-  if(TEAMS[r]) return flagImg(r)+' <span class="kt-nm">'+r+'</span>';
-  return '<span class="kt-ph">'+r+'</span>';
+  // اسم الفريق: لو منتخب حقيقي ضع علمه، لو placeholder اعرضه كما هو
+  if(TEAMS[name]) return flagImg(name)+' <span class="kt-nm">'+name+'</span>';
+  return '<span class="kt-ph">'+name+'</span>';
 }
 function koDateNum(d){
   if(!d) return "";
@@ -1770,6 +1703,32 @@ function koBracketOrder(){
   // المركز الثالث: مباراته الوحيدة
   order.third=M.filter(function(m){return m.r==="third";}).map(function(m){return m.n;});
   return order;
+}
+
+
+/* تحويل "متصدر المجموعة A" → الفريق الفعلي المتأهل (إذا اكتملت المجموعة) */
+function resolveKOTeam(label){
+  if(!label || typeof label!=="string") return label;
+  // متصدر/وصيف المجموعة X
+  var mTop = label.match(/متصدر المجموعة\s+(\S+)/);
+  var mSec = label.match(/وصيف المجموعة\s+(\S+)/);
+  if(mTop || mSec){
+    var g=(mTop||mSec)[1];
+    if(!GROUPS[g]) return label;
+    // تأكد أن المجموعة اكتملت (كل الفرق لعبت 3 مباريات)
+    if(typeof groupPlayedCount==="function"){
+      // نحتاج كل المباريات الست مكتملة
+      var total=0, done=0;
+      M.forEach(function(m){ if(m.g===g){ total++; var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null; var sc=SC_CACHE[m.n]; if((fr&&fr.status==="finished")||(sc&&sc.found&&sc.status==="finished")) done++; } });
+      if(total===0 || done<total) return label; // لم تكتمل بعد
+    }
+    var st=computeStanding(g); // مرتّب تنازليًا
+    if(!st || st.length<2) return label;
+    var idx = mTop ? 0 : 1;
+    return st[idx] ? (TEAMS[st[idx].t]?st[idx].t:st[idx].t) : label;
+  }
+  // أفضل ثالث — يصعب تحديده بدقة، نتركه نصًّا
+  return label;
 }
 
 function renderKO(){
@@ -2468,7 +2427,6 @@ async function pollScores(){
   try{ await loadScoresESPN(ymd(new Date(now-36*3600000)), ymd(new Date(now+24*3600000))); }
   catch(e){ if(window._liveN!==null) fetchScore(window._liveN); }
   try{ if(document.getElementById("groupGrid")){ Object.keys(GROUPS).forEach(renderStanding); renderThirdPlace(); } }catch(e){}
-  try{ if(typeof fetchStats==="function"){ var okS=await fetchStats(); if(okS && typeof renderStats==="function") renderStats(); } }catch(e){}
 }
 
 function vsHTML(m, tm, st){
@@ -2855,108 +2813,6 @@ function statCard(p,i){
     + '</div>';
 }
 
-/* ===== جلب الهدّافين وصنّاع الأهداف تلقائيًا من ESPN ===== */
-var TEAM_EN2AR={
- "mexico":"المكسيك","south africa":"جنوب أفريقيا","korea republic":"كوريا الجنوبية","south korea":"كوريا الجنوبية","korea":"كوريا الجنوبية",
- "czechia":"التشيك","czech republic":"التشيك","canada":"كندا","switzerland":"سويسرا","qatar":"قطر",
- "bosnia and herzegovina":"البوسنة والهرسك","bosnia herzegovina":"البوسنة والهرسك","brazil":"البرازيل","morocco":"المغرب",
- "haiti":"هايتي","scotland":"اسكتلندا","united states":"الولايات المتحدة","usa":"الولايات المتحدة","united states of america":"الولايات المتحدة",
- "paraguay":"الباراغواي","australia":"أستراليا","turkiye":"تركيا","turkey":"تركيا","germany":"ألمانيا",
- "curacao":"كوراساو","cote divoire":"كوت ديفوار","ivory coast":"كوت ديفوار","ecuador":"الإكوادور",
- "netherlands":"هولندا","japan":"اليابان","tunisia":"تونس","sweden":"السويد","belgium":"بلجيكا","egypt":"مصر",
- "iran":"إيران","ir iran":"إيران","new zealand":"نيوزيلندا","spain":"إسبانيا","cape verde":"الرأس الأخضر","cabo verde":"الرأس الأخضر",
- "saudi arabia":"السعودية","uruguay":"الأوروغواي","france":"فرنسا","senegal":"السنغال","norway":"النرويج",
- "iraq":"العراق","argentina":"الأرجنتين","algeria":"الجزائر","austria":"النمسا","jordan":"الأردن","portugal":"البرتغال",
- "uzbekistan":"أوزبكستان","colombia":"كولومبيا","congo dr":"الكونغو الديمقراطية","dr congo":"الكونغو الديمقراطية","democratic republic of the congo":"الكونغو الديمقراطية",
- "england":"إنجلترا","croatia":"كرواتيا","ghana":"غانا","panama":"بنما","kuwait":"الكويت"
-};
-var PLAYER_EN2AR={
- "lionel messi":"ليونيل ميسي","kylian mbappe":"كيليان مبابي","erling haaland":"إيرلينغ هالاند",
- "jonathan david":"جوناثان ديفيد","deniz undav":"دينيز أونداف","johan manzambi":"يوهان مانزامبي",
- "vinicius junior":"فينيسيوس جونيور","vinicius jr":"فينيسيوس جونيور","matheus cunha":"ماتيوس كونيا",
- "folarin balogun":"فولارين بالوغون","harry kane":"هاري كين","kai havertz":"كاي هافيرتز",
- "mikel oyarzabal":"ميكيل أويارثابال","cristiano ronaldo":"كريستيانو رونالدو","ismael saibari":"إسماعيل الصيباري",
- "ayase ueda":"آياسي أويدا","crysencio summerville":"كريسينسيو سامرفيل",
- "michael olise":"مايكل أوليسي","alexander isak":"ألكسندر إيساك","joshua kimmich":"يوشوا كيميش",
- "brahim diaz":"براهيم دياز","denzel dumfries":"دنزيل دومفريس","martin odegaard":"مارتن أوديغارد",
- "mohamed salah":"محمد صلاح","christian pulisic":"كريستيان بوليسيتش","cody gakpo":"كودي خاكبو",
- "julian quinones":"خوليان كينونيس","ruben vargas":"روبن فارغاس","cyle larin":"كايل لارين",
- "daniel munoz":"دانيال مونيوز","elijah just":"إيليا جست","yasin ayari":"ياسين عياري"
-};
-function statNorm(x){ if(!x) return ""; try{ x=x.normalize("NFD").replace(/[\u0300-\u036f]/g,""); }catch(_){}
- return String(x).toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim(); }
-function arTeam(en){ if(!en) return ""; return TEAM_EN2AR[statNorm(en)]||en; }
-function arPlayer(en){ if(!en) return ""; return PLAYER_EN2AR[statNorm(en)]||en; }
-function _leaderEntry(it){
- if(!it||typeof it!=="object") return null;
- var ath=it.athlete||it.player||null;
- var nm=ath?(ath.displayName||ath.fullName||ath.shortName||ath.name):(it.displayName||it.name);
- if(!nm) return null;
- var v=it.value;
- if(v==null && it.displayValue!=null) v=parseFloat(String(it.displayValue).replace(/[^0-9.]/g,""));
- if(v==null && it.total!=null) v=it.total;
- v=parseInt(v,10); if(isNaN(v)) return null;
- var tm=it.team||(ath&&ath.team)||null;
- var ten=tm?(tm.displayName||tm.name||tm.abbreviation):"";
- return { n:arPlayer(String(nm).trim()), t:arTeam(String(ten||"").trim()), v:v };
-}
-function _collectLeaders(node,cat,buckets){
- if(!node||typeof node!=="object") return;
- if(Array.isArray(node)){
-   var tmp=[],hits=0;
-   for(var i=0;i<node.length;i++){ var e=_leaderEntry(node[i]); if(e){hits++;tmp.push(e);} }
-   if(hits>=3 && cat){ buckets[cat]=(buckets[cat]||[]).concat(tmp); return; }
-   for(var j=0;j<node.length;j++) _collectLeaders(node[j],cat,buckets);
-   return;
- }
- var name=node.name||node.displayName||node.abbreviation||"";
- var nextCat=name?String(name):cat;
- if(node.leaders) _collectLeaders(node.leaders,nextCat,buckets);
- for(var k in node){ if(k==="leaders") continue; _collectLeaders(node[k],nextCat,buckets); }
-}
-function parseLeaders(json){
- var b={}; _collectLeaders(json,"",b);
- var g=null,a=null;
- for(var cat in b){ var low=statNorm(cat),arr=b[cat];
-   if(/goal|scor/.test(low) && !/assist|conced|against|own/.test(low)){ if(!g||arr.length>g.length) g=arr; }
-   else if(/assist/.test(low)){ if(!a||arr.length>a.length) a=arr; }
- }
- return { g:g, a:a };
-}
-function _dedupeSort(arr,lim){
- if(!arr) return null;
- arr=arr.slice().sort(function(x,y){ return y.v-x.v; });
- var seen={},out=[];
- for(var i=0;i<arr.length;i++){ var p=arr[i]; if(!p||!p.n||isNaN(p.v)||p.v<1) continue;
-   var nk=String(p.n).trim().toLowerCase(); if(seen[nk]) continue; seen[nk]=1; out.push(p); }
- return out.length?out.slice(0,lim||25):null;
-}
-async function fetchStats(){
- var urls=[
-  "https://site.web.api.espn.com/apis/common/v3/sports/soccer/fifa.world/leaders?season=2026",
-  "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/leaders?season=2026",
-  "https://site.web.api.espn.com/apis/common/v3/sports/soccer/fifa.world/leaders"
- ];
- for(var i=0;i<urls.length;i++){
-   try{
-     var r=await fetch(urls[i],{cache:"no-store"});
-     if(!r.ok) continue;
-     var d=await r.json();
-     var p=parseLeaders(d);
-     var g=_dedupeSort(p.g,20), a=_dedupeSort(p.a,15);
-     if(g && g.length>=4){
-       STAT_DATA.g=g;
-       if(a && a.length>=3) STAT_DATA.a=a;
-       STAT_DATA.live=true;
-       var t=new Date(),hh=(t.getHours()<10?"0":"")+t.getHours(),mm=(t.getMinutes()<10?"0":"")+t.getMinutes();
-       STAT_DATA.upd="اليوم "+hh+":"+mm+" — مباشر من ESPN";
-       return true;
-     }
-   }catch(e){ /* جرّب الرابط التالي */ }
- }
- return false; /* فشل الكل: تبقى القائمة اليدوية كاحتياط */
-}
-
 function refreshAll(btn){
   if(btn){ btn.classList.add("spinning"); btn.disabled=true; }
   var msg=document.getElementById("refreshMsg");
@@ -3143,23 +2999,40 @@ setInterval(function(){renderHero(); renderHomeLists();}, 60000);
 setInterval(pollScores, 120000);
 applyFinals();
 loadScoresESPN("20260610", ymd(new Date(Date.now()+24*3600000))).catch(function(){});
-if(typeof fetchStats==="function"){ fetchStats().then(function(ok){ if(ok && typeof renderStats==="function") renderStats(); }).catch(function(){}); }
 setTimeout(applyFinals, 4000);
 </script>
 
-<!-- أُزيل Service Worker القديم (Blob/cache-first) لأنه كان يخدم نسخة مخزّنة قديمة ويمنع وصول التحديثات. الآن يعتمد التطبيق فقط على sw.js (شبكة-أولاً). -->
+<script>
+if("serviceWorker" in navigator){
+  var swCode = `
+    var CACHE="wc2026-v1";
+    self.addEventListener("install", function(e){ self.skipWaiting(); });
+    self.addEventListener("activate", function(e){ self.clients.claim(); });
+    self.addEventListener("fetch", function(e){
+      if(e.request.method!=="GET") return;
+      e.respondWith(
+        caches.open(CACHE).then(function(cache){
+          return cache.match(e.request).then(function(hit){
+            var net = fetch(e.request).then(function(res){
+              if(res && res.status===200 && (e.request.url.indexOf("http")===0)){ try{cache.put(e.request, res.clone());}catch(_){} }
+              return res;
+            }).catch(function(){ return hit; });
+            return hit || net;
+          });
+        })
+      );
+    });
+  `;
+  var blob=new Blob([swCode],{type:"text/javascript"});
+  var swUrl=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(function(){});
+}
+</script>
 
 <script>
 /* تسجيل Service Worker لتشغيل التطبيق أوفلاين */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
-    // نظافة ذاتية: ألغِ أي Service Worker قديم عالق (Blob أو غير sw.js) يخدم نسخة قديمة
-    navigator.serviceWorker.getRegistrations().then(function(regs){
-      regs.forEach(function(reg){
-        var u=(reg.active&&reg.active.scriptURL)||(reg.installing&&reg.installing.scriptURL)||(reg.waiting&&reg.waiting.scriptURL)||"";
-        if(u.indexOf("blob:")===0 || u.indexOf("/sw.js")===-1){ reg.unregister(); }
-      });
-    }).catch(function(){});
     navigator.serviceWorker.register("sw.js").catch(function(e){console.log("SW:",e);});
   });
 }
