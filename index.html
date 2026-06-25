@@ -1669,6 +1669,8 @@ function koNextMatch(n){
 }
 function koMatchMini(m){
   var t=fmtT(m.t);
+  var teamH=m.h, teamA=m.a;
+  if(typeof resolveKOTeam==="function"){ teamH=resolveKOTeam(m.h); teamA=resolveKOTeam(m.a); }
   var bronze = m.r==="third" ? '<div class="km-bronze">🥉 تحديد المركز الثالث</div>' : '';
   var dd = m.d ? ('<span class="km-date">'+koDateNum(m.d)+'</span>') : '';
   var nxt = koNextMatch(m.n);
@@ -1676,9 +1678,9 @@ function koMatchMini(m){
   return '<div class="ko-m" data-mn="'+m.n+'">'
     +'<div class="km-head"><span class="km-n">#'+m.n+'</span>'+dd+'<span class="km-t">'+t.t+'</span></div>'
     +bronze
-    +'<div class="km-row">'+koTeam(m.h)+'</div>'
+    +'<div class="km-row">'+koTeam(teamH)+'</div>'
     +'<div class="km-vs">×</div>'
-    +'<div class="km-row">'+koTeam(m.a)+'</div>'
+    +'<div class="km-row">'+koTeam(teamA)+'</div>'
     +arrow
   +'</div>';
 }
