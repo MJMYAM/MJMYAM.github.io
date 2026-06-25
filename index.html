@@ -3153,6 +3153,13 @@ setTimeout(applyFinals, 4000);
 /* تسجيل Service Worker لتشغيل التطبيق أوفلاين */
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){
+    // نظافة ذاتية: ألغِ أي Service Worker قديم عالق (Blob أو غير sw.js) يخدم نسخة قديمة
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(reg){
+        var u=(reg.active&&reg.active.scriptURL)||(reg.installing&&reg.installing.scriptURL)||(reg.waiting&&reg.waiting.scriptURL)||"";
+        if(u.indexOf("blob:")===0 || u.indexOf("/sw.js")===-1){ reg.unregister(); }
+      });
+    }).catch(function(){});
     navigator.serviceWorker.register("sw.js").catch(function(e){console.log("SW:",e);});
   });
 }
