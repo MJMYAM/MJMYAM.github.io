@@ -824,6 +824,172 @@ nav#bn button .ic{font-size:18.5px;}
 .team .fl{position:relative; display:inline-flex; align-items:center; gap:4px;}
 .team .fl .fav-star{font-size:14px; padding:0; margin-right:2px;}
 .team.ph .fav-star{display:none;}
+
+/* ============================================================
+   ===== مميزات احترافية جديدة (خريطة/مقارنة/أبطال/كويز/توقّعات/wiki/سائح/i18n) =====
+   ============================================================ */
+
+/* ثيمات المنتخبات (اختيارية عبر نافذة المنتخب) */
+[data-team-theme="brazil"]{--accent:#f7d417;}
+[data-team-theme="argentina"]{--accent:#6ca9e0;}
+[data-team-theme="france"]{--accent:#1e3a8a;}
+[data-team-theme="germany"]{--accent:#ffffff;}
+[data-team-theme="spain"]{--accent:#c8102e;}
+[data-team-theme="england"]{--accent:#c8102e;}
+[data-team-theme="portugal"]{--accent:#c8102e;}
+[data-team-theme="saudi"]{--accent:#006c35;}
+[data-team-theme="morocco"]{--accent:#c1272d;}
+[data-team-theme="egypt"]{--accent:#ce1126;}
+[data-team-theme] .orbs span:nth-child(1){background:var(--accent,var(--red)); opacity:.18;}
+
+/* شاشة البداية Splash */
+#splash{position:fixed; inset:0; z-index:99999; background:radial-gradient(ellipse at center,#0d1538 0%,#060a1c 60%,#02040c 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity .6s,visibility .6s; overflow:hidden;}
+#splash.hidden{opacity:0; visibility:hidden; pointer-events:none;}
+#splash .sp-glow{position:absolute; width:90vw; height:90vw; max-width:600px; max-height:600px; border-radius:50%; background:radial-gradient(circle,rgba(240,194,75,.16) 0%,rgba(240,194,75,0) 60%); filter:blur(40px); animation:sp-pulse 2.4s ease-in-out infinite; pointer-events:none;}
+@keyframes sp-pulse{0%,100%{transform:scale(1); opacity:.7;}50%{transform:scale(1.18); opacity:1;}}
+#splash .sp-cup{font-size:64px; position:relative; z-index:2; filter:drop-shadow(0 12px 32px rgba(240,194,75,.45)); animation:sp-logo-in .8s cubic-bezier(.34,1.3,.5,1) both, sp-float 4s ease-in-out infinite 1s;}
+@keyframes sp-logo-in{0%{transform:scale(.6) translateY(20px); opacity:0;}100%{transform:scale(1) translateY(0); opacity:1;}}
+@keyframes sp-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+#splash .sp-title{font-family:"Changa",sans-serif; font-weight:800; font-size:26px; background:linear-gradient(110deg,#ffe9b0,var(--gold) 55%,#d9a02c); -webkit-background-clip:text; background-clip:text; color:transparent; margin-top:18px; letter-spacing:.5px; position:relative; z-index:2;}
+#splash .sp-sub{color:#94a0c6; font-size:13px; margin-top:6px; position:relative; z-index:2;}
+#splash .sp-bar{width:180px; height:4px; background:rgba(255,255,255,.1); border-radius:99px; margin-top:18px; overflow:hidden; position:relative; z-index:2;}
+#splash .sp-bar i{display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,var(--gold),var(--gold2)); animation:sp-fill 1.6s ease-out forwards;}
+@keyframes sp-fill{to{width:100%;}}
+#splash .sp-credit{position:absolute; bottom:30px; left:0; right:0; text-align:center; font-size:10.5px; color:#5e6a93; letter-spacing:.5px; z-index:2;}
+
+/* أزرار الترويسة (تبديل اللغة) */
+.header-tools{display:flex; gap:6px; align-items:center;}
+.hdr-btn{width:34px; height:34px; border-radius:10px; background:var(--card2); border:1px solid var(--line); color:var(--txt); cursor:pointer; display:grid; place-items:center; font-size:14px; font-weight:700; font-family:inherit; transition:.15s;}
+.hdr-btn:active{background:var(--gold); color:#0b0f24;}
+
+/* شريط التنقل السفلي قابل للتمرير (لاستيعاب التبويبات الجديدة) */
+nav#bn{justify-content:flex-start; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch;}
+nav#bn::-webkit-scrollbar{display:none;}
+nav#bn button{flex:0 0 auto; min-width:60px; max-width:none;}
+nav#bn button .badge{position:absolute; top:0; right:22%; background:#ff4757; color:#fff; font-size:9px; font-weight:800; padding:1px 5px; border-radius:99px; display:none;}
+nav#bn button.has-badge .badge{display:block;}
+
+/* الخريطة Leaflet */
+#mapContainer{height:380px; border-radius:18px; overflow:hidden; border:1px solid var(--line); margin-bottom:14px; background:#0a1028;}
+.leaflet-container{background:#0a1028 !important; font-family:inherit;}
+.leaflet-popup-content-wrapper{background:#16223f !important; color:#fff !important; border-radius:10px !important; box-shadow:0 8px 24px rgba(0,0,0,.6) !important;}
+.leaflet-popup-tip{background:#16223f !important;}
+.leaflet-popup-content{margin:10px 14px !important; font-family:inherit; font-size:12px; line-height:1.5;}
+.leaflet-popup-content b{color:var(--gold2); font-size:13px;}
+.leaflet-popup-content .popup-cap{color:var(--mut); font-size:11px; margin-top:2px;}
+
+/* النوافذ المنبثقة (wiki/مقارنة/مشاركة) */
+.modal-bg{position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:none; align-items:flex-end; justify-content:center; animation:fadein .25s;}
+.modal-bg.show{display:flex;}
+@keyframes fadein{from{opacity:0;}to{opacity:1;}}
+.modal-sheet{width:100%; max-width:540px; max-height:88vh; background:var(--bg2); border-radius:22px 22px 0 0; border-top:1px solid var(--line); overflow:hidden; display:flex; flex-direction:column; animation:slideUp .35s cubic-bezier(.34,1.3,.5,1);}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-handle{width:36px; height:4px; background:rgba(255,255,255,.2); border-radius:99px; margin:10px auto 6px;}
+.modal-head{display:flex; align-items:center; gap:12px; padding:6px 18px 14px; border-bottom:1px solid var(--line);}
+.modal-head .m-flag{width:54px; height:38px; border-radius:6px; object-fit:cover; box-shadow:0 4px 14px rgba(0,0,0,.4); flex-shrink:0;}
+.modal-head h2{margin:0; font-family:"Changa",sans-serif; font-weight:800; font-size:18px; flex:1; line-height:1.2;}
+.modal-close{background:var(--card); border:1px solid var(--line); width:32px; height:32px; border-radius:10px; display:grid; place-items:center; cursor:pointer; color:var(--mut); font-size:16px;}
+.modal-body{flex:1; overflow-y:auto; padding:14px 18px 24px; -webkit-overflow-scrolling:touch;}
+.wiki-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px;}
+.wiki-stat{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 8px; text-align:center;}
+.wiki-stat b{display:block; font-family:"Changa",sans-serif; font-weight:800; font-size:18px; color:var(--gold2);}
+.wiki-stat span{font-size:9.5px; color:var(--mut);}
+.wiki-row{display:flex; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px dashed var(--line); font-size:12.5px;}
+.wiki-row:last-child{border-bottom:none;}
+.wiki-row .wk{color:var(--mut); flex-shrink:0;}
+.wiki-row .wv{font-weight:600; text-align:left;}
+.wiki-bio{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:11px 13px; margin:12px 0; font-size:12px; color:var(--mut); line-height:1.85;}
+.wiki-actions{display:flex; gap:8px; margin-top:10px;}
+.wiki-act{flex:1; padding:10px; border-radius:11px; border:1px solid var(--line); background:var(--card); font-family:inherit; font-size:11.5px; font-weight:700; color:var(--txt); cursor:pointer; transition:.15s;}
+.wiki-act:active{transform:scale(.97);}
+.wiki-act.on{background:linear-gradient(135deg,rgba(240,194,75,.2),rgba(240,194,75,.05)); border-color:var(--gold); color:var(--gold2);}
+
+/* الأبطال التاريخيون */
+.champ-card{position:relative; display:flex; gap:12px; padding:11px 0; border-bottom:1px dashed var(--line);}
+.champ-card:last-child{border-bottom:none;}
+.champ-year{flex-shrink:0; width:54px; text-align:center; font-family:"Changa",sans-serif; font-weight:800; font-size:17px; color:var(--gold2); padding-top:2px;}
+.champ-info{flex:1; min-width:0;}
+.champ-winner{display:flex; align-items:center; gap:7px; font-weight:700; font-size:14px;}
+.champ-winner .flg{height:18px; border-radius:3px;}
+.champ-host{font-size:11px; color:var(--mut); margin-top:2px;}
+.champ-score{display:inline-block; font-size:11px; color:var(--txt); font-weight:600; background:rgba(240,194,75,.1); padding:1px 8px; border-radius:99px; margin-top:4px;}
+
+/* الكويز */
+.quiz-card{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; margin-bottom:14px;}
+.quiz-prog{font-family:"Changa",sans-serif; font-weight:700; font-size:11.5px; color:var(--mut); margin-bottom:10px;}
+.quiz-q{font-family:"Changa",sans-serif; font-weight:700; font-size:16px; margin-bottom:14px; line-height:1.4;}
+.quiz-opts{display:flex; flex-direction:column; gap:8px;}
+.quiz-opt{padding:11px 14px; border:1px solid var(--line); background:var(--card2); border-radius:12px; font-family:inherit; font-size:13px; font-weight:600; color:var(--txt); cursor:pointer; transition:.2s; text-align:right;}
+.quiz-opt:active{border-color:var(--gold); background:rgba(240,194,75,.05);}
+.quiz-opt.correct{background:rgba(46,204,113,.2); border-color:#2ecc71; color:#7ee2ab;}
+.quiz-opt.wrong{background:rgba(232,72,85,.2); border-color:#e84855; color:#ff9aa3;}
+.quiz-opt:disabled{cursor:default;}
+.quiz-score{text-align:center; font-family:"Changa",sans-serif; font-weight:800; font-size:36px; color:var(--gold2); margin:14px 0 6px;}
+.quiz-level{display:inline-block; font-size:10px; font-weight:700; background:rgba(240,194,75,.15); color:var(--gold2); padding:2px 10px; border-radius:99px; margin-bottom:8px;}
+
+/* المقارنة */
+.cmp-grid{display:grid; grid-template-columns:1fr auto 1fr; gap:8px; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px 12px; margin-bottom:14px;}
+.cmp-side{text-align:center; padding:6px;}
+.cmp-side h4{margin:6px 0; font-family:"Changa",sans-serif; font-weight:700; font-size:14px;}
+.cmp-side .flg{height:42px; width:62px; object-fit:cover; border-radius:5px; box-shadow:0 4px 14px rgba(0,0,0,.4);}
+.cmp-mid{font-family:"Changa",sans-serif; font-weight:800; font-size:18px; color:var(--gold2); align-self:center;}
+.cmp-row{display:grid; grid-template-columns:1fr auto 1fr; gap:8px; padding:7px 10px; border-bottom:1px dashed var(--line); font-size:12.5px;}
+.cmp-row:last-child{border-bottom:none;}
+.cmp-h{text-align:right; font-weight:600;}
+.cmp-l{text-align:left; font-weight:600;}
+.cmp-k{background:rgba(240,194,75,.1); color:var(--gold2); padding:1px 9px; border-radius:99px; font-family:"Changa",sans-serif; font-weight:700; font-size:11px; align-self:center;}
+
+/* التوقّعات Predict */
+.pred-intro{font-size:12.5px; line-height:1.75; color:var(--mut); background:var(--card); border:1px solid var(--line); border-radius:14px; padding:13px 15px; margin:2px 2px 14px;}
+.pred-intro b{color:var(--gold2); font-weight:700;}
+.pred-bar{position:relative; height:36px; background:var(--card); border:1px solid var(--line); border-radius:99px; overflow:hidden; margin:0 2px 12px; display:flex; align-items:center;}
+.pred-bar-fill{position:absolute; top:0; bottom:0; right:0; width:0; background:linear-gradient(90deg,var(--gold2),var(--gold)); border-radius:99px; transition:width .55s cubic-bezier(.34,1.3,.5,1);}
+.pred-bar span{position:relative; z-index:2; margin:0 auto; font-family:"Changa",sans-serif; font-weight:700; font-size:12.5px; color:#0c1226;}
+.pred-actions{display:flex; gap:8px; margin:0 2px 20px;}
+.pred-btn{flex:1; padding:12px; border-radius:12px; border:1px solid var(--line); font-family:inherit; font-weight:700; font-size:12.5px; cursor:pointer; transition:transform .15s,background .2s; background:var(--card); color:var(--txt);}
+.pred-btn.gold{background:linear-gradient(90deg,var(--gold),var(--gold2)); color:#1a1205; border-color:transparent;}
+.pred-btn.ghost{color:var(--mut);}
+.pred-btn:active{transform:scale(.97);}
+.pred-round{margin:0 2px 18px;}
+.pr-head{display:flex; align-items:center; gap:9px; font-family:"Changa",sans-serif; font-weight:800; font-size:14.5px; margin:0 0 11px;}
+.pr-head .dot{width:10px; height:10px; border-radius:50%; box-shadow:0 0 10px currentColor;}
+.ptie{display:flex; align-items:stretch; gap:8px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:8px; margin-bottom:9px; transition:border-color .25s;}
+.ptie.done{border-color:rgba(240,194,75,.34);}
+.pteam{flex:1; display:flex; align-items:center; gap:9px; background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:10px; padding:10px 11px; cursor:pointer; font-family:inherit; color:var(--txt); transition:background .2s,border-color .2s; min-width:0; text-align:right;}
+.pteam:active{background:rgba(255,255,255,.07);}
+.pteam.on{background:linear-gradient(90deg,rgba(240,194,75,.20),rgba(240,194,75,.05)); border-color:var(--gold); box-shadow:0 0 0 1px rgba(240,194,75,.25) inset;}
+.pteam.locked{cursor:default; opacity:.5;}
+.pteam .flg{height:21px; width:31px; object-fit:cover; border-radius:3px; flex-shrink:0; box-shadow:0 1px 3px rgba(0,0,0,.45);}
+.pteam .pn{font-weight:700; font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.pteam .pchk{margin-inline-start:auto; color:var(--gold); font-weight:900; font-size:14px; opacity:0; transform:scale(.5); transition:.2s;}
+.pteam.on .pchk{opacity:1; transform:scale(1);}
+.pvs{display:flex; align-items:center; font-family:"Changa",sans-serif; font-weight:800; font-size:10.5px; color:var(--dim); flex-shrink:0; padding:0 1px;}
+.champ{position:relative; border-radius:18px; padding:22px 16px; text-align:center; overflow:hidden; margin-bottom:14px;}
+.champ.empty{background:var(--card); border:1px dashed var(--line);}
+.champ.empty .ct{font-size:30px; opacity:.4;}
+.champ.empty .cl{font-family:"Changa",sans-serif; font-weight:800; font-size:16px; color:var(--mut); margin-top:6px;}
+.champ.empty .cs{font-size:11.5px; color:var(--dim); margin-top:4px;}
+.champ.on{background:radial-gradient(120% 120% at 50% 0,rgba(240,194,75,.28),rgba(10,16,40,.15) 62%),linear-gradient(160deg,#16223f,#0a1028); border:1px solid rgba(240,194,75,.5); box-shadow:0 14px 44px rgba(240,194,75,.16),inset 0 1px 0 rgba(255,255,255,.06);}
+.champ.on .ctrophy{font-size:46px; filter:drop-shadow(0 4px 14px rgba(240,194,75,.6)); animation:champPop .6s cubic-bezier(.3,1.6,.5,1); position:relative; z-index:2;}
+.champ.on .cflag{margin:10px auto 0; width:62px; position:relative; z-index:2;}
+.champ.on .cflag .flg{height:42px; width:62px; object-fit:cover; border-radius:5px; box-shadow:0 4px 14px rgba(0,0,0,.5);}
+.champ.on .cname{font-family:"Changa",sans-serif; font-weight:800; font-size:25px; margin-top:11px; position:relative; z-index:2; background:linear-gradient(90deg,var(--gold2),var(--gold)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+.champ.on .ctag{font-size:12px; color:var(--gold); font-weight:600; margin-top:3px; letter-spacing:.5px; position:relative; z-index:2;}
+.champ.on .crunner{font-size:11.5px; color:var(--mut); margin-top:9px; position:relative; z-index:2;}
+.crays{position:absolute; top:-50%; left:50%; transform:translateX(-50%); width:200%; height:200%; background:conic-gradient(from 0deg,transparent 0 9deg,rgba(240,194,75,.05) 9deg 18deg); animation:rayspin 26s linear infinite; pointer-events:none;}
+@keyframes rayspin{to{transform:translateX(-50%) rotate(360deg);}}
+@keyframes champPop{0%{transform:scale(0) rotate(-18deg);}100%{transform:scale(1) rotate(0);}}
+
+/* زر المشاركة العائم */
+.fab{position:fixed; bottom:calc(var(--nav-h) + 16px); left:16px; width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,var(--gold2),var(--gold)); display:grid; place-items:center; cursor:pointer; box-shadow:0 8px 24px rgba(240,194,75,.4); z-index:55; border:none; color:#0b0f24; font-size:20px; transition:transform .2s;}
+.fab:active{transform:scale(.92);}
+
+/* Toast جديد (مميزات) + Toast التوقّعات */
+.toast{position:fixed; left:50%; top:80px; transform:translate(-50%,-100px); background:var(--card2); border:1px solid var(--line); color:var(--txt); font-size:12.5px; font-weight:600; padding:10px 16px; border-radius:99px; z-index:300; box-shadow:0 8px 24px rgba(0,0,0,.5); transition:transform .35s cubic-bezier(.34,1.3,.5,1),opacity .3s; opacity:0; max-width:90%; text-align:center;}
+.toast.show{transform:translate(-50%,0); opacity:1;}
+.pred-toast{position:fixed; left:50%; bottom:calc(var(--nav-h) + 18px); transform:translate(-50%,16px); background:#16223f; border:1px solid rgba(240,194,75,.4); color:var(--txt); font-size:12.5px; font-weight:600; padding:12px 18px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,.55); z-index:1000; opacity:0; transition:.3s; max-width:84%; text-align:center; white-space:pre-line; line-height:1.65;}
+.pred-toast.show{opacity:1; transform:translate(-50%,0);}
+.empty-state{text-align:center; color:var(--mut); padding:30px 12px;}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -857,8 +1023,20 @@ if("serviceWorker" in navigator){
 <meta name="apple-mobile-web-app-title" content="مونديال 2026">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<!-- Leaflet (خريطة الملاعب التفاعلية) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
+<!-- شاشة البداية -->
+<div id="splash">
+  <div class="sp-glow"></div>
+  <div class="sp-cup">🏆</div>
+  <div class="sp-title">كأس العالم 2026</div>
+  <div class="sp-sub" data-i18n="splash_sub">جارٍ تحميل البطولة الكبرى…</div>
+  <div class="sp-bar"><i></i></div>
+  <div class="sp-credit">إعداد: مبارك المعتوق ⚽</div>
+</div>
 <button id="refreshBtn" onclick="refreshAll(this)" title="تحديث">🔄</button>
 <div id="refreshMsg"></div>
 
@@ -874,6 +1052,9 @@ if("serviceWorker" in navigator){
   <div class="brand">
     <span class="cup">🏆</span>
     <h1>كأس العالم 2026<small>نسخة الجوال 📱 · بتوقيت الكويت</small></h1>
+  </div>
+  <div class="header-tools">
+    <button class="hdr-btn" id="langBtn" onclick="toggleLang()" title="تبديل اللغة / Language">EN</button>
   </div>
   <div class="hosts"><img class="flg" style="height:16px" src="https://flagcdn.com/h40/us.png" alt="🇺🇸" onerror="this.replaceWith(this.alt)"> <img class="flg" style="height:16px" src="https://flagcdn.com/h40/ca.png" alt="🇨🇦" onerror="this.replaceWith(this.alt)"> <img class="flg" style="height:16px" src="https://flagcdn.com/h40/mx.png" alt="🇲🇽" onerror="this.replaceWith(this.alt)"></div>
 </header>
@@ -1005,11 +1186,62 @@ if("serviceWorker" in navigator){
 
     <div class="info-foot">📋 المعلومات من الملحق الرسمي لجدول البطولة</div>
   
+    <div class="sec-t"><i></i><span data-i18n="tourist_title">لو رايح مونديال</span> <span class="cnt">Tourist Mode ✈️</span></div>
+    <div id="touristBox"></div>
+
     <div class="info-stadiums-sec">
       <div class="iss-title">🏟️ ملاعب البطولة</div>
       <div class="iss-sub">16 ملعبًا · 3 دول مستضيفة</div>
       <div id="stadiumList"></div>
     </div>
+  </section>
+
+  <!-- ============ MAP (خريطة الملاعب) ============ -->
+  <section id="tab-map" class="tab">
+    <div class="sec-t"><i></i><span data-i18n="map_title">خريطة الملاعب</span> <span class="cnt">16 ملعبًا</span></div>
+    <div id="mapContainer"></div>
+    <div class="st-source" style="margin-bottom:8px">📍 اضغط على أي ملعب لمعرفة تفاصيله ومبارياته</div>
+    <div id="mapBottom"></div>
+  </section>
+
+  <!-- ============ COMPARE (مقارنة منتخبين) ============ -->
+  <section id="tab-compare" class="tab">
+    <div class="sec-t"><i></i><span data-i18n="cmp_title">قارن منتخبين</span> <span class="cnt">Head-to-Head</span></div>
+    <div class="sel-row" style="margin-bottom:14px">
+      <select id="cmpA"></select>
+      <select id="cmpB"></select>
+    </div>
+    <div id="cmpResult"></div>
+  </section>
+
+  <!-- ============ CHAMPIONS (الأبطال التاريخيون) ============ -->
+  <section id="tab-champions" class="tab">
+    <div class="sec-t"><i></i><span data-i18n="ch_title">الأبطال التاريخيون</span> <span class="cnt">22 نسخة</span></div>
+    <div class="st-source" style="margin-bottom:14px">🏆 من 1930 إلى 2022 — رحلة كل الأبطال عبر التاريخ</div>
+    <div id="chList"></div>
+  </section>
+
+  <!-- ============ QUIZ (اختبر معلوماتك) ============ -->
+  <section id="tab-quiz" class="tab">
+    <div class="sec-t"><i></i><span data-i18n="quiz_title">اختبر معلوماتك</span> <span class="cnt">20 سؤالًا</span></div>
+    <div id="quizBox"></div>
+  </section>
+
+  <!-- ============ PREDICT (توقّع البطل) ============ -->
+  <section id="tab-predict" class="tab">
+    <div class="sec-t"><i></i><span data-i18n="pr_title">توقّع البطل</span> <span class="cnt">من دور الـ16 للنهائي</span></div>
+    <div class="pred-intro">
+      <span data-i18n="pr_intro_1">اختر الفائز في كل مباراة وكوّن مشوارك حتى التتويج. القائمة تضمّ</span>
+      <b>16 منتخبًا</b>
+      <span data-i18n="pr_intro_2">مرشحًا للّقب، موزّعة على نصفَي البطولة — توقّعك يُحفظ تلقائيًا في جهازك.</span>
+    </div>
+    <div class="pred-bar"><div class="pred-bar-fill" id="predFill"></div><span id="predPct">0 من 15</span></div>
+    <div class="pred-actions">
+      <button id="predReset" class="pred-btn ghost">↻ <span data-i18n="reset">إعادة التعيين</span></button>
+      <button id="predShare" class="pred-btn gold">📤 <span data-i18n="share">شارك توقّعك</span></button>
+    </div>
+    <div id="predChampWrap"></div>
+    <div id="predBracket"></div>
   </section>
 
   <!-- ============ STADIUMS ============ -->
@@ -1029,7 +1261,12 @@ if("serviceWorker" in navigator){
   <button data-tab="cd"><span class="ic">⏳</span>العدّاد</button>
   <button data-tab="groups"><span class="ic">🧩</span>المجموعات</button>
   <button data-tab="ko"><span class="ic">🏆</span>الإقصائيات</button>
-  <button data-tab="info"><span class="ic">ℹ️</span>البطولة</button>
+  <button data-tab="map"><span class="ic">🗺️</span><span data-i18n="tab_map">الخريطة</span></button>
+  <button data-tab="compare"><span class="ic">⚖️</span><span data-i18n="cmp_title">المقارنة</span></button>
+  <button data-tab="champions"><span class="ic">👑</span><span data-i18n="tab_champs">الأبطال</span></button>
+  <button data-tab="quiz"><span class="ic">🧠</span><span data-i18n="quiz_title">الكويز</span></button>
+  <button data-tab="predict"><span class="ic">🔮</span><span data-i18n="tab_predict">توقّعاتي</span></button>
+  <button data-tab="info"><span class="ic">ℹ️</span><span data-i18n="info_title">البطولة</span></button>
 </nav>
 
 <script>
@@ -3402,6 +3639,489 @@ function refreshStatuses(){
   }catch(e){}
 }
 setInterval(refreshStatuses, 60000);
+
+</script>
+
+<!-- ============ نوافذ ورسائل المميزات الجديدة ============ -->
+<button class="fab" id="fabShare" onclick="openShareApp()" title="مشاركة">📤</button>
+
+<div class="modal-bg" id="wikiModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head" id="wikiHead"></div>
+    <div class="modal-body" id="wikiBody"></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="compareModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head"><h2>📊 قارن منتخبين</h2><button class="modal-close" onclick="closeCompareModal()">✕</button></div>
+    <div class="modal-body" id="compareBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="pred-toast" id="predToast"></div>
+
+<script>
+/* ================================================================
+   المميزات الاحترافية الجديدة — مدمجة فوق الملف الأساسي
+   خريطة · مقارنة · أبطال · بطاقة منتخب · كويز · توقّعات · سائح · لغتان
+   ================================================================ */
+
+/* ===== إحداثيات الملاعب (دمج مع STADIUMS الموجود) ===== */
+var STADIUM_COORDS = {
+  azteca:[19.3028,-99.1505], metlife:[40.8136,-74.0744], att:[32.7473,-97.0945],
+  arrowhead:[39.0489,-94.4839], nrg:[29.6847,-95.4107], mercedes:[33.7553,-84.4006],
+  sofi:[33.9534,-118.3387], lincoln:[39.9008,-75.1675], lumen:[47.5952,-122.3316],
+  levis:[37.4032,-121.9692], gillette:[42.0909,-71.2643], hardrock:[25.9580,-80.2389],
+  bcplace:[49.2768,-123.1119], bbva:[25.6691,-100.2433], akron:[20.6866,-103.4634],
+  bmo:[43.6532,-79.3832]
+};
+try{ Object.keys(STADIUM_COORDS).forEach(function(k){ if(STADIUMS[k]){ STADIUMS[k].lat=STADIUM_COORDS[k][0]; STADIUMS[k].lng=STADIUM_COORDS[k][1]; } }); }catch(e){}
+
+/* ===== الأبطال التاريخيون ===== */
+var CHAMPIONS_HISTORY = [
+  {year:1930, host:"الأوروغواي", winner:"الأوروغواي", runner:"الأرجنتين", score:"4-2", emoji:"🇺🇾"},
+  {year:1934, host:"إيطاليا", winner:"إيطاليا", runner:"تشيكوسلوفاكيا", score:"2-1", emoji:"🇮🇹"},
+  {year:1938, host:"فرنسا", winner:"إيطاليا", runner:"المجر", score:"4-2", emoji:"🇮🇹"},
+  {year:1950, host:"البرازيل", winner:"الأوروغواي", runner:"البرازيل", score:"2-1", emoji:"🇺🇾"},
+  {year:1954, host:"سويسرا", winner:"ألمانيا الغربية", runner:"المجر", score:"3-2", emoji:"🇩🇪"},
+  {year:1958, host:"السويد", winner:"البرازيل", runner:"السويد", score:"5-2", emoji:"🇧🇷"},
+  {year:1962, host:"تشيلي", winner:"البرازيل", runner:"تشيكوسلوفاكيا", score:"3-1", emoji:"🇧🇷"},
+  {year:1966, host:"إنجلترا", winner:"إنجلترا", runner:"ألمانيا الغربية", score:"4-2", emoji:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},
+  {year:1970, host:"المكسيك", winner:"البرازيل", runner:"إيطاليا", score:"4-1", emoji:"🇧🇷"},
+  {year:1974, host:"ألمانيا الغربية", winner:"ألمانيا الغربية", runner:"هولندا", score:"2-1", emoji:"🇩🇪"},
+  {year:1978, host:"الأرجنتين", winner:"الأرجنتين", runner:"هولندا", score:"3-1", emoji:"🇦🇷"},
+  {year:1982, host:"إسبانيا", winner:"إيطاليا", runner:"ألمانيا الغربية", score:"3-1", emoji:"🇮🇹"},
+  {year:1986, host:"المكسيك", winner:"الأرجنتين", runner:"ألمانيا الغربية", score:"3-2", emoji:"🇦🇷"},
+  {year:1990, host:"إيطاليا", winner:"ألمانيا الغربية", runner:"الأرجنتين", score:"1-0", emoji:"🇩🇪"},
+  {year:1994, host:"الولايات المتحدة", winner:"البرازيل", runner:"إيطاليا", score:"0-0 (4-2)", emoji:"🇧🇷"},
+  {year:1998, host:"فرنسا", winner:"فرنسا", runner:"البرازيل", score:"3-0", emoji:"🇫🇷"},
+  {year:2002, host:"كوريا الجنوبية/اليابان", winner:"البرازيل", runner:"ألمانيا", score:"2-0", emoji:"🇧🇷"},
+  {year:2006, host:"ألمانيا", winner:"إيطاليا", runner:"فرنسا", score:"1-1 (5-3)", emoji:"🇮🇹"},
+  {year:2010, host:"جنوب أفريقيا", winner:"إسبانيا", runner:"هولندا", score:"1-0", emoji:"🇪🇸"},
+  {year:2014, host:"البرازيل", winner:"ألمانيا", runner:"الأرجنتين", score:"1-0", emoji:"🇩🇪"},
+  {year:2018, host:"روسيا", winner:"فرنسا", runner:"كرواتيا", score:"4-2", emoji:"🇫🇷"},
+  {year:2022, host:"قطر", winner:"الأرجنتين", runner:"فرنسا", score:"3-3 (4-2)", emoji:"🇦🇷"}
+];
+
+/* ===== بطاقة معلومات لكل منتخب ===== */
+var TEAM_WIKI = {
+  "البرازيل":{conf:"CONMEBOL",rank:5,titles:5,lastTitle:2002,coach:"دوريفال جونيور",captain:"ماركينيوس",nickname:"السيليساو",starPlayer:"فينيسيوس جونيور",bio:"أكثر منتخب فاز بكأس العالم بـ 5 ألقاب. معروف بأسلوب السامبا الهجومي."},
+  "الأرجنتين":{conf:"CONMEBOL",rank:1,titles:3,lastTitle:2022,coach:"ليونيل سكالوني",captain:"ليونيل ميسي",nickname:"التانجو",starPlayer:"ميسي",bio:"حامل اللقب الحالي. فاز بأول لقب 1978 ثم 1986 مع مارادونا و2022 مع ميسي."},
+  "فرنسا":{conf:"UEFA",rank:2,titles:2,lastTitle:2018,coach:"ديدييه ديشان",captain:"كيليان مبابي",nickname:"الديوك",starPlayer:"كيليان مبابي",bio:"منتخب قوي ومتنوع. فاز في 1998 و2018، ووصل النهائي 2006 و2022."},
+  "ألمانيا":{conf:"UEFA",rank:9,titles:4,lastTitle:2014,coach:"يوليان ناغيلسمان",captain:"إلكاي غوندوغان",nickname:"المانشافت",starPlayer:"فلوريان فيرتز",bio:"من أكثر المنتخبات تتويجًا. 4 ألقاب مع تاريخ طويل من الانضباط التكتيكي."},
+  "إسبانيا":{conf:"UEFA",rank:3,titles:1,lastTitle:2010,coach:"لويس دي لا فوينتي",captain:"ألفارو موراتا",nickname:"لاروخا",starPlayer:"لامين يامال",bio:"بطل 2010 بأسلوب التيكي تاكا الشهير. مواهب شابة مذهلة."},
+  "إنجلترا":{conf:"UEFA",rank:4,titles:1,lastTitle:1966,coach:"توماس توخيل",captain:"هاري كين",nickname:"الأسود الثلاثة",starPlayer:"جود بيلينغهام",bio:"بطل العالم 1966 على أرضه. وصل نصف نهائي 2018 ونهائي يورو 2020 و2024."},
+  "البرتغال":{conf:"UEFA",rank:6,titles:0,lastTitle:null,coach:"روبرتو مارتينيز",captain:"كريستيانو رونالدو",nickname:"برازيليو أوروبا",starPlayer:"كريستيانو رونالدو",bio:"بطل يورو 2016. أول مشاركة في مونديال 1966 (نصف نهائي)."},
+  "هولندا":{conf:"UEFA",rank:7,titles:0,lastTitle:null,coach:"رونالد كومان",captain:"فيرجيل فان ديك",nickname:"الطواحين",starPlayer:"فرينكي دي يونغ",bio:"وصيف 1974 و1978 و2010. كرة قدم هجومية جميلة."},
+  "الأوروغواي":{conf:"CONMEBOL",rank:11,titles:2,lastTitle:1950,coach:"مارسيلو بييلسا",captain:"دييغو غودين",nickname:"الشاروا",starPlayer:"فيديريكو فالفيردي",bio:"بطل 1930 و1950. أول نسختين في التاريخ."},
+  "المكسيك":{conf:"CONCACAF",rank:14,titles:0,lastTitle:null,coach:"خابيير أغيري",captain:"إدسون ألفاريز",nickname:"إل تري",starPlayer:"سانتياغو خيمينيز",bio:"دائمًا يصل لدور الـ16. مستضيف البطولة 1970 و1986."},
+  "الولايات المتحدة":{conf:"CONCACAF",rank:16,titles:0,lastTitle:null,coach:"ماوريسيو بوكيتينو",captain:"كريستيان بوليسيتش",nickname:"يو إس إم إن تي",starPlayer:"بوليسيتش",bio:"مستضيف البطولة. تطور ملحوظ في كرة القدم آخر 30 سنة."},
+  "السعودية":{conf:"AFC",rank:56,titles:0,lastTitle:null,coach:"هيرفي رينارد",captain:"سالم الدوسري",nickname:"الصقور الخضر",starPlayer:"سالم الدوسري",bio:"فازت على الأرجنتين 2-1 في مونديال 2022. تأهلت للنسخة السادسة."},
+  "المغرب":{conf:"CAF",rank:13,titles:0,lastTitle:null,coach:"وليد الركراكي",captain:"رومان سايس",nickname:"أسود الأطلس",starPlayer:"أشرف حكيمي",bio:"صانعة المفاجأة: أول منتخب عربي وإفريقي يصل نصف نهائي 2022."},
+  "مصر":{conf:"CAF",rank:36,titles:0,lastTitle:null,coach:"حسام حسن",captain:"محمد صلاح",nickname:"الفراعنة",starPlayer:"محمد صلاح",bio:"7 مشاركات في المونديال. صلاح نجم ليفربول وقائد المنتخب."},
+  "اليابان":{conf:"AFC",rank:18,titles:0,lastTitle:null,coach:"هاجيمي موريياسو",captain:"مايا يوشيدا",nickname:"الساموراي الأزرق",starPlayer:"تاكيفوسا كوبو",bio:"حقق مفاجآت تاريخية: فوز على ألمانيا وإسبانيا 2022."},
+  "كوريا الجنوبية":{conf:"AFC",rank:22,titles:0,lastTitle:null,coach:"هونغ ميونغ-بو",captain:"سون هيونغ-مين",nickname:"المحاربون",starPlayer:"سون هيونغ-مين",bio:"وصلت نصف نهائي 2002 كمستضيفة. سون نجم توتنهام السابق."},
+  "السنغال":{conf:"CAF",rank:19,titles:0,lastTitle:null,coach:"باب تياو",captain:"كاليدو كوليبالي",nickname:"أسود التيرانغا",starPlayer:"ساديو ماني",bio:"بطل إفريقيا 2021. وصل ربع نهائي 2002 في أول مشاركة."},
+  "العراق":{conf:"AFC",rank:55,titles:0,lastTitle:null,coach:"غراهام أرنولد",captain:"أيمن حسين",nickname:"أسود الرافدين",starPlayer:"أيمن حسين",bio:"بطل آسيا 2007."},
+  "الأردن":{conf:"AFC",rank:64,titles:0,lastTitle:null,coach:"جمال السلامي",captain:"إحسان حداد",nickname:"النشامى",starPlayer:"موسى التعمري",bio:"أول مشاركة في كأس العالم. وصيف آسيا 2023."},
+  "تونس":{conf:"CAF",rank:45,titles:0,lastTitle:null,coach:"سامي الطرابلسي",captain:"يوسف المساكني",nickname:"نسور قرطاج",starPlayer:"حنبعل المجبري",bio:"6 مشاركات. فوز تاريخي على فرنسا 2022."},
+  "الجزائر":{conf:"CAF",rank:41,titles:0,lastTitle:null,coach:"فلاديمير بيتكوفيتش",captain:"رياض محرز",nickname:"ثعالب الصحراء",starPlayer:"رياض محرز",bio:"بطل إفريقيا 2019. أفضل إنجاز: دور الـ16 في 2014."},
+  "قطر":{conf:"AFC",rank:34,titles:0,lastTitle:null,coach:"لوبيتيغي",captain:"حسن الهيدوس",nickname:"العنابي",starPlayer:"أكرم عفيف",bio:"مستضيف 2022. بطل آسيا 2019 و2023."},
+  "إيران":{conf:"AFC",rank:27,titles:0,lastTitle:null,coach:"أمير قلعة نوعي",captain:"عليرضا جهانبخش",nickname:"تيم ملي",starPlayer:"مهدي طارمي",bio:"فوز تاريخي على ويلز 2022."},
+  "أستراليا":{conf:"AFC",rank:24,titles:0,lastTitle:null,coach:"توني بوبوفيتش",captain:"ماتيو ريان",nickname:"السوكرووز",starPlayer:"مارتن بوي",bio:"وصل دور الـ16 في 2006 و2022."},
+  "أوزبكستان":{conf:"AFC",rank:62,titles:0,lastTitle:null,coach:"تيمور كاباييف",captain:"إلدور شومورودوف",nickname:"الذئاب البيضاء",starPlayer:"شومورودوف",bio:"أول مشاركة في كأس العالم."},
+  "الإكوادور":{conf:"CONMEBOL",rank:30,titles:0,lastTitle:null,coach:"سيباستيان بيكسي",captain:"إنر فالنسيا",nickname:"لا تري",starPlayer:"مويسيس كايسيدو",bio:"افتتح مونديال 2006 بفوز على بولندا."},
+  "الكونغو الديمقراطية":{conf:"CAF",rank:51,titles:0,lastTitle:null,coach:"سيباستيان ديسابر",captain:"تشانسيل مبيمبا",nickname:"الفهود",starPlayer:"تشانسيل مبيمبا",bio:"أول مشاركة منذ 1974 (كانت زائير)."},
+  "الرأس الأخضر":{conf:"CAF",rank:65,titles:0,lastTitle:null,coach:"بيبي",captain:"ريان مينديز",nickname:"القروش الزرقاء",starPlayer:"ريان مينديز",bio:"أول مشاركة في كأس العالم في تاريخها."},
+  "غانا":{conf:"CAF",rank:67,titles:0,lastTitle:null,coach:"أوتو أدو",captain:"أندريه أيو",nickname:"النجوم السوداء",starPlayer:"محمد قدوس",bio:"ربع نهائي 2010."},
+  "جنوب أفريقيا":{conf:"CAF",rank:58,titles:0,lastTitle:null,coach:"هوغو بروس",captain:"رونوين ويليامز",nickname:"بافانا بافانا",starPlayer:"بيرسي تاو",bio:"مستضيف 2010."},
+  "نيوزيلندا":{conf:"OFC",rank:89,titles:0,lastTitle:null,coach:"دارين بازيلي",captain:"كريس وود",nickname:"أول وايتس",starPlayer:"كريس وود",bio:"لم تخسر في مونديال 2010 (3 تعادلات)."},
+  "بنما":{conf:"CONCACAF",rank:43,titles:0,lastTitle:null,coach:"توماس كريستيانسن",captain:"أنيبال غودوي",nickname:"كاناليروس",starPlayer:"أديلبرت كاراسكيا",bio:"المشاركة الثانية بعد 2018."},
+  "هايتي":{conf:"CONCACAF",rank:83,titles:0,lastTitle:null,coach:"سيباستيان ميغنيه",captain:"دوكنز نازون",nickname:"غرونادييه",starPlayer:"دوكنز نازون",bio:"مشاركة ثانية فقط بعد 1974."},
+  "كوراساو":{conf:"CONCACAF",rank:82,titles:0,lastTitle:null,coach:"ديك أدفوكات",captain:"لياندرو باكونا",nickname:"الزرقاء",starPlayer:"لياندرو باكونا",bio:"أصغر دولة (مساحةً) تتأهل لكأس العالم."},
+  "البوسنة والهرسك":{conf:"UEFA",rank:74,titles:0,lastTitle:null,coach:"سيرغي باربيز",captain:"إيدين دجيكو",nickname:"التنانين",starPlayer:"إيدين دجيكو",bio:"العودة بعد أول ظهور تاريخي 2014."},
+  "النرويج":{conf:"UEFA",rank:33,titles:0,lastTitle:null,coach:"ستوله سولباكن",captain:"مارتن أوديغارد",nickname:"أحفاد الفايكنغ",starPlayer:"إرلينغ هالاند",bio:"هالاند بمعدل تهديفي خرافي."},
+  "كرواتيا":{conf:"UEFA",rank:10,titles:0,lastTitle:null,coach:"زلاتكو داليتش",captain:"لوكا مودريتش",nickname:"الفاتنا",starPlayer:"مودريتش",bio:"وصيف 2018 وثالث 2022."},
+  "السويد":{conf:"UEFA",rank:31,titles:0,lastTitle:null,coach:"يون دال توماسون",captain:"إميل فورسبيرغ",nickname:"بلاغولت",starPlayer:"ألكسندر إيساك",bio:"وصيف 1958 كمستضيف."},
+  "سويسرا":{conf:"UEFA",rank:19,titles:0,lastTitle:null,coach:"مراد ياكين",captain:"غرانيت جاكا",nickname:"ناتي",starPlayer:"غرانيت جاكا",bio:"دور الـ16 في معظم المشاركات الأخيرة."},
+  "النمسا":{conf:"UEFA",rank:25,titles:0,lastTitle:null,coach:"رالف رانغنيك",captain:"دافيد ألابا",nickname:"داس تيم",starPlayer:"دافيد ألابا",bio:"عودة قوية بأسلوب الضغط العالي."},
+  "التشيك":{conf:"UEFA",rank:38,titles:0,lastTitle:null,coach:"إيفان هاشيك",captain:"توماس سوتشيك",nickname:"ناروداك",starPlayer:"باتريك شيك",bio:"وريث تشيكوسلوفاكيا، وصيف 1934 و1962."},
+  "الباراغواي":{conf:"CONMEBOL",rank:53,titles:0,lastTitle:null,coach:"غوستافو ألفارو",captain:"غوستافو غوميز",nickname:"الغوارانيون",starPlayer:"ميغيل ألميرون",bio:"ربع نهائي مونديال 2010."},
+  "تركيا":{conf:"UEFA",rank:42,titles:0,lastTitle:null,coach:"فينسنت كومباني",captain:"هاكان تشالهان أوغلو",nickname:"الهلال والنجمة",starPlayer:"أردا غولر",bio:"ثالث مونديال 2002."},
+  "كوت ديفوار":{conf:"CAF",rank:37,titles:0,lastTitle:null,coach:"إيمرس فاي",captain:"فرانك كيسييه",nickname:"الأفيال",starPlayer:"فرانك كيسييه",bio:"بطل إفريقيا 2023."},
+  "كندا":{conf:"CONCACAF",rank:30,titles:0,lastTitle:null,coach:"جيسي مارش",captain:"ألفونسو ديفيز",nickname:"الكنديون",starPlayer:"ألفونسو ديفيز",bio:"مستضيف. ديفيز نجم بايرن ميونخ."}
+};
+
+/* ===== أسئلة الكويز ===== */
+var QUIZ = [
+  {q:"من هو بطل كأس العالم 2022؟",o:["البرازيل","الأرجنتين","فرنسا","كرواتيا"],a:1,level:"سهل"},
+  {q:"كم مرة فازت البرازيل بكأس العالم؟",o:["3","4","5","6"],a:2,level:"سهل"},
+  {q:"أين سيُقام نهائي كأس العالم 2026؟",o:["ملعب أزتيكا","ملعب ميتلايف","ملعب صوفي","ملعب جيليت"],a:1,level:"متوسط"},
+  {q:"من هو هدّاف كأس العالم 2022؟",o:["كيليان مبابي","ليونيل ميسي","جوليان ألفاريز","أنطوان غريزمان"],a:0,level:"سهل"},
+  {q:"كم منتخبًا سيشارك في كأس العالم 2026؟",o:["32","40","48","52"],a:2,level:"سهل"},
+  {q:"في أي عام فازت ألمانيا الغربية بمونديالها الأول؟",o:["1950","1954","1958","1966"],a:1,level:"متوسط"},
+  {q:"من هو المنتخب الإفريقي الوحيد الذي وصل نصف نهائي المونديال؟",o:["نيجيريا","غانا","الكاميرون","المغرب"],a:3,level:"صعب"},
+  {q:"أين ستقام مباراة المركز الثالث 2026؟",o:["ميتلايف","هارد روك (ميامي)","صوفي","أزتيكا"],a:1,level:"متوسط"},
+  {q:"كم مدينة ستستضيف كأس العالم 2026؟",o:["12","14","16","18"],a:2,level:"متوسط"},
+  {q:"من فاز بأول نسخة من كأس العالم؟",o:["البرازيل","الأوروغواي","الأرجنتين","إيطاليا"],a:1,level:"سهل"},
+  {q:"ما اسم الكرة الرسمية لمونديال 2026؟",o:["الأديداس","تريوندا","الجابولاني","البرازوكا"],a:1,level:"صعب"},
+  {q:"من هو القائد الحالي لمنتخب البرازيل؟",o:["نيمار","ماركينيوس","كاسيميرو","أليسون"],a:1,level:"متوسط"},
+  {q:"من سجل 'هدف القرن' في مونديال 1986؟",o:["بيليه","مارادونا","زيدان","رونالدو"],a:1,level:"سهل"},
+  {q:"كم عدد أيام مونديال 2026 تقريبًا؟",o:["30","35","39","45"],a:2,level:"متوسط"},
+  {q:"من هو قائد منتخب فرنسا الحالي؟",o:["غريزمان","مبابي","بوغبا","لوريس"],a:1,level:"متوسط"},
+  {q:"أي منتخب وصل نصف نهائي 2022 كمفاجأة؟",o:["اليابان","كوريا الجنوبية","المغرب","أستراليا"],a:2,level:"سهل"},
+  {q:"ما اسم تعويذة كأس العالم 2026 من كندا؟",o:["مايل","كلاتش","زايو","نيمو"],a:0,level:"متوسط"},
+  {q:"أي دولة استضافت المونديال أكثر من غيرها (مرّتين)؟",o:["البرازيل","ألمانيا","المكسيك","فرنسا"],a:2,level:"صعب"},
+  {q:"في أي عام أقيم أول مونديال في العالم العربي؟",o:["2010","2018","2022","2026"],a:2,level:"سهل"},
+  {q:"من سجل هدف فرنسا الذهبي ضد البرازيل في نهائي 1998؟",o:["رونالدو","زيدان","دجوركايف","بيتيت"],a:1,level:"صعب"}
+];
+
+/* ===== معلومات السائح ===== */
+var TOURIST_INFO = {
+  visa:{us:"ESTA / تأشيرة B1-B2",ca:"eTA / تأشيرة كندية",mx:"تأشيرة سياحية (إعفاء لعدة دول)"},
+  currency:{us:"دولار أمريكي $",ca:"دولار كندي C$",mx:"بيزو مكسيكي $"},
+  language:{us:"الإنجليزية",ca:"الإنجليزية / الفرنسية",mx:"الإسبانية"},
+  bestAirports:{us:"JFK · LAX · ORD",ca:"YYZ تورونتو · YVR فانكوفر",mx:"MEX مكسيكو سيتي"}
+};
+
+/* ===== نظام اللغتين ===== */
+var I18N = {
+  ar:{splash_sub:"جارٍ تحميل البطولة الكبرى…",map_title:"خريطة الملاعب",cmp_title:"قارن منتخبين",ch_title:"الأبطال التاريخيون",quiz_title:"اختبر معلوماتك",pr_title:"توقّع البطل",pr_intro_1:"اختر الفائز في كل مباراة وكوّن مشوارك حتى التتويج. القائمة تضمّ",pr_intro_2:"مرشحًا للّقب، موزّعة على نصفَي البطولة — توقّعك يُحفظ تلقائيًا في جهازك.",share:"شارك توقّعك",reset:"إعادة التعيين",info_title:"عن البطولة",tourist_title:"لو رايح مونديال",tab_map:"الخريطة",tab_champs:"الأبطال",tab_predict:"توقّعاتي"},
+  en:{splash_sub:"Loading the biggest tournament…",map_title:"Stadiums Map",cmp_title:"Compare Teams",ch_title:"Historical Champions",quiz_title:"Test Your Knowledge",pr_title:"Predict the Champion",pr_intro_1:"Pick the winner of each match and build your path to the title. The list includes",pr_intro_2:"top contenders split across both halves — your prediction is saved on your device.",share:"Share Prediction",reset:"Reset",info_title:"About",tourist_title:"Traveling to the Cup",tab_map:"Map",tab_champs:"Champs",tab_predict:"Predict"}
+};
+var currentLang = (function(){ try{ return localStorage.getItem("wc2026_lang")||"ar"; }catch(e){ return "ar"; } })();
+function tr(key){ return (I18N[currentLang] && I18N[currentLang][key]) || I18N.ar[key] || key; }
+function applyLang(){
+  document.querySelectorAll("[data-i18n]").forEach(function(el){ var k=el.getAttribute("data-i18n"); var v=tr(k); if(v) el.textContent=v; });
+  var b=document.getElementById("langBtn"); if(b) b.textContent = currentLang==="ar" ? "EN" : "عر";
+  try{ localStorage.setItem("wc2026_lang", currentLang); }catch(e){}
+}
+function toggleLang(){
+  currentLang = currentLang==="ar" ? "en" : "ar";
+  applyLang();
+  showToast(currentLang==="ar" ? "🇰🇼 العربية" : "🇬🇧 English");
+}
+
+/* ===== رسائل واهتزاز ===== */
+function showToast(msg, dur){
+  dur = dur||2200;
+  var el=document.getElementById("toast");
+  if(!el){ if(typeof toast==="function"){ toast(msg); } return; }
+  el.textContent=msg; el.classList.add("show");
+  clearTimeout(window._nToastT);
+  window._nToastT=setTimeout(function(){ el.classList.remove("show"); }, dur);
+}
+function haptic(p){ if(navigator.vibrate){ try{ navigator.vibrate(p||30); }catch(e){} } }
+
+/* ===== ثيمات المنتخبات (بدون وضع ليلي/نهاري) ===== */
+var THEME_MAP = {"البرازيل":"brazil","الأرجنتين":"argentina","فرنسا":"france","ألمانيا":"germany","إسبانيا":"spain","إنجلترا":"england","البرتغال":"portugal","السعودية":"saudi","المغرب":"morocco","مصر":"egypt"};
+var currentTeamTheme = (function(){ try{ return localStorage.getItem("wc2026_team_theme")||""; }catch(e){ return ""; } })();
+function applyTheme(){ document.documentElement.setAttribute("data-team-theme", currentTeamTheme); try{ localStorage.setItem("wc2026_team_theme", currentTeamTheme); }catch(e){} }
+function toggleTeamTheme(teamName){
+  var tk=THEME_MAP[teamName]||"";
+  currentTeamTheme = (currentTeamTheme===tk) ? "" : tk;
+  applyTheme();
+  showToast(currentTeamTheme ? ("🎨 ثيم "+teamName+" مفعّل") : "↩️ أُلغي الثيم");
+}
+
+/* ===== بطاقة المنتخب (Wiki) ===== */
+function openWiki(teamName){
+  var wiki=TEAM_WIKI[teamName];
+  if(!wiki){ showToast("ℹ️ لا توجد معلومات متاحة لهذا المنتخب بعد"); return; }
+  haptic(40);
+  var modal=document.getElementById("wikiModal");
+  var head=document.getElementById("wikiHead");
+  var body=document.getElementById("wikiBody");
+  var iso=ISO[teamName]||"un";
+  head.innerHTML='<img class="m-flag" src="https://flagcdn.com/w160/'+iso+'.png" alt="'+(TEAMS[teamName]||"")+'" onerror="this.style.display=\'none\'"><h2>'+teamName+'</h2><button class="modal-close" onclick="closeWiki()">✕</button>';
+  var titles=wiki.titles||0;
+  var trophies = titles>0 ? Array(titles+1).join("🏆 ") : "—";
+  var themeOn = (THEME_MAP[teamName] && THEME_MAP[teamName]===currentTeamTheme);
+  body.innerHTML=
+    '<div class="wiki-stats">'
+    +'<div class="wiki-stat"><b>'+(wiki.rank||"—")+'</b><span>تصنيف FIFA</span></div>'
+    +'<div class="wiki-stat"><b>'+titles+'</b><span>ألقاب عالمية</span></div>'
+    +'<div class="wiki-stat"><b>'+(wiki.lastTitle||"—")+'</b><span>آخر لقب</span></div>'
+    +'</div>'
+    +'<div style="text-align:center;margin:10px 0;font-size:18px">'+trophies+'</div>'
+    +'<div class="wiki-bio">'+(wiki.bio||"")+'</div>'
+    +'<div class="wiki-row"><span class="wk">⚽ الاتحاد</span><span class="wv">'+wiki.conf+'</span></div>'
+    +'<div class="wiki-row"><span class="wk">🎖️ المدرب</span><span class="wv">'+wiki.coach+'</span></div>'
+    +'<div class="wiki-row"><span class="wk">©️ القائد</span><span class="wv">'+wiki.captain+'</span></div>'
+    +'<div class="wiki-row"><span class="wk">⭐ النجم</span><span class="wv">'+wiki.starPlayer+'</span></div>'
+    +'<div class="wiki-row"><span class="wk">🏷️ اللقب</span><span class="wv">'+wiki.nickname+'</span></div>'
+    +'<div class="wiki-actions">'
+    +(THEME_MAP[teamName]?'<button class="wiki-act'+(themeOn?' on':'')+'" onclick="toggleTeamTheme(\''+teamName+'\');openWiki(\''+teamName+'\')">🎨 <span>ثيم</span></button>':'')
+    +'<button class="wiki-act" onclick="openCompare(\''+teamName+'\')">📊 <span>قارن</span></button>'
+    +'<button class="wiki-act" onclick="shareTeam(\''+teamName+'\')">📤 <span>مشاركة</span></button>'
+    +'</div>';
+  modal.classList.add("show");
+  document.body.style.overflow="hidden";
+}
+function closeWiki(){ document.getElementById("wikiModal").classList.remove("show"); document.body.style.overflow=""; }
+document.addEventListener("click", function(e){
+  if(e.target.classList && e.target.classList.contains("modal-bg")){ e.target.classList.remove("show"); document.body.style.overflow=""; }
+});
+/* فتح بطاقة المنتخب بالضغط على اسمه في جداول الترتيب */
+document.addEventListener("click", function(e){
+  var cell=e.target.closest && e.target.closest(".sttbl td.t, .mstbl td.t, .lr-name");
+  if(cell){ var nm=(cell.textContent||"").replace(/[‎‏]/g,"").trim(); if(TEAM_WIKI[nm]){ haptic(30); openWiki(nm); } }
+});
+
+/* ===== الأبطال التاريخيون ===== */
+function renderChampions(){
+  var el=document.getElementById("chList"); if(!el) return;
+  el.innerHTML=CHAMPIONS_HISTORY.slice().reverse().map(function(c){
+    var iso=ISO[c.winner]||"un";
+    return '<div class="champ-card"><div class="champ-year">'+c.year+'</div><div class="champ-info">'
+      +'<div class="champ-winner"><img class="flg" src="https://flagcdn.com/h40/'+iso+'.png" alt="'+c.emoji+'" onerror="this.replaceWith(this.alt)"><span>'+c.winner+' '+c.emoji+'</span></div>'
+      +'<div class="champ-host">📍 '+c.host+'</div>'
+      +'<div><span class="champ-score">'+c.score+'</span> <span style="font-size:11px;color:var(--mut)">ضد '+c.runner+'</span></div>'
+      +'</div></div>';
+  }).join("");
+}
+
+/* ===== الكويز ===== */
+var quizState={idx:0,score:0,answered:false,finished:false};
+function renderQuiz(){
+  var box=document.getElementById("quizBox"); if(!box) return;
+  if(quizState.finished){
+    var pct=Math.round(quizState.score/QUIZ.length*100), msg;
+    if(pct>=90) msg="🏆 خبير مونديال!"; else if(pct>=70) msg="⭐ ممتاز!"; else if(pct>=50) msg="👍 جيد!"; else msg="📚 حاول مرة ثانية";
+    box.innerHTML='<div class="quiz-card" style="text-align:center"><div style="font-size:60px;margin:14px 0">🏆</div><div class="quiz-score">'+quizState.score+'/'+QUIZ.length+'</div><div style="font-size:14px;color:var(--mut);margin-bottom:14px">'+msg+'</div><button class="pred-btn gold" onclick="restartQuiz()">↻ ابدأ من جديد</button></div>';
+    return;
+  }
+  var q=QUIZ[quizState.idx];
+  box.innerHTML='<div class="quiz-card"><div class="quiz-prog">السؤال '+(quizState.idx+1)+' من '+QUIZ.length+'</div><span class="quiz-level">'+q.level+'</span><div class="quiz-q">'+q.q+'</div><div class="quiz-opts" id="quizOpts">'+q.o.map(function(opt,i){return '<button class="quiz-opt" data-i="'+i+'">'+opt+'</button>';}).join("")+'</div><div id="quizFb" style="margin-top:12px"></div></div>';
+  document.querySelectorAll("#quizOpts .quiz-opt").forEach(function(btn){ btn.addEventListener("click", function(){ handleQuizAnswer(parseInt(btn.dataset.i,10), q.a, btn); }); });
+}
+function handleQuizAnswer(chosen, correct, btn){
+  if(quizState.answered) return; quizState.answered=true;
+  var opts=document.querySelectorAll("#quizOpts .quiz-opt");
+  opts.forEach(function(o,i){ o.disabled=true; if(i===correct) o.classList.add("correct"); else if(o===btn && i!==correct) o.classList.add("wrong"); });
+  if(chosen===correct){ quizState.score++; haptic(50); document.getElementById("quizFb").innerHTML='<div style="color:#2ecc71;font-weight:700">✅ إجابة صحيحة!</div>'; }
+  else{ haptic([20,30,20]); document.getElementById("quizFb").innerHTML='<div style="color:#e84855;font-weight:700">❌ الصحيح: '+QUIZ[quizState.idx].o[correct]+'</div>'; }
+  setTimeout(function(){ quizState.idx++; quizState.answered=false; if(quizState.idx>=QUIZ.length) quizState.finished=true; renderQuiz(); }, 1400);
+}
+function restartQuiz(){ quizState={idx:0,score:0,answered:false,finished:false}; renderQuiz(); }
+
+/* ===== المقارنة ===== */
+var compareA="", compareB="";
+function openCompare(teamName){
+  if(typeof closeWiki==="function") closeWiki();
+  var modal=document.getElementById("compareModal");
+  modal.classList.add("show"); document.body.style.overflow="hidden";
+  if(teamName) compareA=teamName;
+  if(!compareB || compareB===compareA){ compareB = (compareA==="الأرجنتين"?"البرازيل":"الأرجنتين"); }
+  renderCompareModalBody();
+}
+function closeCompareModal(){ document.getElementById("compareModal").classList.remove("show"); document.body.style.overflow=""; }
+function renderCompareModalBody(){
+  var body=document.getElementById("compareBody"); if(!body) return;
+  var teams=Object.keys(TEAMS);
+  var opts=teams.map(function(t){return '<option value="'+t+'" '+(t===compareA?'selected':'')+'>'+t+'</option>';}).join("");
+  var optsB=teams.map(function(t){return '<option value="'+t+'" '+(t===compareB?'selected':'')+'>'+t+'</option>';}).join("");
+  body.innerHTML='<div class="sel-row" style="margin-bottom:14px"><select onchange="compareA=this.value;renderCompareModalBody()">'+opts+'</select><select onchange="compareB=this.value;renderCompareModalBody()">'+optsB+'</select></div><div id="cmpResultBody"></div>';
+  renderCompareResult();
+}
+function renderCompareResult(){
+  var el=document.getElementById("cmpResultBody")||document.getElementById("cmpResult"); if(!el) return;
+  if(!compareA||!compareB){ el.innerHTML=""; return; }
+  var wA=TEAM_WIKI[compareA]||{}, wB=TEAM_WIKI[compareB]||{};
+  var between=M.filter(function(m){ return (m.h===compareA&&m.a===compareB)||(m.h===compareB&&m.a===compareA); });
+  var isoA=ISO[compareA]||"un", isoB=ISO[compareB]||"un";
+  el.innerHTML=
+    '<div class="cmp-grid"><div class="cmp-side"><img class="flg" src="https://flagcdn.com/w160/'+isoA+'.png" alt=""><h4>'+compareA+'</h4></div><div class="cmp-mid">VS</div><div class="cmp-side"><img class="flg" src="https://flagcdn.com/w160/'+isoB+'.png" alt=""><h4>'+compareB+'</h4></div></div>'
+    +'<div class="cmp-row"><div class="cmp-h">'+(wA.rank||"—")+'</div><div class="cmp-k">تصنيف FIFA</div><div class="cmp-l">'+(wB.rank||"—")+'</div></div>'
+    +'<div class="cmp-row"><div class="cmp-h">'+(wA.titles||0)+'</div><div class="cmp-k">ألقاب عالمية</div><div class="cmp-l">'+(wB.titles||0)+'</div></div>'
+    +'<div class="cmp-row"><div class="cmp-h">'+(wA.conf||"—")+'</div><div class="cmp-k">الاتحاد</div><div class="cmp-l">'+(wB.conf||"—")+'</div></div>'
+    +'<div class="cmp-row"><div class="cmp-h">'+(wA.coach||"—")+'</div><div class="cmp-k">المدرب</div><div class="cmp-l">'+(wB.coach||"—")+'</div></div>'
+    +'<div class="cmp-row"><div class="cmp-h">'+(wA.captain||"—")+'</div><div class="cmp-k">القائد</div><div class="cmp-l">'+(wB.captain||"—")+'</div></div>'
+    +'<div class="cmp-row"><div class="cmp-h">'+(wA.starPlayer||"—")+'</div><div class="cmp-k">النجم</div><div class="cmp-l">'+(wB.starPlayer||"—")+'</div></div>'
+    +'<div style="margin-top:14px;font-family:\'Changa\',sans-serif;font-weight:700;font-size:13px">⚔️ المواجهات داخل البطولة</div>'
+    +(between.length ? between.map(function(m){ var date=m.d?fmtD(m.d):(ROUNDS[m.r]?ROUNDS[m.r].l:""); return '<div class="cmp-row"><div class="cmp-h">'+m.h+'</div><div class="cmp-k">'+date+'</div><div class="cmp-l">'+m.a+'</div></div>'; }).join("") : '<div class="empty-state">لا توجد مواجهة مباشرة بينهما في دور المجموعات</div>');
+}
+function renderCompareTab(){
+  var selA=document.getElementById("cmpA"), selB=document.getElementById("cmpB"), result=document.getElementById("cmpResult");
+  if(!selA||!selB||!result) return;
+  if(!selA.options.length){
+    var teams=Object.keys(TEAMS);
+    selA.innerHTML=teams.map(function(t){return '<option value="'+t+'">'+t+'</option>';}).join("");
+    selB.innerHTML=teams.map(function(t){return '<option value="'+t+'">'+t+'</option>';}).join("");
+    selA.value="البرازيل"; selB.value="الأرجنتين"; compareA=selA.value; compareB=selB.value;
+    selA.addEventListener("change", function(){ compareA=selA.value; renderCompareResult(); });
+    selB.addEventListener("change", function(){ compareB=selB.value; renderCompareResult(); });
+  } else { compareA=selA.value; compareB=selB.value; }
+  renderCompareResult();
+}
+
+/* ===== الخريطة (Leaflet) ===== */
+var mapInstance=null, mapMarkers=[];
+function initMap(){
+  var el=document.getElementById("mapContainer");
+  if(!el || mapInstance || typeof L==="undefined") return;
+  mapInstance=L.map("mapContainer",{center:[40,-95],zoom:3,minZoom:2,maxZoom:8,scrollWheelZoom:false});
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{attribution:"© OSM, © CartoDB",subdomains:"abcd",maxZoom:19}).addTo(mapInstance);
+  Object.keys(STADIUMS).forEach(function(k){
+    var s=STADIUMS[k]; if(!s.lat||!s.lng) return;
+    var matches=M.filter(function(m){return m.s===k;}).length;
+    var icon=L.divIcon({className:"stadium-pin",html:'<div style="background:linear-gradient(135deg,#f0c24b,#ffe09a);width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 6px 18px rgba(0,0,0,.6);display:grid;place-items:center;border:2px solid #fff"><span style="transform:rotate(45deg);font-size:14px;font-weight:800;color:#0b0f24">'+matches+'</span></div>',iconSize:[32,32],iconAnchor:[16,32]});
+    var mk=L.marker([s.lat,s.lng],{icon:icon}).addTo(mapInstance);
+    mk.bindPopup('<b>'+s.n+'</b><br><span style="font-size:11px">'+s.c+' · '+s.co+'</span><div class="popup-cap">👥 '+s.cap.toLocaleString("en-US")+' متفرج<br>⚽ '+matches+' مباريات</div>');
+    mk.on("click", function(){ haptic(40); });
+    mapMarkers.push(mk);
+  });
+  if(mapMarkers.length){ var grp=L.featureGroup(mapMarkers); mapInstance.fitBounds(grp.getBounds().pad(0.3)); }
+  setTimeout(function(){ mapInstance.invalidateSize(); }, 120);
+  var bottom=document.getElementById("mapBottom");
+  if(bottom){
+    var byCo={};
+    Object.keys(STADIUMS).forEach(function(k){ var s=STADIUMS[k]; if(!byCo[s.co]) byCo[s.co]=[]; byCo[s.co].push({key:k,st:s}); });
+    bottom.innerHTML=Object.keys(byCo).map(function(co){
+      return '<div class="co-h"><span class="f">'+flagImg(co)+'</span>'+co+'<small>'+byCo[co].length+' ملاعب</small></div><div class="sgrid">'
+        +byCo[co].map(function(o){ var matches=M.filter(function(m){return m.s===o.key;}).length; return '<div class="std" onclick="flyToStadium(\''+o.key+'\')"><div class="top"><h4>'+o.st.n+'</h4><span class="f">'+flagImg(co)+'</span></div><div class="city">📍 '+o.st.c+'</div><div class="caprow"><span class="capv">'+o.st.cap.toLocaleString("en-US")+'</span><span class="capl">متفرج</span></div><div class="foot"><span class="tag">'+matches+' مباراة</span>'+(o.st.tag?'<span class="tag gold">⭐ '+o.st.tag+'</span>':'')+'</div></div>'; }).join("")
+        +'</div>';
+    }).join("");
+  }
+}
+function flyToStadium(key){
+  var s=STADIUMS[key]; if(!s||!mapInstance) return;
+  mapInstance.flyTo([s.lat,s.lng],6,{duration:1.2});
+  var marker=mapMarkers.find(function(m){ var ll=m.getLatLng(); return Math.abs(ll.lat-s.lat)<0.001 && Math.abs(ll.lng-s.lng)<0.001; });
+  if(marker) marker.openPopup();
+  var mapTabActive=document.getElementById("tab-map"); if(mapTabActive) mapTabActive.scrollIntoView({behavior:"smooth"});
+}
+
+/* ===== المشاركة ===== */
+function copyToClipboard(text){ if(navigator.clipboard){ navigator.clipboard.writeText(text).catch(function(){fallbackCopy(text);}); } else { fallbackCopy(text); } }
+function fallbackCopy(text){ var ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); }catch(e){} document.body.removeChild(ta); }
+function shareTeam(teamName){
+  var wiki=TEAM_WIKI[teamName]||{};
+  var text="⚽ "+teamName+"\n🏆 ألقاب: "+(wiki.titles||0)+"\n🎖️ مدرب: "+(wiki.coach||"—")+"\n⭐ نجم: "+(wiki.starPlayer||"—")+"\n\nمن تطبيق كأس العالم 2026";
+  if(navigator.share){ navigator.share({title:teamName,text:text,url:location.href}).then(function(){haptic(50);}).catch(function(){}); }
+  else { copyToClipboard(text); showToast("📋 تم نسخ المعلومات"); }
+}
+function openShareApp(){
+  var champ=window._predChampion;
+  if(champ){ sharePrediction(champ); return; }
+  var text="🏆 تطبيق كأس العالم 2026 — جدول المباريات بتوقيت الكويت\nتابعوا معنا!";
+  if(navigator.share){ navigator.share({title:"كأس العالم 2026",text:text,url:location.href}).catch(function(){}); }
+  else { copyToClipboard(text); showToast("📋 تم نسخ رابط التطبيق"); }
+}
+function sharePrediction(champName){
+  var text="🏆 توقّعي لكأس العالم 2026:\n\nالبطل: "+champName+" 🏆\n\nشاركنا توقّعك!";
+  if(navigator.share){ navigator.share({title:"توقّعي لكأس العالم",text:text,url:location.href}).then(function(){haptic(50);}).catch(function(){}); }
+  else { copyToClipboard(text); showToast("📋 تم نسخ التوقّع"); }
+}
+
+/* ===== توقّع البطل (Bracket) ===== */
+var PREDICT_TEAMS=["الأرجنتين","البرازيل","فرنسا","إنجلترا","إسبانيا","ألمانيا","البرتغال","هولندا","الأوروغواي","كرواتيا","المغرب","بلجيكا","المكسيك","الولايات المتحدة","اليابان","السنغال"];
+var predState=(function(){ try{ return JSON.parse(localStorage.getItem("wc2026_pred")||"{}"); }catch(e){ return {}; } })();
+function savePred(){ try{ localStorage.setItem("wc2026_pred", JSON.stringify(predState)); }catch(e){} }
+function getPred(key){ return predState[key]||null; }
+function setPred(key, team){ predState[key]=team; savePred(); }
+function pairUp(arr){ var out=[]; for(var i=0;i<arr.length;i+=2) out.push([arr[i],arr[i+1]]); return out; }
+function renderPredictTie(t1,t2,slot,winner){
+  var isReal=function(t){ return TEAMS[t]?true:false; };
+  var locked=!isReal(t1)||!isReal(t2);
+  function side(t){
+    return '<div class="pteam '+(winner===t?"on":"")+' '+(locked?"locked":"")+'" onclick="'+(locked?"":"pickPred('"+slot+"','"+String(t).replace(/'/g,"\\'")+"')")+'">'
+      +(TEAMS[t]?'<img class="flg" src="https://flagcdn.com/h40/'+(ISO[t]||"un")+'.png" alt="" onerror="this.replaceWith(this.alt)">':'')
+      +'<span class="pn">'+t+'</span><span class="pchk">✓</span></div>';
+  }
+  return '<div class="ptie '+(winner?"done":"")+'">'+side(t1)+'<div class="pvs">×</div>'+side(t2)+'</div>';
+}
+function pickPred(slot, team){
+  haptic(40);
+  setPred(slot, team);
+  renderPredict();
+  showToast("✅ اخترت "+team);
+}
+function renderChampBox(champ){
+  var wrap=document.getElementById("predChampWrap"); if(!wrap) return;
+  if(!champ){ wrap.innerHTML='<div class="champ empty"><div class="ct">🏆</div><div class="cl">اختر البطل</div><div class="cs">ابدأ من دور الـ16 وتنقّل للأعلى</div></div>'; return; }
+  var wiki=TEAM_WIKI[champ]||{};
+  wrap.innerHTML='<div class="champ on"><div class="crays"></div><div class="ctrophy">🏆</div><div class="cflag">'+(TEAMS[champ]?'<img class="flg" src="https://flagcdn.com/w160/'+(ISO[champ]||"un")+'.png" alt="" onerror="this.replaceWith(this.alt)">':'')+'</div><div class="cname">'+champ+'</div><div class="ctag">بطلك في كأس العالم 2026</div><div class="crunner">'+(wiki.conf||"")+' · تصنيف '+(wiki.rank||"—")+'</div></div>';
+}
+function renderPredict(){
+  var wrap=document.getElementById("predBracket"); if(!wrap) return;
+  var half1=PREDICT_TEAMS.slice(0,8), half2=PREDICT_TEAMS.slice(8);
+  var halves=[{name:"النصف الأول",qf:pairUp(half1)},{name:"النصف الثاني",qf:pairUp(half2)}];
+  var html="";
+  halves.forEach(function(half,hi){
+    html+='<div class="pred-round"><div class="pr-head"><span class="dot" style="background:#f0c24b;color:#f0c24b"></span>'+half.name+'</div>';
+    var r16=[];
+    half.qf.forEach(function(pair,i){ r16.push(getPred("r16_"+hi+"_"+i)); });
+    half.qf.forEach(function(pair,i){ html+=renderPredictTie(pair[0],pair[1],"r16_"+hi+"_"+i,getPred("r16_"+hi+"_"+i)); });
+    html+='<div style="margin:10px 4px;color:var(--mut);font-size:11px;text-align:center">↓ ربع نهائي '+half.name+'</div>';
+    html+=renderPredictTie(r16[0]||"—",r16[1]||"—","qf_"+hi+"_0",getPred("qf_"+hi+"_0"));
+    html+=renderPredictTie(r16[2]||"—",r16[3]||"—","qf_"+hi+"_1",getPred("qf_"+hi+"_1"));
+    var sfw=[getPred("qf_"+hi+"_0"),getPred("qf_"+hi+"_1")];
+    html+='<div style="margin:10px 4px;color:var(--gold);font-size:11px;text-align:center">↓ نصف نهائي '+half.name+'</div>';
+    html+=renderPredictTie(sfw[0]||"—",sfw[1]||"—","sf_"+hi+"_0",getPred("sf_"+hi+"_0"));
+    html+='</div>';
+  });
+  var f1=getPred("sf_0_0"), f2=getPred("sf_1_0");
+  html+='<div class="pred-round"><div class="pr-head"><span class="dot" style="background:#fff;color:#fff"></span>النهائي الكبير 🏆</div>'+renderPredictTie(f1||"—",f2||"—","final_0",getPred("final_0"))+'</div>';
+  wrap.innerHTML=html;
+  var total=15, done=0;
+  for(var h=0;h<2;h++){ for(var i=0;i<4;i++) if(getPred("r16_"+h+"_"+i)) done++; for(var j=0;j<2;j++) if(getPred("qf_"+h+"_"+j)) done++; if(getPred("sf_"+h+"_0")) done++; }
+  if(getPred("final_0")) done++;
+  var pct=(done/total*100).toFixed(0);
+  var fill=document.getElementById("predFill"); if(fill) fill.style.width=pct+"%";
+  var pe=document.getElementById("predPct"); if(pe) pe.textContent=done+" من "+total;
+  var champ=getPred("final_0"); renderChampBox(champ); window._predChampion=champ;
+}
+
+/* ===== وضع السائح ===== */
+function renderTourist(){
+  var box=document.getElementById("touristBox"); if(!box) return;
+  function conf(flag,name,n,key){
+    return '<div class="ref-conf"><div class="rc-head">'+flag+' <span>'+name+'</span><span class="rc-n">'+n+'</span></div>'
+      +'<div class="ref-row"><span class="rf-n">التأشيرة</span><span class="rf-c">'+TOURIST_INFO.visa[key]+'</span></div>'
+      +'<div class="ref-row"><span class="rf-n">العملة</span><span class="rf-c">'+TOURIST_INFO.currency[key]+'</span></div>'
+      +'<div class="ref-row"><span class="rf-n">اللغة</span><span class="rf-c">'+TOURIST_INFO.language[key]+'</span></div>'
+      +'<div class="ref-row"><span class="rf-n">أفضل المطارات</span><span class="rf-c">'+TOURIST_INFO.bestAirports[key]+'</span></div></div>';
+  }
+  box.innerHTML='<div class="ref-wrap">'+conf("🇺🇸","الولايات المتحدة","11 مدينة","us")+conf("🇨🇦","كندا","مدينتان","ca")+conf("🇲🇽","المكسيك","3 مدن","mx")+'</div><div class="info-foot" style="margin-top:14px">💡 تحقّق من متطلبات السفر المحدّثة قبل السفر</div>';
+}
+
+/* ===== ربط التبويبات الجديدة بنظام التبديل ===== */
+(function(){
+  if(typeof goTab==="function"){
+    var _baseGoTab=goTab;
+    goTab=function(id){
+      _baseGoTab(id);
+      try{
+        if(id==="map") initMap();
+        else if(id==="compare") renderCompareTab();
+        else if(id==="champions") renderChampions();
+        else if(id==="quiz") renderQuiz();
+        else if(id==="predict") renderPredict();
+        else if(id==="info") renderTourist();
+      }catch(e){}
+    };
+    window.goTab=goTab;
+  }
+})();
+
+/* ===== أزرار التوقّعات ===== */
+(function(){
+  var r=document.getElementById("predReset");
+  if(r) r.addEventListener("click", function(){ if(confirm("إعادة تعيين كل التوقّعات؟")){ predState={}; savePred(); renderPredict(); showToast("✅ تمّت إعادة التعيين"); } });
+  var sh=document.getElementById("predShare");
+  if(sh) sh.addEventListener("click", openShareApp);
+})();
+
+/* ===== تشغيل أولي ===== */
+applyTheme();
+applyLang();
+try{ renderTourist(); }catch(e){}
+setTimeout(function(){ var sp=document.getElementById("splash"); if(sp) sp.classList.add("hidden"); }, 1700);
 
 </script>
 </body>
