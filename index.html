@@ -103,6 +103,13 @@ main{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:16px 
 .cd .v{font-family:"Changa",sans-serif; font-weight:800; font-size:26px; line-height:1; font-variant-numeric:tabular-nums; color:var(--gold2);}
 .cd .l{font-size:10.5px; color:var(--mut); margin-top:4px;}
 .hero .live-big{font-family:"Changa",sans-serif; font-weight:800; font-size:26px; text-align:center; color:#ff6b76; padding:8px 0 4px;}
+.hero .hero-scorers{margin-top:8px; display:flex; flex-direction:column; gap:5px; align-items:stretch;}
+.hero .hs-row{display:flex; align-items:baseline; gap:8px; justify-content:center; flex-wrap:wrap; font-size:12.5px; line-height:1.55;}
+.hero .hs-tm{font-weight:800; color:var(--gold); white-space:nowrap; flex:0 0 auto;}
+.hero .hs-list{color:#e9eefb; text-align:center;}
+.hero .hs-g{white-space:nowrap;}
+.hero .hs-g i{color:#ffc14d; font-style:normal; font-size:11px; margin-inline-start:1px;}
+.hero .hs-og{color:#9aa6c6; font-size:10.5px;}
 
 .beam-wrap{margin-top:16px;}
 .beam-meta{display:flex; justify-content:space-between; font-size:11px; color:var(--mut); margin-bottom:6px;}
@@ -847,8 +854,8 @@ nav#bn button .ic{font-size:18.5px;}
 #splash.hidden{opacity:0; visibility:hidden; pointer-events:none;}
 #splash .sp-glow{position:absolute; width:90vw; height:90vw; max-width:600px; max-height:600px; border-radius:50%; background:radial-gradient(circle,rgba(240,194,75,.16) 0%,rgba(240,194,75,0) 60%); filter:blur(40px); animation:sp-pulse 2.4s ease-in-out infinite; pointer-events:none;}
 @keyframes sp-pulse{0%,100%{transform:scale(1); opacity:.7;}50%{transform:scale(1.18); opacity:1;}}
-#splash .sp-logo{position:relative; z-index:2; background:linear-gradient(180deg,#fff,#eef1f8); border-radius:30px; padding:18px 26px; box-shadow:0 24px 64px -14px rgba(0,0,0,.7), 0 0 0 1px rgba(240,194,75,.45), 0 0 60px -10px rgba(240,194,75,.25); animation:sp-logo-in .8s cubic-bezier(.34,1.3,.5,1) both, sp-float 4s ease-in-out infinite 1s;}
-#splash .sp-logo img{display:block; height:148px; width:auto; filter:drop-shadow(0 6px 14px rgba(0,0,0,.14));}
+#splash .sp-cup{position:relative; z-index:2; width:160px; padding:18px 20px 14px; background:#fff; border-radius:30px; border:1.5px solid rgba(240,194,75,.6); box-shadow:0 20px 55px rgba(0,0,0,.55), inset 0 0 0 1px rgba(240,194,75,.12); display:flex; align-items:center; justify-content:center; animation:sp-logo-in .8s cubic-bezier(.34,1.3,.5,1) both, sp-float 4s ease-in-out infinite 1s;}
+#splash .sp-cup img{width:100%; height:auto; display:block;}
 @keyframes sp-logo-in{0%{transform:scale(.6) translateY(20px); opacity:0;}100%{transform:scale(1) translateY(0); opacity:1;}}
 @keyframes sp-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 #splash .sp-title{font-family:"Changa",sans-serif; font-weight:800; font-size:26px; background:linear-gradient(110deg,#ffe9b0,var(--gold) 55%,#d9a02c); -webkit-background-clip:text; background-clip:text; color:transparent; margin-top:18px; letter-spacing:.5px; position:relative; z-index:2;}
@@ -1032,7 +1039,7 @@ if("serviceWorker" in navigator){
 <!-- شاشة البداية -->
 <div id="splash">
   <div class="sp-glow"></div>
-  <div class="sp-logo"><img src="splash-logo.png" alt="كأس العالم 2026"></div>
+  <div class="sp-cup"><img src="wc-logo.png" alt="FIFA World Cup 2026"></div>
   <div class="sp-title">كأس العالم 2026</div>
   <div class="sp-sub" data-i18n="splash_sub">جارٍ تحميل البطولة الكبرى…</div>
   <div class="sp-bar"><i></i></div>
@@ -1249,7 +1256,6 @@ if("serviceWorker" in navigator){
 
 
   <footer>
-    <span data-ver style="display:block;font-size:9px;color:var(--mut);opacity:.6;margin-top:6px">إصدار v24 · 24 يونيو</span>
     جميع الأوقات بتوقيت الكويت <img class="flg" src="https://flagcdn.com/h24/kw.png" alt="🇰🇼" onerror="this.replaceWith(this.alt)"><br>
     <span class="credit">إعداد وتنفيذ: مبارك المعتوق ⚽</span>
   </footer>
@@ -1773,6 +1779,7 @@ function renderHero(){
     }
   });
   window._heroGroup = group.map(function(m){return m.n;});
+  refreshHeroScore();
 }
 
 function heroCardHTML(m){
@@ -2971,6 +2978,7 @@ async function pollScores(){
   var now=Date.now();
   try{ await loadScoresESPN(ymd(new Date(now-36*3600000)), ymd(new Date(now+24*3600000))); }
   catch(e){ if(window._liveN!==null) fetchScore(window._liveN); }
+  try{ await fetchLiveGoals(); }catch(e){}
   try{ if(document.getElementById("groupGrid")){ Object.keys(GROUPS).forEach(renderStanding); renderThirdPlace(); } }catch(e){}
 }
 
@@ -3000,6 +3008,29 @@ function refreshCards(n){
     if(mm && mm.g && document.getElementById("groupGrid")){ renderStanding(mm.g); renderThirdPlace(); }
   }catch(e){}
 }
+function liveScorersHTML(mn, m){
+  var gc = (typeof GOAL_CACHE!=="undefined") ? GOAL_CACHE[mn] : null;
+  if(!gc) return "";
+  function line(list, teamName){
+    var items=(list||[]).map(function(g){
+      var nm = g.rawName || (typeof stripGoalHTML==="function"?stripGoalHTML(g.who):g.who) || "";
+      if(!nm || nm==="هدف") nm="هدف";
+      var t = g.min ? (g.min+"'") : "";
+      var og = /own\s*goal/i.test(g.type||"") || /عكسي/i.test(g.type||"");
+      return '<span class="hs-g">'
+        + '<span style="direction:ltr;unicode-bidi:embed">'+nm+'</span>'
+        + (t?' <i>'+t+'</i>':'')
+        + (og?' <span class="hs-og">(عكسي)</span>':'')
+        + '</span>';
+    });
+    if(!items.length) return "";
+    return '<div class="hs-row"><span class="hs-tm">'+teamName+'</span>'
+      + '<span class="hs-list">⚽ '+items.join('، ')+'</span></div>';
+  }
+  var h=line(gc.home, m.h), a=line(gc.away, m.a);
+  if(!h && !a) return "";
+  return '<div class="hero-scorers">'+h+a+'</div>';
+}
 function refreshHeroScore(){
   if(!window._heroGroup) return;
   window._heroGroup.forEach(function(mn){
@@ -3007,11 +3038,28 @@ function refreshHeroScore(){
     if(!el) return;
     var sc=SC_CACHE[mn];
     if(sc && sc.found){
+      var m=getM(mn);
+      var scorers = (m && (sc.status==="live"||sc.status==="ht")) ? liveScorersHTML(mn, m) : "";
       el.innerHTML='<div class="live-big"><span style="direction:rtl;display:inline-block;letter-spacing:2px">'+sc.sh+' : '+sc.sa+'</span>'
         +(sc.status==="live"&&sc.minute?' <small style="font-size:13px;color:#ffb1b8">⏱ '+sc.minute+'</small>':'')
-        +(sc.status==="ht"?' <small style="font-size:13px;color:#ffb1b8">استراحة</small>':'')+'</div>';
+        +(sc.status==="ht"?' <small style="font-size:13px;color:#ffb1b8">استراحة</small>':'')+'</div>'
+        + scorers;
     }
   });
+}
+/* جلب الهدّافين للمباريات الجارية (خلفي) ثم تحديث البطاقة */
+async function fetchLiveGoals(){
+  var live=[];
+  for(var i=0;i<M.length;i++){
+    var m=M[i]; if(!m.d) continue;
+    if(statusOf(m)!=="live") continue;
+    var id=EV_ID[m.n]; if(!id) continue;
+    live.push({n:m.n,id:id});
+  }
+  for(var k=0;k<live.length;k++){
+    try{ await fetchGoalsSilent(live[k].n, live[k].id); }catch(e){}
+  }
+  if(live.length) refreshHeroScore();
 }
 async function fetchScore(n, btn){
   var m=getM(n); if(!m) return;
@@ -3611,7 +3659,7 @@ applyFinals();
 loadScoresESPN("20260610", ymd(new Date(Date.now()+24*3600000))).then(function(){
   applyFinals();
   return fetchAllGoals();
-}).catch(function(){});
+}).then(function(){ return fetchLiveGoals(); }).catch(function(){});
 setTimeout(applyFinals, 4000);
 setInterval(function(){fetchAllGoals().catch(function(){});}, 300000);
 </script>
@@ -4122,7 +4170,7 @@ function renderTourist(){
 applyTheme();
 applyLang();
 try{ renderTourist(); }catch(e){}
-setTimeout(function(){ var sp=document.getElementById("splash"); if(sp) sp.classList.add("hidden"); }, 2000);
+setTimeout(function(){ var sp=document.getElementById("splash"); if(sp) sp.classList.add("hidden"); }, 1700);
 
 </script>
 </body>
