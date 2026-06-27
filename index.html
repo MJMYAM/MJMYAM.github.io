@@ -847,7 +847,8 @@ nav#bn button .ic{font-size:18.5px;}
 #splash.hidden{opacity:0; visibility:hidden; pointer-events:none;}
 #splash .sp-glow{position:absolute; width:90vw; height:90vw; max-width:600px; max-height:600px; border-radius:50%; background:radial-gradient(circle,rgba(240,194,75,.16) 0%,rgba(240,194,75,0) 60%); filter:blur(40px); animation:sp-pulse 2.4s ease-in-out infinite; pointer-events:none;}
 @keyframes sp-pulse{0%,100%{transform:scale(1); opacity:.7;}50%{transform:scale(1.18); opacity:1;}}
-#splash .sp-cup{font-size:64px; position:relative; z-index:2; filter:drop-shadow(0 12px 32px rgba(240,194,75,.45)); animation:sp-logo-in .8s cubic-bezier(.34,1.3,.5,1) both, sp-float 4s ease-in-out infinite 1s;}
+#splash .sp-logo{position:relative; z-index:2; background:linear-gradient(180deg,#fff,#eef1f8); border-radius:30px; padding:18px 26px; box-shadow:0 24px 64px -14px rgba(0,0,0,.7), 0 0 0 1px rgba(240,194,75,.45), 0 0 60px -10px rgba(240,194,75,.25); animation:sp-logo-in .8s cubic-bezier(.34,1.3,.5,1) both, sp-float 4s ease-in-out infinite 1s;}
+#splash .sp-logo img{display:block; height:148px; width:auto; filter:drop-shadow(0 6px 14px rgba(0,0,0,.14));}
 @keyframes sp-logo-in{0%{transform:scale(.6) translateY(20px); opacity:0;}100%{transform:scale(1) translateY(0); opacity:1;}}
 @keyframes sp-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 #splash .sp-title{font-family:"Changa",sans-serif; font-weight:800; font-size:26px; background:linear-gradient(110deg,#ffe9b0,var(--gold) 55%,#d9a02c); -webkit-background-clip:text; background-clip:text; color:transparent; margin-top:18px; letter-spacing:.5px; position:relative; z-index:2;}
@@ -1031,7 +1032,7 @@ if("serviceWorker" in navigator){
 <!-- شاشة البداية -->
 <div id="splash">
   <div class="sp-glow"></div>
-  <div class="sp-cup">🏆</div>
+  <div class="sp-logo"><img src="splash-logo.png" alt="كأس العالم 2026"></div>
   <div class="sp-title">كأس العالم 2026</div>
   <div class="sp-sub" data-i18n="splash_sub">جارٍ تحميل البطولة الكبرى…</div>
   <div class="sp-bar"><i></i></div>
@@ -4121,7 +4122,7 @@ function renderTourist(){
 applyTheme();
 applyLang();
 try{ renderTourist(); }catch(e){}
-setTimeout(function(){ var sp=document.getElementById("splash"); if(sp) sp.classList.add("hidden"); }, 1700);
+setTimeout(function(){ var sp=document.getElementById("splash"); if(sp) sp.classList.add("hidden"); }, 2000);
 
 </script>
 </body>
