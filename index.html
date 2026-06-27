@@ -301,6 +301,8 @@ main{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:16px 
 
 footer{margin-top:38px; text-align:center; font-size:11px; color:var(--dim); line-height:2;}
 footer .credit{display:inline-block; margin-top:5px; font-family:"Changa",sans-serif; font-size:14px; font-weight:700; background:linear-gradient(110deg,#ffe9b0,var(--gold) 55%,#d9a02c); -webkit-background-clip:text; background-clip:text; color:transparent;}
+footer .visit-box{display:inline-flex; align-items:center; gap:7px; background:var(--card2); border:1px solid var(--line); border-radius:99px; padding:6px 15px; margin-bottom:12px; font-size:12.5px; color:var(--mut); font-family:"Changa",sans-serif;}
+footer .visit-box b{color:var(--gold); font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:1px; min-width:14px;}
 
 /* ===== BOTTOM NAV ===== */
 nav#bn{
@@ -1254,6 +1256,7 @@ if("serviceWorker" in navigator){
 
 
   <footer>
+    <div class="visit-box" id="visitBox">👁️ زوّار الموقع: <b id="visitCount">…</b></div><br>
     جميع الأوقات بتوقيت الكويت <img class="flg" src="https://flagcdn.com/h24/kw.png" alt="🇰🇼" onerror="this.replaceWith(this.alt)"><br>
     <span class="credit">إعداد وتنفيذ: مبارك المعتوق ⚽</span>
   </footer>
@@ -4162,6 +4165,21 @@ function renderTourist(){
 /* ===== تشغيل أولي ===== */
 applyTheme();
 applyLang();
+/* عدّاد زوّار الموقع — Abacus (مجاني، بدون تسجيل) */
+(function(){
+  var el=document.getElementById("visitCount"), box=document.getElementById("visitBox");
+  if(!el) return;
+  var BASE="https://abacus.jasoncameron.dev", NS="mjmyam.github.io", KEY="visits";
+  var first=false; try{ first=!localStorage.getItem("wc2026_visited"); }catch(e){}
+  function call(verb){ return fetch(BASE+"/"+verb+"/"+NS+"/"+KEY).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }); }
+  function done(d){
+    if(!d || typeof d.value!=="number") throw new Error("bad");
+    el.textContent = d.value.toLocaleString("en-US");
+    try{ localStorage.setItem("wc2026_visited","1"); }catch(e){}
+  }
+  var p = first ? call("hit") : call("get").catch(function(){ return call("hit"); });
+  p.then(done).catch(function(){ if(box) box.style.display="none"; });
+})();
 try{ renderTourist(); }catch(e){}
 setTimeout(function(){ var sp=document.getElementById("splash"); if(sp) sp.classList.add("hidden"); }, 1700);
 
