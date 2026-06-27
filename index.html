@@ -2153,6 +2153,37 @@ function goalIcon(ty){
   if(ty.indexOf("own")!==-1) return "🔴";
   return "⚽";
 }
+/* استخراج اسم مسجّل الهدف من حدث ESPN — محصّن ضد تغيّر بنية البيانات (يجرّب الحقول ثم يحلّل النص) */
+function espnGoalName(ev){
+  function nm(a){
+    if(!a||typeof a!=="object") return "";
+    if(a.$ref&&!a.displayName&&!a.shortName&&!a.fullName&&!a.lastName) return "";
+    return a.displayName||a.shortName||a.fullName||a.name||a.lastName||(a.athlete?nm(a.athlete):"")||"";
+  }
+  var w="";
+  if(ev.athletesInvolved&&ev.athletesInvolved.length) w=nm(ev.athletesInvolved[0]);
+  if(!w&&ev.participants&&ev.participants.length){for(var i=0;i<ev.participants.length&&!w;i++) w=nm(ev.participants[i].athlete||ev.participants[i]);}
+  if(!w&&ev.player) w=nm(ev.player);
+  if(w) return w;
+  /* تحليل النص: "Own Goal by NAME, Team." أو "Goal! ... NAME (Team) ..." */
+  var t=(ev.text||ev.shortText||ev.headline||"");
+  var og=t.match(/own\s*goal\s*by\s+([A-Za-zÀ-ÿ'’.\- ]{2,40}?)\s*[,.]/i);
+  if(og&&og[1]) return og[1].trim();
+  var idx=t.indexOf("(");
+  if(idx>1){
+    var m2=t.slice(0,idx).match(/([A-ZÀ-Þ][A-Za-zÀ-ÿ'’.\-]+(?:\s+[A-Za-zÀ-ÿ'’.\-]+){0,3})\s*$/);
+    if(m2&&m2[1]&&m2[1].trim().length>=2&&!/goal/i.test(m2[1])) return m2[1].trim();
+  }
+  return "";
+}
+function espnAssistName(ev){
+  function nm(a){if(!a||typeof a!=="object")return "";if(a.$ref&&!a.displayName&&!a.shortName)return "";return a.displayName||a.shortName||a.fullName||a.name||"";}
+  if(ev.athletesInvolved&&ev.athletesInvolved.length>1) return nm(ev.athletesInvolved[1]);
+  var t=(ev.text||ev.shortText||"");
+  var am=t.match(/assist(?:ed)?\s+by\s+([A-Za-zÀ-ÿ'’.\- ]{2,40}?)\s*[,.]/i);
+  if(am&&am[1]) return am[1].trim();
+  return "";
+}
 function renderGoals(m, g){
   if(!g || (!g.home.length && !g.away.length)){
     return '<div class="gl-empty">لا توجد أهداف مسجّلة بعد في هذه المباراة</div>';
@@ -2202,10 +2233,7 @@ async function fetchGoals(n, box, btn){
     evs.forEach(function(ev){
       var isGoal = (ev.scoringPlay===true) || ((ev.type||{}).id==="137") || /goal/i.test((ev.type||{}).text||"");
       if(!isGoal) return;
-      var who="";
-      if(ev.athletesInvolved && ev.athletesInvolved.length) who=ev.athletesInvolved[0].displayName||ev.athletesInvolved[0].shortName||"";
-      if(!who && ev.participants && ev.participants.length) who=((ev.participants[0].athlete||{}).displayName)||"";
-      if(!who) who="هدف";
+      var who=espnGoalName(ev); if(!who) who="هدف";
       var mn=""; 
       if(ev.clock && ev.clock.displayValue) mn=String(ev.clock.displayValue).replace(/['\u2019]/g,"").replace(/:.*/,"");
       else if(ev.time && ev.time.displayValue) mn=String(ev.time.displayValue).replace(/['\u2019]/g,"").replace(/:.*/,"");
@@ -3123,12 +3151,8 @@ async function fetchGoalsSilent(n, evId){
     evs.forEach(function(ev){
       var isGoal=(ev.scoringPlay===true)||((ev.type||{}).id==="137")||/goal/i.test((ev.type||{}).text||"");
       if(!isGoal) return;
-      var who="";
-      if(ev.athletesInvolved&&ev.athletesInvolved.length) who=ev.athletesInvolved[0].displayName||ev.athletesInvolved[0].shortName||"";
-      if(!who&&ev.participants&&ev.participants.length) who=((ev.participants[0].athlete||{}).displayName)||"";
-      if(!who) who="هدف";
-      var assist="";
-      if(ev.athletesInvolved&&ev.athletesInvolved.length>1) assist=ev.athletesInvolved[1].displayName||ev.athletesInvolved[1].shortName||"";
+      var who=espnGoalName(ev); if(!who) who="هدف";
+      var assist=espnAssistName(ev);
       var mn="";
       if(ev.clock&&ev.clock.displayValue) mn=String(ev.clock.displayValue).replace(/[‘’]/g,"").replace(/:.*/,"");
       else if(ev.time&&ev.time.displayValue) mn=String(ev.time.displayValue).replace(/[‘’]/g,"").replace(/:.*/,"");
