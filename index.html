@@ -1061,9 +1061,7 @@ if("serviceWorker" in navigator){
     <span class="cup">🏆</span>
     <h1>كأس العالم 2026<small>نسخة الجوال 📱 · بتوقيت الكويت</small></h1>
   </div>
-  <div class="header-tools">
-    <button class="hdr-btn" id="langBtn" onclick="toggleLang()" title="تبديل اللغة / Language">EN</button>
-  </div>
+  <div class="header-tools"></div>
   <div class="hosts"><img class="flg" style="height:16px" src="https://flagcdn.com/h40/us.png" alt="🇺🇸" onerror="this.replaceWith(this.alt)"> <img class="flg" style="height:16px" src="https://flagcdn.com/h40/ca.png" alt="🇨🇦" onerror="this.replaceWith(this.alt)"> <img class="flg" style="height:16px" src="https://flagcdn.com/h40/mx.png" alt="🇲🇽" onerror="this.replaceWith(this.alt)"></div>
 </header>
 
@@ -3842,18 +3840,13 @@ var I18N = {
   ar:{splash_sub:"جارٍ تحميل البطولة الكبرى…",map_title:"خريطة الملاعب",cmp_title:"قارن منتخبين",ch_title:"الأبطال التاريخيون",quiz_title:"اختبر معلوماتك",pr_title:"توقّع البطل",pr_intro_1:"اختر الفائز في كل مباراة وكوّن مشوارك حتى التتويج. القائمة تضمّ",pr_intro_2:"مرشحًا للّقب، موزّعة على نصفَي البطولة — توقّعك يُحفظ تلقائيًا في جهازك.",share:"شارك توقّعك",reset:"إعادة التعيين",info_title:"عن البطولة",tourist_title:"لو رايح مونديال",tab_map:"الخريطة",tab_champs:"الأبطال",tab_predict:"توقّعاتي"},
   en:{splash_sub:"Loading the biggest tournament…",map_title:"Stadiums Map",cmp_title:"Compare Teams",ch_title:"Historical Champions",quiz_title:"Test Your Knowledge",pr_title:"Predict the Champion",pr_intro_1:"Pick the winner of each match and build your path to the title. The list includes",pr_intro_2:"top contenders split across both halves — your prediction is saved on your device.",share:"Share Prediction",reset:"Reset",info_title:"About",tourist_title:"Traveling to the Cup",tab_map:"Map",tab_champs:"Champs",tab_predict:"Predict"}
 };
-var currentLang = (function(){ try{ return localStorage.getItem("wc2026_lang")||"ar"; }catch(e){ return "ar"; } })();
+var currentLang = "ar";
 function tr(key){ return (I18N[currentLang] && I18N[currentLang][key]) || I18N.ar[key] || key; }
 function applyLang(){
   document.querySelectorAll("[data-i18n]").forEach(function(el){ var k=el.getAttribute("data-i18n"); var v=tr(k); if(v) el.textContent=v; });
-  var b=document.getElementById("langBtn"); if(b) b.textContent = currentLang==="ar" ? "EN" : "عر";
-  try{ localStorage.setItem("wc2026_lang", currentLang); }catch(e){}
+  try{ localStorage.setItem("wc2026_lang","ar"); }catch(e){}
 }
-function toggleLang(){
-  currentLang = currentLang==="ar" ? "en" : "ar";
-  applyLang();
-  showToast(currentLang==="ar" ? "🇰🇼 العربية" : "🇬🇧 English");
-}
+function toggleLang(){ /* مُعطّل: التطبيق عربي فقط */ }
 
 /* ===== رسائل واهتزاز ===== */
 function showToast(msg, dur){
