@@ -607,6 +607,25 @@ nav#bn button .ic{font-size:19px;}
 
 .km-bronze{font-size:9.5px; color:#e6b958; font-weight:700; text-align:center; margin-bottom:5px;}
 .ko-col[data-round="third"] .ko-m{border-color:rgba(201,150,46,.45); background:rgba(201,150,46,.07);}
+/* ===== شجرة الطريق إلى النهائي (braket متناظر) ===== */
+.rtf-hint{font-size:10.5px; color:var(--dim); text-align:center; margin-bottom:8px;}
+.rtf-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch; padding:6px 2px 14px;}
+.rtf{position:relative; display:inline-flex; min-width:100%; justify-content:center;}
+.rtf-svg{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;}
+.rtf-grid{position:relative; z-index:1; display:flex; align-items:stretch;}
+.rtf-col{display:flex; flex-direction:column; justify-content:space-around; align-items:center; flex:0 0 auto;}
+.rtf-col.c-r32{width:60px;} .rtf-col.c-r16{width:42px;} .rtf-col.c-qf{width:42px;} .rtf-col.c-sf{width:42px;} .rtf-col.c-fin{width:88px;}
+.rtf-cell{display:flex; flex-direction:column; gap:3px; padding:3px; border-radius:9px; cursor:pointer; transition:transform .15s, background .15s;}
+.rtf-cell:active{transform:scale(.94); background:rgba(255,255,255,.05);}
+.rtf-f{width:40px; height:27px; border-radius:5px; overflow:hidden; border:1.5px solid rgba(255,255,255,.16); background:var(--card2); display:flex; align-items:center; justify-content:center;}
+.rtf-col.c-r16 .rtf-f, .rtf-col.c-qf .rtf-f, .rtf-col.c-sf .rtf-f{width:32px; height:22px;}
+.rtf-f img{width:100%; height:100%; object-fit:cover; display:block;}
+.rtf-f.tbd{background:rgba(255,255,255,.03); border-style:dashed; border-color:rgba(255,255,255,.12);}
+.rtf-fin-wrap{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px;}
+.rtf-fin-logo{width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; background:radial-gradient(circle at 50% 35%, rgba(240,194,75,.28), rgba(240,194,75,.05)); border:1.5px solid rgba(240,194,75,.5); box-shadow:0 0 22px rgba(240,194,75,.25);}
+.rtf-fin-lbl{font-family:"Changa",sans-serif; font-weight:800; font-size:12px; background:linear-gradient(110deg,#ffe9b0,var(--gold) 55%,#d9a02c); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.rtf-third{margin-top:16px;}
+.rtf-third-h{text-align:center; font-family:"Changa",sans-serif; font-weight:700; font-size:12px; color:#cd9a2e; margin-bottom:8px;}
 
 /* تفادي اختباء البطاقة تحت الترويسة الثابتة عند التمرير إليها */
 .match{scroll-margin-top:80px;}
@@ -1141,7 +1160,7 @@ if("serviceWorker" in navigator){
   <section id="tab-ko" class="tab">
     <div class="sec-t"><i></i>مشوار خروج المغلوب <span class="cnt">32 مباراة</span></div>
     <div class="ko-switch">
-      <button class="ko-mode on" data-komode="tree">🗺️ شجرة أفقية</button>
+      <button class="ko-mode on" data-komode="tree">🏆 الطريق للنهائي</button>
       <button class="ko-mode" data-komode="list">📋 عرض عمودي</button>
     </div>
     <div id="koList"></div>
@@ -2296,31 +2315,59 @@ function renderKOList(el){
     return h+arr.map(function(m){return matchCard(m,{showDate:true});}).join("");
   }).join("");
 }
+function rtfCell(m, side){
+  if(!m) return '';
+  var h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+  var a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+  function f(name){
+    if(name && (typeof ISO!=="undefined") && ISO[name]) return '<span class="rtf-f">'+flagImg(name)+'</span>';
+    return '<span class="rtf-f tbd"></span>';
+  }
+  return '<div class="rtf-cell" data-mn="'+m.n+'" data-side="'+side+'">'+f(h)+f(a)+'</div>';
+}
+function rtfDrawLines(){
+  var rtf=document.getElementById("rtfTree"); if(!rtf) return;
+  var svg=rtf.querySelector(".rtf-svg"); if(!svg) return;
+  var rb=rtf.getBoundingClientRect();
+  if(!rb.width || !rb.height) return; // مخفي
+  svg.setAttribute("viewBox","0 0 "+rb.width+" "+rb.height);
+  var paths="";
+  rtf.querySelectorAll(".rtf-cell[data-mn]").forEach(function(cell){
+    var mn=+cell.dataset.mn, side=cell.dataset.side;
+    var nxt=(typeof koNextMatch==="function")?koNextMatch(mn):null;
+    if(!nxt) return;
+    var nc=rtf.querySelector('.rtf-cell[data-mn="'+nxt+'"]');
+    if(!nc) return;
+    var a=cell.getBoundingClientRect(), b=nc.getBoundingClientRect();
+    var ay=a.top+a.height/2-rb.top, by=b.top+b.height/2-rb.top, ax, bx;
+    if(side==="R"){ ax=a.left-rb.left; bx=b.right-rb.left; }
+    else { ax=a.right-rb.left; bx=b.left-rb.left; }
+    var mx=(ax+bx)/2;
+    paths+='<path d="M'+ax.toFixed(1)+' '+ay.toFixed(1)+' H'+mx.toFixed(1)+' V'+by.toFixed(1)+' H'+bx.toFixed(1)+'" fill="none" stroke="rgba(240,194,75,.35)" stroke-width="1.5"/>';
+  });
+  svg.innerHTML=paths;
+}
+window.addEventListener("resize", function(){ if(document.getElementById("rtfTree")) rtfDrawLines(); });
 function renderKOTree(el){
-  var cols=[
-    {rk:"r32", l:"دور الـ32"},
-    {rk:"r16", l:"دور الـ16"},
-    {rk:"qf",  l:"ربع النهائي"},
-    {rk:"sf",  l:"نصف النهائي"},
-    {rk:"third", l:"المركز الثالث"},
-    {rk:"final", l:"النهائي"}
-  ];
-  var colsHtml=cols.map(function(col){
-    var r=ROUNDS[col.rk];
-    var bo=koBracketOrder();
-    var ordIds = bo[col.rk] || M.filter(function(m){return m.r===col.rk;}).map(function(m){return m.n;});
-    var arr = ordIds.map(function(id){return getM(id);}).filter(Boolean);
-    var matches=arr.map(function(m){return '<div class="ko-slot" data-mn="'+m.n+'">'+koMatchMini(m)+'</div>';}).join("");
-    return '<div class="ko-col" data-round="'+col.rk+'">'
-      +'<div class="ko-col-h" style="--rc:'+r.c+'">'+col.l+'<small>'+koRangeNum(col.rk)+'</small></div>'
-      +'<div class="ko-col-body">'+matches+'</div>'
-    +'</div>';
-  }).join("");
-  var thirdHtml = '';
-  el.innerHTML='<div class="ko-tree-hint">↔ اسحب يمين/يسار لتصفّح الأدوار</div>'
-    +'<div class="ko-tree" id="koTree">'+colsHtml+'</div>'+thirdHtml;
-  // ارسم الخطوط بعد رسم العناصر
-  
+  var bo=koBracketOrder();
+  function arrOf(rk){ var ids=bo[rk]||M.filter(function(m){return m.r===rk;}).map(function(m){return m.n;}); return ids.map(getM).filter(Boolean); }
+  var r32=arrOf("r32"), r16=arrOf("r16"), qf=arrOf("qf"), sf=arrOf("sf"), fin=arrOf("final");
+  function Lh(a){ return a.slice(0, Math.ceil(a.length/2)); }
+  function Rh(a){ return a.slice(Math.ceil(a.length/2)); }
+  function col(cls, arr, side){ return '<div class="rtf-col '+cls+'">'+arr.map(function(m){return rtfCell(m,side);}).join("")+'</div>'; }
+  var finalCell = fin[0] ? rtfCell(fin[0],"F") : '';
+  var center='<div class="rtf-col c-fin"><div class="rtf-fin-wrap"><div class="rtf-fin-logo">🏆</div><div class="rtf-fin-lbl">النهائي</div>'+finalCell+'</div></div>';
+  var grid='<div class="rtf-grid">'
+    + col("c-r32", Lh(r32), "L") + col("c-r16", Lh(r16), "L") + col("c-qf", Lh(qf), "L") + col("c-sf", Lh(sf), "L")
+    + center
+    + col("c-sf", Rh(sf), "R") + col("c-qf", Rh(qf), "R") + col("c-r16", Rh(r16), "R") + col("c-r32", Rh(r32), "R")
+    + '</div>';
+  var third=M.filter(function(m){return m.r==="third";})[0];
+  var thirdHtml = third ? '<div class="rtf-third"><div class="rtf-third-h">🥉 مباراة المركز الثالث</div>'+koMatchMini(third)+'</div>' : '';
+  el.innerHTML='<div class="rtf-hint">↔ اسحب أفقياً · اضغط مباراة للتفاصيل</div>'
+    +'<div class="rtf-wrap"><div class="rtf" id="rtfTree"><svg class="rtf-svg"></svg>'+grid+'</div></div>'
+    + thirdHtml;
+  requestAnimationFrame(function(){ rtfDrawLines(); setTimeout(rtfDrawLines, 60); setTimeout(rtfDrawLines, 250); });
 }
 function koRangeNum(rk){
   var map={r32:"28/6 – 3/7", r16:"4/7 – 7/7", qf:"9/7 – 12/7", sf:"14/7 – 15/7", final:"19/7"};
@@ -3616,6 +3663,8 @@ document.body.addEventListener("click", function(e){
   }
   var koMini=e.target.closest(".ko-tree .ko-m[data-mn]");
   if(koMini){ openMatchFull(+koMini.dataset.mn); return; }
+  var rtfHit=e.target.closest(".rtf-cell[data-mn]");
+  if(rtfHit){ openMatchFull(+rtfHit.dataset.mn); return; }
   var heroHit=e.target.closest(".hero-clickable");
   if(heroHit && heroHit.dataset.heroMn){
     openMatchFull(+heroHit.dataset.heroMn);
