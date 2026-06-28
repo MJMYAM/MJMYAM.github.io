@@ -2639,7 +2639,7 @@ function extShell(m){
   if(!isReal(m)) return '<div class="lu-note">🔒 طرفا المباراة يتحددان بعد اكتمال الدور السابق</div>';
   var goalsBlock='';
   // صندوق الأهداف والهدّافين — يُملأ تلقائياً عند فتح المباراة (حية/منتهية)
-  var scorersBox='', summaryBox='';
+  var scorersBox='', summaryBox='', liveTvBox='';
   if(m.d && isReal(m)){
     var stxV=statusOf(m);
     if(stxV==="live"||stxV==="done"){
@@ -2650,13 +2650,17 @@ function extShell(m){
       var qMatch=encodeURIComponent(m.h+" ضد "+m.a);
       summaryBox='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button><div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div><div class="ext-div"></div>';
     }
+    if(stxV!=="done"){
+      var llbl = stxV==="live" ? "🔴 شاهد المباراة بثًّا مباشراً الآن" : "📺 روابط بث المباراة المباشر";
+      liveTvBox='<button class="live-tv-btn'+(stxV==="live"?" islive":"")+'" data-livetv="'+m.n+'">'+llbl+'</button><div class="livetv-box" id="livetv-'+m.n+'" style="display:none"></div><div class="ext-div"></div>';
+    }
   }
   // بدل زر عرض الأهداف: اعرض ترتيب مجموعة المباراة (لمباريات دور المجموعات)
   if(m.g && GROUPS[m.g]){
     goalsBlock = '<div class="mini-stand">'+miniStandingHTML(m.g, m.h, m.a)+'</div><div class="ext-div"></div>';
   }
-  if(LU_CACHE[m.n]) return scorersBox+summaryBox+goalsBlock+LU_CACHE[m.n];
-  return scorersBox+summaryBox+goalsBlock
+  if(LU_CACHE[m.n]) return scorersBox+summaryBox+liveTvBox+goalsBlock+LU_CACHE[m.n];
+  return scorersBox+summaryBox+liveTvBox+goalsBlock
     + '<button class="lu-btn" data-lu="'+m.n+'">⚡ جلب التشكيلة والقناة الناقلة الآن</button>'
     +'<div class="lu-note">يبحث مباشرة لحظة الضغط — التشكيلات تُعلن عادة قبل المباراة بساعة تقريبًا</div>';
 }
