@@ -2479,7 +2479,7 @@ async function fetchGoals(n, box, btn){
       }
     }catch(e){}
     /* تفاصيل الأهداف: مصفوفة details أو keyEvents */
-    var evs = d1.details || (d1.keyEvents||[]) || [];
+    var evs = (d1.details&&d1.details.length) ? d1.details : (d1.keyEvents||[]);
     evs.forEach(function(ev){
       var isGoal = (ev.scoringPlay===true) || ((ev.type||{}).id==="137") || /goal/i.test((ev.type||{}).text||"");
       if(!isGoal) return;
@@ -3438,7 +3438,7 @@ async function fetchGoalsSilent(n, evId){
         }
       }
     }catch(e){}
-    var evs=d1.details||d1.keyEvents||[];
+    var evs=(d1.details&&d1.details.length) ? d1.details : (d1.keyEvents||[]);
     evs.forEach(function(ev){
       var isGoal=(ev.scoringPlay===true)||((ev.type||{}).id==="137")||/goal/i.test((ev.type||{}).text||"");
       if(!isGoal) return;
