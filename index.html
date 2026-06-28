@@ -2375,9 +2375,9 @@ function renderKOTree(el){
     paths+='<path d="M'+mOut.toFixed(1)+' '+mcy.toFixed(1)+' H'+midx.toFixed(1)+' V'+ncy.toFixed(1)+' H'+nIn.toFixed(1)+'" fill="none" stroke="rgba(240,194,75,.45)" stroke-width="1.6" stroke-linejoin="round"/>';
   });
   var svg='<svg class="rtf-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+paths+'</svg>';
-  var trophy='<div class="rtf-trophy" style="left:'+(finCx-26).toFixed(1)+'px;top:'+(finCy-SMH/2-66).toFixed(1)+'px"><div class="tr-ic">\U0001F3C6</div><span>\u0627\u0644\u0646\u0647\u0627\u0626\u064a</span></div>';
+  var trophy='<div class="rtf-trophy" style="left:'+(finCx-26).toFixed(1)+'px;top:'+(finCy-SMH/2-66).toFixed(1)+'px"><div class="tr-ic">🏆</div><span>\u0627\u0644\u0646\u0647\u0627\u0626\u064a</span></div>';
   var third=M.filter(function(m){return m.r==="third";})[0];
-  var thirdHtml = third ? '<div class="rtf-third"><div class="rtf-third-h">\U0001F949 \u0645\u0628\u0627\u0631\u0627\u0629 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u062b\u0627\u0644\u062b</div>'+koMatchMini(third)+'</div>' : '';
+  var thirdHtml = third ? '<div class="rtf-third"><div class="rtf-third-h">🥉 \u0645\u0628\u0627\u0631\u0627\u0629 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u062b\u0627\u0644\u062b</div>'+koMatchMini(third)+'</div>' : '';
   el.innerHTML='<div class="rtf-hint">\u2194 \u0627\u0633\u062d\u0628 \u0623\u0641\u0642\u064a\u0627\u064b \u00b7 \u0627\u0636\u063a\u0637 \u0623\u064a \u0645\u0628\u0627\u0631\u0627\u0629 \u0644\u0644\u062a\u0641\u0627\u0635\u064a\u0644</div>'
     +'<div class="rtf-wrap"><div class="rtf" id="rtfTree" style="width:'+W+'px;height:'+H+'px">'+svg+cells.join("")+trophy+'</div></div>'
     + thirdHtml;
