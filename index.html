@@ -809,6 +809,8 @@ nav#bn button .ic{font-size:18.5px;}
 .tc-title{font-size:9.5px; color:var(--mut,#8e94a0); font-weight:700;}
 .tc-chips{display:flex; flex-wrap:wrap; gap:4px;}
 .tc-chip{display:inline-flex; align-items:center; gap:3px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:7px; padding:2px 6px; font-size:10px; font-weight:700;}
+.kt-pair{display:inline-flex; flex-wrap:wrap; gap:5px; align-items:center; justify-content:center;}
+.kt-pair .tc-chip .flg, .kt-pair .tc-chip img{width:18px; height:13px;}
 .tc-chip img{height:11px; width:auto; border-radius:2px;}
 .tc-g{font-family:'Saira Condensed',sans-serif; font-weight:800; font-size:10px; color:var(--green,#2fe089); background:rgba(47,224,137,.14); border-radius:4px; padding:0 4px; min-width:14px; text-align:center;}
 .tc-nm{font-size:10px;}
@@ -1578,6 +1580,18 @@ function teamHTML(name){
     var tc=thirdCandidatesHTML(name);
     if(tc) return '<div class="team ph tc-team">'+tc+'</div>';
   }
+  // "الفائز من المباراة X" → الفريقان المتنافسان على هذا المركز (دور الـ16)
+  if(typeof name==="string"){
+    var mw=name.match(/الفائز من المباراة\s+(\d+)/);
+    if(mw){
+      var fm=getM(parseInt(mw[1],10));
+      if(fm && TEAMS[fm.h] && TEAMS[fm.a]){
+        var kchips='<span class="tc-chip">'+flagImg(fm.h)+'<span class="tc-nm">'+fm.h+'</span></span>'
+                  +'<span class="tc-chip">'+flagImg(fm.a)+'<span class="tc-nm">'+fm.a+'</span></span>';
+        return '<div class="team ph tc-team"><div class="tc-wrap"><div class="tc-title">الفائز من مباراة '+mw[1]+':</div><div class="tc-chips">'+kchips+'</div></div></div>';
+      }
+    }
+  }
   return '<div class="team ph"><span class="tn">'+name+'</span></div>';
 }
 function matchCard(m, opts){
@@ -2135,6 +2149,16 @@ function koTeam(name){
   if(typeof name==="string" && name.indexOf("أفضل ثالث")===0){
     var tc=thirdCandidatesHTML(name);
     if(tc) return tc;
+  }
+  // "الفائز من المباراة X" → الفريقان المتنافسان على المركز (دور الـ16)
+  if(typeof name==="string"){
+    var mw=name.match(/الفائز من المباراة\s+(\d+)/);
+    if(mw){
+      var fm=getM(parseInt(mw[1],10));
+      if(fm && TEAMS[fm.h] && TEAMS[fm.a]){
+        return '<span class="kt-pair"><span class="tc-chip">'+flagImg(fm.h)+'<span class="tc-nm">'+fm.h+'</span></span><span class="tc-chip">'+flagImg(fm.a)+'<span class="tc-nm">'+fm.a+'</span></span></span>';
+      }
+    }
   }
   return '<span class="kt-ph">'+name+'</span>';
 }
