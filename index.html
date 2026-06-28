@@ -4264,12 +4264,12 @@ applyLang();
 (function(){
   var el=document.getElementById("visitCount"), box=document.getElementById("visitBox");
   if(!el) return;
-  var BASE="https://abacus.jasoncameron.dev", NS="mjmyam.github.io", KEY="visits";
+  var BASE="https://abacus.jasoncameron.dev", NS="mjmyam.github.io", KEY="visits", BASE_COUNT=250;
   var first=false; try{ first=!localStorage.getItem("wc2026_visited"); }catch(e){}
   function call(verb){ return fetch(BASE+"/"+verb+"/"+NS+"/"+KEY).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }); }
   function done(d){
     if(!d || typeof d.value!=="number") throw new Error("bad");
-    el.textContent = d.value.toLocaleString("en-US");
+    el.textContent = (d.value + BASE_COUNT).toLocaleString("en-US");
     try{ localStorage.setItem("wc2026_visited","1"); }catch(e){}
   }
   var p = first ? call("hit") : call("get").catch(function(){ return call("hit"); });
