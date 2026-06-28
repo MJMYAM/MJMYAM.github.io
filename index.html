@@ -2906,7 +2906,7 @@ function attachKnockout(ev,n1,n2){
   return cand;
 }
 async function loadScoresESPN(fromYmd,toYmd){
-  var res=await fetch(ESPN_SB+"?dates="+fromYmd+"-"+toYmd);
+  var res=await fetch(ESPN_SB+"?limit=1000&dates="+fromYmd+"-"+toYmd);
   if(!res.ok) throw new Error("espn");
   var data=await res.json();
   var evs=data.events||[], changed=false;
