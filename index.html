@@ -2423,11 +2423,15 @@ function espnGoalName(ev){
   return "";
 }
 function espnAssistName(ev){
-  function nm(a){if(!a||typeof a!=="object")return "";if(a.$ref&&!a.displayName&&!a.shortName)return "";return a.displayName||a.shortName||a.fullName||a.name||"";}
-  if(ev.athletesInvolved&&ev.athletesInvolved.length>1) return nm(ev.athletesInvolved[1]);
-  var t=(ev.text||ev.shortText||"");
-  var am=t.match(/assist(?:ed)?\s+by\s+([A-Za-zÀ-ÿ'’.\- ]{2,40}?)\s*[,.]/i);
-  if(am&&am[1]) return am[1].trim();
+  var t=(ev.text||ev.shortText||ev.headline||"");
+  /* لا توجد صناعة في الأهداف العكسية */
+  if(/own\s*goal/i.test(t)) return "";
+  /* المصدر الموثوق الوحيد: نص ESPN الصريح "Assisted by NAME" */
+  var am=t.match(/Assist(?:ed)?\s+by\s+([^.,;]+?)(?:\s+with\b|\s+following\b|\s+after\b|\s+from\b|[.,;]|$)/i);
+  if(am&&am[1]){
+    var name=am[1].trim().replace(/\s+/g," ");
+    if(name.length>=2 && name.length<=40 && !/\b(goal|penalty|corner|cross|shot|through|free|kick|header)\b/i.test(name)) return name;
+  }
   return "";
 }
 function renderGoals(m, g){
