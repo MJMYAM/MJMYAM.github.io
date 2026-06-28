@@ -609,8 +609,8 @@ nav#bn button .ic{font-size:19px;}
 .ko-col[data-round="third"] .ko-m{border-color:rgba(201,150,46,.45); background:rgba(201,150,46,.07);}
 /* ===== شجرة الطريق إلى النهائي (braket متناظر بإحداثيات محسوبة) ===== */
 .rtf-hint{font-size:10.5px; color:var(--dim); text-align:center; margin-bottom:8px;}
-.rtf-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch; padding:6px 0 14px; display:flex; justify-content:center;}
-.rtf{position:relative; flex:0 0 auto;}
+.rtf-wrap{overflow:hidden; padding:6px 0 14px;}
+.rtf{position:relative; transform-origin:top left;}
 .rtf-svg{position:absolute; left:0; top:0; z-index:0; pointer-events:none; overflow:visible;}
 .rtf-cell{position:absolute; z-index:2; display:flex; flex-direction:column; justify-content:center; gap:2px; padding:2px; border-radius:7px; background:var(--card); border:1px solid var(--line); cursor:pointer; box-sizing:border-box; transition:transform .12s, border-color .12s;}
 .rtf-cell:active{transform:scale(.92); border-color:var(--gold);}
@@ -2378,10 +2378,29 @@ function renderKOTree(el){
   var trophy='<div class="rtf-trophy" style="left:'+(finCx-26).toFixed(1)+'px;top:'+(finCy-SMH/2-66).toFixed(1)+'px"><div class="tr-ic">🏆</div><span>\u0627\u0644\u0646\u0647\u0627\u0626\u064a</span></div>';
   var third=M.filter(function(m){return m.r==="third";})[0];
   var thirdHtml = third ? '<div class="rtf-third"><div class="rtf-third-h">🥉 \u0645\u0628\u0627\u0631\u0627\u0629 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u062b\u0627\u0644\u062b</div>'+koMatchMini(third)+'</div>' : '';
-  el.innerHTML='<div class="rtf-hint">\u2194 \u0627\u0633\u062d\u0628 \u0623\u0641\u0642\u064a\u0627\u064b \u00b7 \u0627\u0636\u063a\u0637 \u0623\u064a \u0645\u0628\u0627\u0631\u0627\u0629 \u0644\u0644\u062a\u0641\u0627\u0635\u064a\u0644</div>'
-    +'<div class="rtf-wrap"><div class="rtf" id="rtfTree" style="width:'+W+'px;height:'+H+'px">'+svg+cells.join("")+trophy+'</div></div>'
+  el.innerHTML='<div class="rtf-hint">👆 \u0627\u0636\u063a\u0637 \u0623\u064a \u0645\u0628\u0627\u0631\u0627\u0629 \u0644\u0639\u0631\u0636 \u062a\u0641\u0627\u0635\u064a\u0644\u0647\u0627</div>'
+    +'<div class="rtf-wrap"><div class="rtf" id="rtfTree" data-w="'+W+'" data-h="'+H+'" style="width:'+W+'px;height:'+H+'px">'+svg+cells.join("")+trophy+'</div></div>'
     + thirdHtml;
+  requestAnimationFrame(function(){ rtfFit(); setTimeout(rtfFit,80); setTimeout(rtfFit,320); });
 }
+function rtfFit(){
+  var rtf=document.getElementById("rtfTree"); if(!rtf) return;
+  var wrap=rtf.parentElement; if(!wrap) return;
+  var W=parseFloat(rtf.dataset.w)||rtf.offsetWidth;
+  var H=parseFloat(rtf.dataset.h)||rtf.offsetHeight;
+  var avail=wrap.clientWidth; if(!avail) return;
+  if(W>avail){
+    var s=avail/W;
+    rtf.style.transform="scale("+s.toFixed(4)+")";
+    rtf.style.marginLeft="0px";
+    wrap.style.height=Math.ceil(H*s+6)+"px";
+  } else {
+    rtf.style.transform="none";
+    rtf.style.marginLeft=Math.round((avail-W)/2)+"px";
+    wrap.style.height="auto";
+  }
+}
+window.addEventListener("resize", function(){ if(document.getElementById("rtfTree")) rtfFit(); });
 
 function koRangeNum(rk){
   var map={r32:"28/6 – 3/7", r16:"4/7 – 7/7", qf:"9/7 – 12/7", sf:"14/7 – 15/7", final:"19/7"};
