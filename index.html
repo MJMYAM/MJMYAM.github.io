@@ -607,24 +607,22 @@ nav#bn button .ic{font-size:19px;}
 
 .km-bronze{font-size:9.5px; color:#e6b958; font-weight:700; text-align:center; margin-bottom:5px;}
 .ko-col[data-round="third"] .ko-m{border-color:rgba(201,150,46,.45); background:rgba(201,150,46,.07);}
-/* ===== شجرة الطريق إلى النهائي (braket متناظر) ===== */
+/* ===== شجرة الطريق إلى النهائي (braket متناظر بإحداثيات محسوبة) ===== */
 .rtf-hint{font-size:10.5px; color:var(--dim); text-align:center; margin-bottom:8px;}
-.rtf-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch; padding:6px 2px 14px;}
-.rtf{position:relative; display:inline-flex; min-width:100%; justify-content:center;}
-.rtf-svg{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:visible;}
-.rtf-grid{position:relative; z-index:1; display:flex; align-items:stretch;}
-.rtf-col{display:flex; flex-direction:column; justify-content:space-around; align-items:center; flex:0 0 auto;}
-.rtf-col.c-r32{width:60px;} .rtf-col.c-r16{width:42px;} .rtf-col.c-qf{width:42px;} .rtf-col.c-sf{width:42px;} .rtf-col.c-fin{width:88px;}
-.rtf-cell{display:flex; flex-direction:column; gap:3px; padding:3px; border-radius:9px; cursor:pointer; transition:transform .15s, background .15s;}
-.rtf-cell:active{transform:scale(.94); background:rgba(255,255,255,.05);}
-.rtf-f{width:40px; height:27px; border-radius:5px; overflow:hidden; border:1.5px solid rgba(255,255,255,.16); background:var(--card2); display:flex; align-items:center; justify-content:center;}
-.rtf-col.c-r16 .rtf-f, .rtf-col.c-qf .rtf-f, .rtf-col.c-sf .rtf-f{width:32px; height:22px;}
+.rtf-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch; padding:6px 0 14px; display:flex; justify-content:center;}
+.rtf{position:relative; flex:0 0 auto;}
+.rtf-svg{position:absolute; left:0; top:0; z-index:0; pointer-events:none; overflow:visible;}
+.rtf-cell{position:absolute; z-index:2; display:flex; flex-direction:column; justify-content:center; gap:2px; padding:2px; border-radius:7px; background:var(--card); border:1px solid var(--line); cursor:pointer; box-sizing:border-box; transition:transform .12s, border-color .12s;}
+.rtf-cell:active{transform:scale(.92); border-color:var(--gold);}
+.rtf-cell.rtf-sm{background:var(--card2); border-color:rgba(255,255,255,.1);}
+.rtf-cell.rtf-finbox{border-color:rgba(240,194,75,.55); box-shadow:0 0 14px rgba(240,194,75,.25);}
+.rtf-f{flex:1; min-height:0; border-radius:4px; overflow:hidden; border:1px solid rgba(255,255,255,.14); background:#0a1024; display:flex; align-items:center; justify-content:center;}
 .rtf-f img{width:100%; height:100%; object-fit:cover; display:block;}
-.rtf-f.tbd{background:rgba(255,255,255,.03); border-style:dashed; border-color:rgba(255,255,255,.12);}
-.rtf-fin-wrap{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px;}
-.rtf-fin-logo{width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; background:radial-gradient(circle at 50% 35%, rgba(240,194,75,.28), rgba(240,194,75,.05)); border:1.5px solid rgba(240,194,75,.5); box-shadow:0 0 22px rgba(240,194,75,.25);}
-.rtf-fin-lbl{font-family:"Changa",sans-serif; font-weight:800; font-size:12px; background:linear-gradient(110deg,#ffe9b0,var(--gold) 55%,#d9a02c); -webkit-background-clip:text; background-clip:text; color:transparent;}
-.rtf-third{margin-top:16px;}
+.rtf-f.tbd{background:rgba(255,255,255,.04); border-style:dashed; border-color:rgba(255,255,255,.12);}
+.rtf-trophy{position:absolute; z-index:3; width:52px; display:flex; flex-direction:column; align-items:center; gap:4px; pointer-events:none;}
+.rtf-trophy .tr-ic{width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; background:radial-gradient(circle at 50% 35%, rgba(240,194,75,.3), rgba(240,194,75,.04)); border:1.5px solid rgba(240,194,75,.55); box-shadow:0 0 20px rgba(240,194,75,.3);}
+.rtf-trophy span{font-family:"Changa",sans-serif; font-weight:800; font-size:10.5px; background:linear-gradient(110deg,#ffe9b0,var(--gold) 55%,#d9a02c); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.rtf-third{margin-top:18px;}
 .rtf-third-h{text-align:center; font-family:"Changa",sans-serif; font-weight:700; font-size:12px; color:#cd9a2e; margin-bottom:8px;}
 
 /* تفادي اختباء البطاقة تحت الترويسة الثابتة عند التمرير إليها */
@@ -2315,60 +2313,76 @@ function renderKOList(el){
     return h+arr.map(function(m){return matchCard(m,{showDate:true});}).join("");
   }).join("");
 }
-function rtfCell(m, side){
-  if(!m) return '';
-  var h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
-  var a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
-  function f(name){
-    if(name && (typeof ISO!=="undefined") && ISO[name]) return '<span class="rtf-f">'+flagImg(name)+'</span>';
-    return '<span class="rtf-f tbd"></span>';
-  }
-  return '<div class="rtf-cell" data-mn="'+m.n+'" data-side="'+side+'">'+f(h)+f(a)+'</div>';
+function rtfFlag(name, big){
+  if(name && (typeof ISO!=="undefined") && ISO[name]) return '<span class="rtf-f">'+flagImg(name)+'</span>';
+  return '<span class="rtf-f tbd"></span>';
 }
-function rtfDrawLines(){
-  var rtf=document.getElementById("rtfTree"); if(!rtf) return;
-  var svg=rtf.querySelector(".rtf-svg"); if(!svg) return;
-  var rb=rtf.getBoundingClientRect();
-  if(!rb.width || !rb.height) return; // مخفي
-  svg.setAttribute("viewBox","0 0 "+rb.width+" "+rb.height);
-  var paths="";
-  rtf.querySelectorAll(".rtf-cell[data-mn]").forEach(function(cell){
-    var mn=+cell.dataset.mn, side=cell.dataset.side;
-    var nxt=(typeof koNextMatch==="function")?koNextMatch(mn):null;
-    if(!nxt) return;
-    var nc=rtf.querySelector('.rtf-cell[data-mn="'+nxt+'"]');
-    if(!nc) return;
-    var a=cell.getBoundingClientRect(), b=nc.getBoundingClientRect();
-    var ay=a.top+a.height/2-rb.top, by=b.top+b.height/2-rb.top, ax, bx;
-    if(side==="R"){ ax=a.left-rb.left; bx=b.right-rb.left; }
-    else { ax=a.right-rb.left; bx=b.left-rb.left; }
-    var mx=(ax+bx)/2;
-    paths+='<path d="M'+ax.toFixed(1)+' '+ay.toFixed(1)+' H'+mx.toFixed(1)+' V'+by.toFixed(1)+' H'+bx.toFixed(1)+'" fill="none" stroke="rgba(240,194,75,.35)" stroke-width="1.5"/>';
-  });
-  svg.innerHTML=paths;
-}
-window.addEventListener("resize", function(){ if(document.getElementById("rtfTree")) rtfDrawLines(); });
 function renderKOTree(el){
   var bo=koBracketOrder();
   function arrOf(rk){ var ids=bo[rk]||M.filter(function(m){return m.r===rk;}).map(function(m){return m.n;}); return ids.map(getM).filter(Boolean); }
-  var r32=arrOf("r32"), r16=arrOf("r16"), qf=arrOf("qf"), sf=arrOf("sf"), fin=arrOf("final");
-  function Lh(a){ return a.slice(0, Math.ceil(a.length/2)); }
-  function Rh(a){ return a.slice(Math.ceil(a.length/2)); }
-  function col(cls, arr, side){ return '<div class="rtf-col '+cls+'">'+arr.map(function(m){return rtfCell(m,side);}).join("")+'</div>'; }
-  var finalCell = fin[0] ? rtfCell(fin[0],"F") : '';
-  var center='<div class="rtf-col c-fin"><div class="rtf-fin-wrap"><div class="rtf-fin-logo">🏆</div><div class="rtf-fin-lbl">النهائي</div>'+finalCell+'</div></div>';
-  var grid='<div class="rtf-grid">'
-    + col("c-r32", Lh(r32), "L") + col("c-r16", Lh(r16), "L") + col("c-qf", Lh(qf), "L") + col("c-sf", Lh(sf), "L")
-    + center
-    + col("c-sf", Rh(sf), "R") + col("c-qf", Rh(qf), "R") + col("c-r16", Rh(r16), "R") + col("c-r32", Rh(r32), "R")
-    + '</div>';
+  var RR={r32:arrOf("r32"), r16:arrOf("r16"), qf:arrOf("qf"), sf:arrOf("sf"), final:arrOf("final")};
+  function half(a,s){ var h=Math.ceil(a.length/2); return s==="L"?a.slice(0,h):a.slice(h); }
+  // ----- الأبعاد (إحداثيات ثابتة محسوبة) -----
+  var CW=44, CH=46, GAP=14, UNIT=CH+GAP, SEG=36, PADX=4, PADY=10, CEN=60, SMW=28, SMH=40;
+  var nL=Math.max(1, Math.ceil(RR.r32.length/2));
+  var H=Math.round(PADY*2 + nL*CH + (nL-1)*GAP);
+  function baseCy(i){ return PADY + CH/2 + i*UNIT; }
+  function mids(a){ var o=[]; for(var k=0;k+1<a.length;k+=2) o.push((a[k]+a[k+1])/2); return o; }
+  var cy={};
+  cy.r32L=[]; for(var i=0;i<nL;i++) cy.r32L.push(baseCy(i));
+  cy.r16L=mids(cy.r32L); cy.qfL=mids(cy.r16L); cy.sfL=mids(cy.qfL);
+  cy.r32R=cy.r32L.slice(); cy.r16R=mids(cy.r32R); cy.qfR=mids(cy.r16R); cy.sfR=mids(cy.qfR);
+  var finCy=(cy.sfL.length&&cy.sfR.length)?((cy.sfL[0]+cy.sfR[0])/2):(H/2);
+  var xCellL=PADX, xOutL=PADX+CW, xR16L=PADX+CW+SEG, xQFL=PADX+CW+SEG*2, xSFL=PADX+CW+SEG*3;
+  var finCx=xSFL+CEN/2, W=Math.round(2*finCx);
+  function mir(x){ return W-x; }
+  var pos={}, cells=[];
+  function add(list, side, cyArr, big, xRef){
+    list.forEach(function(m, idx){
+      if(!m) return; var c=cyArr[idx]; if(c==null) return;
+      var w=big?CW:SMW, hh=big?CH:SMH;
+      var left = big ? (side==="L"?xCellL:(mir(xCellL)-CW)) : (xRef - w/2);
+      var h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+      var a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+      var extra = (m.r==="final") ? " rtf-finbox" : (big?"":" rtf-sm");
+      cells.push('<div class="rtf-cell'+extra+'" data-mn="'+m.n+'" style="left:'+left.toFixed(1)+'px;top:'+(c-hh/2).toFixed(1)+'px;width:'+w+'px;height:'+hh+'px">'+rtfFlag(h,big)+rtfFlag(a,big)+'</div>');
+      var outX = big ? (side==="L"?xOutL:mir(xOutL)) : (side==="L"?(xRef+w/2):(xRef-w/2));
+      pos[m.n]={cy:c, side:side, w:w, xc:(big?(left+w/2):xRef), outX:outX};
+    });
+  }
+  add(half(RR.r32,"L"),"L",cy.r32L,true,null);
+  add(half(RR.r16,"L"),"L",cy.r16L,false,xR16L);
+  add(half(RR.qf,"L"),"L",cy.qfL,false,xQFL);
+  add(half(RR.sf,"L"),"L",cy.sfL,false,xSFL);
+  add(half(RR.r32,"R"),"R",cy.r32R,true,null);
+  add(half(RR.r16,"R"),"R",cy.r16R,false,mir(xR16L));
+  add(half(RR.qf,"R"),"R",cy.qfR,false,mir(xQFL));
+  add(half(RR.sf,"R"),"R",cy.sfR,false,mir(xSFL));
+  if(RR.final[0]){
+    var fm=RR.final[0]; var fh=resolveKOName(fm.h), fa=resolveKOName(fm.a);
+    cells.push('<div class="rtf-cell rtf-finbox" data-mn="'+fm.n+'" style="left:'+(finCx-SMW/2).toFixed(1)+'px;top:'+(finCy-SMH/2).toFixed(1)+'px;width:'+SMW+'px;height:'+SMH+'px">'+rtfFlag(fh,false)+rtfFlag(fa,false)+'</div>');
+    pos[fm.n]={cy:finCy, side:"C", w:SMW, xc:finCx, outX:finCx};
+  }
+  var paths="";
+  Object.keys(pos).forEach(function(k){
+    var mn=+k, p=pos[mn];
+    var nxt=(typeof koNextMatch==="function")?koNextMatch(mn):null;
+    if(nxt==null || !pos[nxt]) return;
+    var np=pos[nxt];
+    var mOut=p.outX, mcy=p.cy, ncy=np.cy;
+    var nIn = (p.side==="L") ? (np.xc - np.w/2) : (np.xc + np.w/2);
+    var midx=(mOut+nIn)/2;
+    paths+='<path d="M'+mOut.toFixed(1)+' '+mcy.toFixed(1)+' H'+midx.toFixed(1)+' V'+ncy.toFixed(1)+' H'+nIn.toFixed(1)+'" fill="none" stroke="rgba(240,194,75,.45)" stroke-width="1.6" stroke-linejoin="round"/>';
+  });
+  var svg='<svg class="rtf-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+paths+'</svg>';
+  var trophy='<div class="rtf-trophy" style="left:'+(finCx-26).toFixed(1)+'px;top:'+(finCy-SMH/2-66).toFixed(1)+'px"><div class="tr-ic">\U0001F3C6</div><span>\u0627\u0644\u0646\u0647\u0627\u0626\u064a</span></div>';
   var third=M.filter(function(m){return m.r==="third";})[0];
-  var thirdHtml = third ? '<div class="rtf-third"><div class="rtf-third-h">🥉 مباراة المركز الثالث</div>'+koMatchMini(third)+'</div>' : '';
-  el.innerHTML='<div class="rtf-hint">↔ اسحب أفقياً · اضغط مباراة للتفاصيل</div>'
-    +'<div class="rtf-wrap"><div class="rtf" id="rtfTree"><svg class="rtf-svg"></svg>'+grid+'</div></div>'
+  var thirdHtml = third ? '<div class="rtf-third"><div class="rtf-third-h">\U0001F949 \u0645\u0628\u0627\u0631\u0627\u0629 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u062b\u0627\u0644\u062b</div>'+koMatchMini(third)+'</div>' : '';
+  el.innerHTML='<div class="rtf-hint">\u2194 \u0627\u0633\u062d\u0628 \u0623\u0641\u0642\u064a\u0627\u064b \u00b7 \u0627\u0636\u063a\u0637 \u0623\u064a \u0645\u0628\u0627\u0631\u0627\u0629 \u0644\u0644\u062a\u0641\u0627\u0635\u064a\u0644</div>'
+    +'<div class="rtf-wrap"><div class="rtf" id="rtfTree" style="width:'+W+'px;height:'+H+'px">'+svg+cells.join("")+trophy+'</div></div>'
     + thirdHtml;
-  requestAnimationFrame(function(){ rtfDrawLines(); setTimeout(rtfDrawLines, 60); setTimeout(rtfDrawLines, 250); });
 }
+
 function koRangeNum(rk){
   var map={r32:"28/6 – 3/7", r16:"4/7 – 7/7", qf:"9/7 – 12/7", sf:"14/7 – 15/7", final:"19/7"};
   return map[rk]||"";
