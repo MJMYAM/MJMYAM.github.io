@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>المباراة القادمة — كأس العالم 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;700;800&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{font-family:"Tajawal",sans-serif;background:transparent;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden;}
+  :root{--gold:#f0c24b;--gold2:#ffe9b0;}
+  .w{width:100%;max-width:440px;border-radius:22px;padding:15px 16px 16px;color:#fff;position:relative;overflow:hidden;
+     background:linear-gradient(160deg,#101938 0%,#0a1024 55%,#070b1a 100%);
+     border:1px solid rgba(240,194,75,.32); box-shadow:0 14px 40px rgba(0,0,0,.5);}
+  .w::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 80% at 50% -10%, rgba(240,194,75,.14), transparent 60%);pointer-events:none;}
+  .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;position:relative;z-index:1;margin-bottom:12px;}
+  .hd .ttl{display:flex;align-items:center;gap:6px;font-family:"Changa";font-weight:800;font-size:13px;
+     background:linear-gradient(110deg,var(--gold2),var(--gold) 60%,#d9a02c);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hd .rd{font-size:10.5px;font-weight:700;color:#cfd6ee;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);padding:3px 9px;border-radius:20px;white-space:nowrap;}
+  .rd.live{color:#ff7a7a;background:rgba(255,90,90,.12);border-color:rgba(255,90,90,.4);}
+  .teams{display:flex;align-items:center;justify-content:space-between;gap:6px;position:relative;z-index:1;margin-bottom:13px;}
+  .tm{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;}
+  .tm .fl{width:64px;height:43px;border-radius:7px;overflow:hidden;border:1.5px solid rgba(255,255,255,.16);background:#0a1024;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.35);font-size:30px;line-height:1;}
+  .tm .fl img{width:100%;height:100%;object-fit:cover;display:block;}
+  .tm .fl.tbd{font-size:22px;color:rgba(255,255,255,.4);}
+  .tm .nm{font-weight:800;font-size:13px;text-align:center;line-height:1.25;width:100%;word-break:break-word;}
+  .vs{font-family:"Changa";font-weight:800;font-size:13px;color:var(--gold);padding:0 2px;flex:0 0 auto;}
+  .cd{display:flex;justify-content:center;gap:7px;position:relative;z-index:1;margin-bottom:13px;}
+  .cd .seg{flex:1;max-width:74px;text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(240,194,75,.16);border-radius:11px;padding:7px 2px 5px;}
+  .cd .seg b{display:block;font-family:"Changa";font-weight:800;font-size:21px;color:var(--gold2);font-variant-numeric:tabular-nums;line-height:1;}
+  .cd .seg span{display:block;font-size:9.5px;color:#aab2d0;margin-top:4px;}
+  .cd.livebox{font-family:"Changa";font-weight:800;font-size:17px;color:#ff6b6b;padding:10px;}
+  .meta{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:#c4cbe6;}
+  .meta div{display:flex;align-items:center;gap:6px;justify-content:center;text-align:center;}
+  .meta b{color:#fff;font-weight:700;}
+  .done{text-align:center;padding:24px 6px;position:relative;z-index:1;}
+  .done .t{font-family:"Changa";font-weight:800;font-size:17px;color:var(--gold);}
+  .done .s{font-size:12px;color:#aab2d0;margin-top:6px;}
+</style>
+</head>
+<body>
+<div class="w" id="w"><div class="done"><div class="t">⏳ جارٍ التحميل…</div></div></div>
+<script>
+var MATCHES=[{"r": "r32", "h": "جنوب أفريقيا", "a": "كندا", "d": "2026-06-28", "t": "22:00", "s": "sofi"}, {"r": "r32", "h": "ألمانيا", "a": "الباراغواي", "d": "2026-06-29", "t": "23:30", "s": "gillette"}, {"r": "r32", "h": "هولندا", "a": "المغرب", "d": "2026-06-29", "t": "04:00", "s": "bbva"}, {"r": "r32", "h": "البرازيل", "a": "اليابان", "d": "2026-06-29", "t": "20:00", "s": "nrg"}, {"r": "r32", "h": "فرنسا", "a": "السويد", "d": "2026-06-30", "t": "00:00", "s": "metlife"}, {"r": "r32", "h": "كوت ديفوار", "a": "النرويج", "d": "2026-06-30", "t": "20:00", "s": "att"}, {"r": "r32", "h": "المكسيك", "a": "الإكوادور", "d": "2026-06-30", "t": "04:00", "s": "azteca"}, {"r": "r32", "h": "إنجلترا", "a": "الكونغو الديمقراطية", "d": "2026-07-01", "t": "19:00", "s": "mercedes"}, {"r": "r32", "h": "الولايات المتحدة", "a": "البوسنة والهرسك", "d": "2026-07-01", "t": "03:00", "s": "levis"}, {"r": "r32", "h": "بلجيكا", "a": "السنغال", "d": "2026-07-01", "t": "23:00", "s": "lumen"}, {"r": "r32", "h": "البرتغال", "a": "كرواتيا", "d": "2026-07-02", "t": "02:00", "s": "bmo"}, {"r": "r32", "h": "إسبانيا", "a": "النمسا", "d": "2026-07-02", "t": "22:00", "s": "sofi"}, {"r": "r32", "h": "سويسرا", "a": "الجزائر", "d": "2026-07-02", "t": "06:00", "s": "bcplace"}, {"r": "r32", "h": "الأرجنتين", "a": "الرأس الأخضر", "d": "2026-07-03", "t": "01:00", "s": "hardrock"}, {"r": "r32", "h": "كولومبيا", "a": "غانا", "d": "2026-07-03", "t": "04:30", "s": "arrowhead"}, {"r": "r32", "h": "أستراليا", "a": "مصر", "d": "2026-07-03", "t": "21:00", "s": "att"}, {"r": "r16", "h": "الفائز من المباراة 74", "a": "الفائز من المباراة 77", "d": "2026-07-05", "t": "00:00", "s": "lincoln"}, {"r": "r16", "h": "الفائز من المباراة 73", "a": "الفائز من المباراة 75", "d": "2026-07-04", "t": "20:00", "s": "nrg"}, {"r": "r16", "h": "الفائز من المباراة 76", "a": "الفائز من المباراة 78", "d": "2026-07-05", "t": "23:00", "s": "metlife"}, {"r": "r16", "h": "الفائز من المباراة 79", "a": "الفائز من المباراة 80", "d": "2026-07-06", "t": "03:00", "s": "azteca"}, {"r": "r16", "h": "الفائز من المباراة 83", "a": "الفائز من المباراة 84", "d": "2026-07-06", "t": "22:00", "s": "att"}, {"r": "r16", "h": "الفائز من المباراة 81", "a": "الفائز من المباراة 82", "d": "2026-07-07", "t": "03:00", "s": "lumen"}, {"r": "r16", "h": "الفائز من المباراة 86", "a": "الفائز من المباراة 88", "d": "2026-07-07", "t": "19:00", "s": "mercedes"}, {"r": "r16", "h": "الفائز من المباراة 85", "a": "الفائز من المباراة 87", "d": "2026-07-07", "t": "23:00", "s": "bcplace"}, {"r": "qf", "h": "الفائز من المباراة 89", "a": "الفائز من المباراة 90", "d": "2026-07-09", "t": "23:00", "s": "gillette"}, {"r": "qf", "h": "الفائز من المباراة 93", "a": "الفائز من المباراة 94", "d": "2026-07-10", "t": "22:00", "s": "sofi"}, {"r": "qf", "h": "الفائز من المباراة 91", "a": "الفائز من المباراة 92", "d": "2026-07-12", "t": "00:00", "s": "hardrock"}, {"r": "qf", "h": "الفائز من المباراة 95", "a": "الفائز من المباراة 96", "d": "2026-07-12", "t": "04:00", "s": "arrowhead"}, {"r": "sf", "h": "الفائز من المباراة 97", "a": "الفائز من المباراة 98", "d": "2026-07-14", "t": "22:00", "s": "att"}, {"r": "sf", "h": "الفائز من المباراة 99", "a": "الفائز من المباراة 100", "d": "2026-07-15", "t": "22:00", "s": "mercedes"}, {"r": "third", "h": "خاسر المباراة 101", "a": "خاسر المباراة 102", "d": "2026-07-19", "t": "00:00", "s": "hardrock"}, {"r": "final", "h": "الفائز من المباراة 101", "a": "الفائز من المباراة 102", "d": "2026-07-19", "t": "22:00", "s": "metlife"}];
+var ISO={
+ "المكسيك":"mx","جنوب أفريقيا":"za","كوريا الجنوبية":"kr","التشيك":"cz","كندا":"ca","سويسرا":"ch","قطر":"qa",
+ "البوسنة والهرسك":"ba","البرازيل":"br","المغرب":"ma","هايتي":"ht","اسكتلندا":"gb-sct","الولايات المتحدة":"us",
+ "الباراغواي":"py","أستراليا":"au","تركيا":"tr","ألمانيا":"de","كوراساو":"cw","كوت ديفوار":"ci","الإكوادور":"ec",
+ "هولندا":"nl","اليابان":"jp","تونس":"tn","السويد":"se","بلجيكا":"be","مصر":"eg","إيران":"ir","نيوزيلندا":"nz",
+ "إسبانيا":"es","الرأس الأخضر":"cv","السعودية":"sa","الأوروغواي":"uy","فرنسا":"fr","السنغال":"sn","النرويج":"no",
+ "العراق":"iq","الأرجنتين":"ar","الجزائر":"dz","النمسا":"at","الأردن":"jo","البرتغال":"pt","أوزبكستان":"uz",
+ "كولومبيا":"co","الكونغو الديمقراطية":"cd","إنجلترا":"gb-eng","كرواتيا":"hr","غانا":"gh","بنما":"pa","الكويت":"kw"
+};
+var STADIUMS={
+  azteca:   {n:"ملعب أزتيكا", sn:"أزتيكا", c:"مكسيكو سيتي", co:"المكسيك", f:"🇲🇽", cap:87523, tag:"المباراة الافتتاحية"},
+  metlife:  {n:"ملعب ميتلايف", sn:"ميتلايف", c:"نيويورك / نيوجيرسي", co:"الولايات المتحدة", f:"🇺🇸", cap:82500, tag:"النهائي الكبير"},
+  att:      {n:"ملعب إيه تي آند تي", sn:"إيه تي آند تي", c:"دالاس", co:"الولايات المتحدة", f:"🇺🇸", cap:80000},
+  arrowhead:{n:"ملعب أروهيد", sn:"أروهيد", c:"كانساس سيتي", co:"الولايات المتحدة", f:"🇺🇸", cap:76416},
+  nrg:      {n:"ملعب إن آر جي", sn:"إن آر جي", c:"هيوستن", co:"الولايات المتحدة", f:"🇺🇸", cap:72220},
+  mercedes: {n:"ملعب مرسيدس بنز", sn:"مرسيدس بنز", c:"أتلانتا", co:"الولايات المتحدة", f:"🇺🇸", cap:71000},
+  sofi:     {n:"ملعب صوفي", sn:"صوفي", c:"لوس أنجلوس", co:"الولايات المتحدة", f:"🇺🇸", cap:70242},
+  lincoln:  {n:"ملعب لينكولن فاينانشال فيلد", sn:"لينكولن فيلد", c:"فيلادلفيا", co:"الولايات المتحدة", f:"🇺🇸", cap:69176},
+  lumen:    {n:"ملعب لومن فيلد", sn:"لومن فيلد", c:"سياتل", co:"الولايات المتحدة", f:"🇺🇸", cap:68740},
+  levis:    {n:"ملعب ليفاي", sn:"ليفاي", c:"سان فرانسيسكو", co:"الولايات المتحدة", f:"🇺🇸", cap:68500},
+  gillette: {n:"ملعب جيليت", sn:"جيليت", c:"بوسطن", co:"الولايات المتحدة", f:"🇺🇸", cap:66829},
+  hardrock: {n:"ملعب هارد روك", sn:"هارد روك", c:"ميامي", co:"الولايات المتحدة", f:"🇺🇸", cap:65326, tag:"مباراة المركز الثالث"},
+  bcplace:  {n:"ملعب بي سي بليس", sn:"بي سي بليس", c:"فانكوفر", co:"كندا", f:"🇨🇦", cap:54500},
+  bbva:     {n:"ملعب بي بي في إيه", sn:"بي بي في إيه", c:"مونتيري", co:"المكسيك", f:"🇲🇽", cap:53500},
+  akron:    {n:"ملعب آكرون", sn:"آكرون", c:"غوادالاخارا", co:"المكسيك", f:"🇲🇽", cap:46355},
+  bmo:      {n:"ملعب بي إم أو فيلد", sn:"بي إم أو", c:"تورونتو", co:"كندا", f:"🇨🇦", cap:45700}
+};
+var ROUND_AR={r32:"دور الـ32",r16:"دور الـ16",qf:"ربع النهائي",sf:"نصف النهائي",final:"النهائي",third:"المركز الثالث"};
+var WD=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+var MO=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+var SPECIAL={"gb-eng":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","gb-sct":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","gb-wls":"🏴󠁧󠁢󠁷󠁬󠁳󠁿"};
+function codeEmoji(c){
+  if(!c) return "🏳️";
+  if(SPECIAL[c]) return SPECIAL[c];
+  if(c.length!==2) return "🏳️";
+  var A=0x1F1E6, u=c.toUpperCase();
+  return String.fromCodePoint(A+u.charCodeAt(0)-65, A+u.charCodeAt(1)-65);
+}
+function kickoff(m){ return new Date(m.d+"T"+m.t+":00+03:00").getTime(); }
+function pad(n){ return (n<10?"0":"")+n; }
+function fmtT(t){ var p=t.split(":"),hh=+p[0]; var ap=hh>=12?"م":"ص"; var h12=hh%12; if(h12===0)h12=12; return h12+":"+p[1]+" "+ap; }
+function fmtD(d){ var x=new Date(d+"T12:00:00"); return WD[x.getDay()]+" "+x.getDate()+" "+MO[x.getMonth()]; }
+function flagCell(name){
+  var c=ISO[name];
+  if(c){ var em=codeEmoji(c);
+    return '<span class="fl"><img src="https://flagcdn.com/h80/'+c+'.png" alt="'+em+'" onerror="this.parentNode.textContent=this.alt"></span>'; }
+  return '<span class="fl tbd">🏳️</span>';
+}
+function shortName(name){ var m=/المباراة\s*(\d+)/.exec(name||""); return m?("الفائز من م"+m[1]):name; }
+function pickMatch(){
+  var now=Date.now(), LIVE_MS=2.5*3600*1000;
+  var arr=MATCHES.slice().sort(function(a,b){return kickoff(a)-kickoff(b);});
+  for(var i=0;i<arr.length;i++){ if(now < kickoff(arr[i])+LIVE_MS) return arr[i]; }
+  return null;
+}
+function render(){
+  var w=document.getElementById("w"), m=pickMatch();
+  if(!m){ w.innerHTML='<div class="done"><div class="t">🏆 انتهت البطولة</div><div class="s">كأس العالم 2026</div></div>'; return; }
+  var ko=kickoff(m), diff=ko-Date.now(), live=diff<=0;
+  var st=STADIUMS[m.s]||{}, sn=st.sn||st.n||"", city=st.c||"";
+  var rd=ROUND_AR[m.r]||"كأس العالم 2026", cdHtml;
+  if(live){ cdHtml='<div class="cd livebox">🔴 المباراة جارية الآن</div>'; }
+  else{
+    var s=Math.floor(diff/1000), dys=Math.floor(s/86400); s-=dys*86400;
+    var hrs=Math.floor(s/3600); s-=hrs*3600; var mins=Math.floor(s/60), secs=s-mins*60;
+    cdHtml='<div class="cd">'
+      +'<div class="seg"><b>'+pad(dys)+'</b><span>يوم</span></div>'
+      +'<div class="seg"><b>'+pad(hrs)+'</b><span>ساعة</span></div>'
+      +'<div class="seg"><b>'+pad(mins)+'</b><span>دقيقة</span></div>'
+      +'<div class="seg"><b>'+pad(secs)+'</b><span>ثانية</span></div></div>';
+  }
+  w.innerHTML=
+    '<div class="hd"><div class="ttl">⚽ المباراة القادمة</div><div class="rd'+(live?' live':'')+'">'+(live?'🔴 مباشر':rd)+'</div></div>'
+    +'<div class="teams">'
+      +'<div class="tm">'+flagCell(m.h)+'<div class="nm">'+shortName(m.h)+'</div></div>'
+      +'<div class="vs">VS</div>'
+      +'<div class="tm">'+flagCell(m.a)+'<div class="nm">'+shortName(m.a)+'</div></div></div>'
+    +cdHtml
+    +'<div class="meta">'
+      +'<div>📅 <b>'+fmtD(m.d)+'</b> · '+fmtT(m.t)+' بتوقيت الكويت</div>'
+      +'<div>'+(sn?('🏟️ '+sn+(city?' · '+city:'')+' · '):'')+'📺 <b>beIN SPORTS</b></div></div>';
+}
+render(); setInterval(render,1000);
+</script>
+</body>
+</html>
