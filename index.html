@@ -2323,7 +2323,7 @@ function renderKOTree(el){
   var RR={r32:arrOf("r32"), r16:arrOf("r16"), qf:arrOf("qf"), sf:arrOf("sf"), final:arrOf("final")};
   function half(a,s){ var h=Math.ceil(a.length/2); return s==="L"?a.slice(0,h):a.slice(h); }
   // ----- الأبعاد (إحداثيات ثابتة محسوبة) -----
-  var CW=44, CH=46, GAP=14, UNIT=CH+GAP, SEG=36, PADX=4, PADY=10, CEN=60, SMW=28, SMH=40;
+  var CW=58, CH=58, GAP=12, UNIT=CH+GAP, SEG=32, PADX=4, PADY=10, CEN=54, SMW=26, SMH=44;
   var nL=Math.max(1, Math.ceil(RR.r32.length/2));
   var H=Math.round(PADY*2 + nL*CH + (nL-1)*GAP);
   function baseCy(i){ return PADY + CH/2 + i*UNIT; }
