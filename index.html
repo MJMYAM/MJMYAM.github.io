@@ -2829,6 +2829,16 @@ function npBench(teamName, subs, coach, kit){
 }
 function npLum(hex){var h=String(hex).replace("#","");if(h.length===3)h=h.charAt(0)+h.charAt(0)+h.charAt(1)+h.charAt(1)+h.charAt(2)+h.charAt(2);var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)/255;}
 function npDist(c1,c2){function rgb(h){h=String(h).replace("#","");if(h.length===3)h=h.charAt(0)+h.charAt(0)+h.charAt(1)+h.charAt(1)+h.charAt(2)+h.charAt(2);return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}var a=rgb(c1),b=rgb(c2);return Math.sqrt(Math.pow(a[0]-b[0],2)+Math.pow(a[1]-b[1],2)+Math.pow(a[2]-b[2],2));}
+var COACHES={
+  "جنوب أفريقيا":"Hugo Broos","كندا":"Jesse Marsch","ألمانيا":"Julian Nagelsmann","الباراغواي":"Gustavo Alfaro",
+  "هولندا":"Ronald Koeman","المغرب":"Walid Regragui","البرازيل":"Carlo Ancelotti","اليابان":"Hajime Moriyasu",
+  "فرنسا":"Didier Deschamps","السويد":"Graham Potter","كوت ديفوار":"Emerse Faé","النرويج":"Ståle Solbakken",
+  "المكسيك":"Javier Aguirre","الإكوادور":"Sebastián Beccacece","إنجلترا":"Thomas Tuchel","الكونغو الديمقراطية":"Sébastien Desabre",
+  "الولايات المتحدة":"Mauricio Pochettino","البوسنة والهرسك":"Sergej Barbarez","بلجيكا":"Rudi Garcia","السنغال":"Pape Thiaw",
+  "البرتغال":"Roberto Martínez","كرواتيا":"Zlatko Dalić","إسبانيا":"Luis de la Fuente","النمسا":"Ralf Rangnick",
+  "سويسرا":"Murat Yakin","الجزائر":"Vladimir Petković","الأرجنتين":"Lionel Scaloni","الرأس الأخضر":"Bubista",
+  "كولومبيا":"Néstor Lorenzo","غانا":"Carlos Queiroz","أستراليا":"Tony Popovic","مصر":"Hossam Hassan"
+};
 function newLineupHTML(m, j){
   var kitH=npKit(m.h), kitA=npKit(m.a);
   var lH=npLum(kitH.bg), lA=npLum(kitA.bg);
@@ -2837,7 +2847,8 @@ function newLineupHTML(m, j){
   }
   var plH=npLayout(j.home, j.fH, true).map(function(p){return npPlayer(p,kitH);}).join("");
   var plA=npLayout(j.away, j.fA, false).map(function(p){return npPlayer(p,kitA);}).join("");
-  var hasBenchH=(j.subsH&&j.subsH.length)||j.coachH, hasBenchA=(j.subsA&&j.subsA.length)||j.coachA;
+  var coH=COACHES[m.h]||j.coachH||"", coA=COACHES[m.a]||j.coachA||"";
+  var hasBenchH=(j.subsH&&j.subsH.length)||coH, hasBenchA=(j.subsA&&j.subsA.length)||coA;
   return '<div class="np">'
     +'<div class="np-hd">'
       +'<div class="np-tcard"><span class="fg">'+flagImg(m.a)+'</span><div><div class="nm">'+m.a+'</div>'+(j.fA?'<div class="frm">'+j.fA+'</div>':"")+'</div></div>'
@@ -2846,9 +2857,9 @@ function newLineupHTML(m, j){
     +'</div>'
     +'<div class="np-pitch"><div class="np-mid"></div><div class="np-circle"></div><div class="np-spot"></div><div class="np-pbox t"></div><div class="np-pbox b"></div><div class="np-gbox t"></div><div class="np-gbox b"></div><div class="np-goal t"></div><div class="np-goal b"></div><div class="np-pspot t"></div><div class="np-pspot b"></div>'+plH+plA+'</div>'
     +'<div class="np-legend"><span><i style="background:var(--gk)"></i>حارس</span><span><i style="background:var(--def)"></i>دفاع</span><span><i style="background:var(--mid)"></i>وسط</span><span><i style="background:var(--fwd)"></i>هجوم</span></div>'
-    +npBench(m.h, j.subsH, j.coachH, kitH)
+    +npBench(m.h, j.subsH, coH, kitH)
     +(hasBenchH&&hasBenchA?'<div class="np-div"></div>':"")
-    +npBench(m.a, j.subsA, j.coachA, kitA)
+    +npBench(m.a, j.subsA, coA, kitA)
     +'</div>';
 }
 
