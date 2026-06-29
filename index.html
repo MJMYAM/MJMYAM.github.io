@@ -811,6 +811,60 @@ nav#bn button .ic{font-size:18.5px;}
 .tc-chip{display:inline-flex; align-items:center; gap:3px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:7px; padding:2px 6px; font-size:10px; font-weight:700;}
 .kt-pair{display:inline-flex; flex-wrap:wrap; gap:5px; align-items:center; justify-content:center;}
 .kt-pair .tc-chip .flg, .kt-pair .tc-chip img{width:18px; height:13px;}
+
+/* ===== تصميم التشكيلة المطوّر v2 (np) ===== */
+.np{--gk:#f5c542;--def:#3b82f6;--mid:#22c55e;--fwd:#ef4444;}
+.np-hd{display:flex;align-items:stretch;gap:8px;margin:4px 0 12px;}
+.np-tcard{flex:1;display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:14px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);}
+.np-tcard .fg{font-size:22px;line-height:1;display:flex;align-items:center;}
+.np-tcard .fg img{width:28px;height:auto;border-radius:3px;}
+.np-tcard .nm{font-family:"Changa",sans-serif;font-weight:800;font-size:13px;}
+.np-tcard .frm{font-size:10px;color:#f0c24b;font-weight:700;margin-top:2px;}
+.np-hd .mid{display:flex;align-items:center;justify-content:center;padding:0 2px;}
+.np-hd .mid .vs{font-family:"Changa",sans-serif;font-weight:800;font-size:12px;color:#8a93b2;}
+.np-pitch{position:relative;width:100%;aspect-ratio:62/100;border-radius:16px;overflow:hidden;background:repeating-linear-gradient(0deg,#1f7a44 0 9.5%,#1c7340 9.5% 19%),linear-gradient(0deg,#1c7340,#1f7a44);border:2px solid rgba(255,255,255,.22);box-shadow:0 14px 40px rgba(0,0,0,.45),inset 0 0 60px rgba(0,0,0,.25);}
+.np-mid{position:absolute;left:0;right:0;top:50%;border-top:2px solid rgba(255,255,255,.42);}
+.np-circle{position:absolute;left:50%;top:50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border:2px solid rgba(255,255,255,.42);border-radius:50%;}
+.np-spot{position:absolute;left:50%;top:50%;width:5px;height:5px;background:rgba(255,255,255,.7);border-radius:50%;transform:translate(-50%,-50%);}
+.np-pbox{position:absolute;left:50%;transform:translateX(-50%);width:58%;height:15%;border:2px solid rgba(255,255,255,.42);}
+.np-pbox.t{top:0;border-top:none;}
+.np-pbox.b{bottom:0;border-bottom:none;}
+.np-gbox{position:absolute;left:50%;transform:translateX(-50%);width:30%;height:6.5%;border:2px solid rgba(255,255,255,.42);}
+.np-gbox.t{top:0;border-top:none;}
+.np-gbox.b{bottom:0;border-bottom:none;}
+.np-goal{position:absolute;left:50%;transform:translateX(-50%);width:16%;height:1.4%;background:rgba(255,255,255,.5);}
+.np-goal.t{top:-1px;}
+.np-goal.b{bottom:-1px;}
+.np-pspot{position:absolute;left:50%;width:5px;height:5px;background:rgba(255,255,255,.6);border-radius:50%;transform:translateX(-50%);}
+.np-pspot.t{top:11%;}
+.np-pspot.b{bottom:11%;}
+.np-pl{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;width:66px;z-index:3;}
+.np-jersey{position:relative;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,.45);border:2.5px solid var(--rg);}
+.np-jersey .num{font-family:"Changa",sans-serif;font-weight:800;font-size:15px;line-height:1;}
+.np-jersey .pdot{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:13px;height:4px;border-radius:3px;}
+.np-jersey .cap{position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:#f0c24b;color:#1a1206;font-family:"Changa",sans-serif;font-weight:800;font-size:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 5px rgba(0,0,0,.4);}
+.np-jersey.has-img{background:#0a1024 !important;}
+.np-jersey.has-img img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:top center;display:block;}
+.np-jersey.has-img .num{position:absolute;bottom:-5px;right:-5px;min-width:15px;height:15px;padding:0 3px;border-radius:99px;background:#0a1024;color:#fff;font-size:9px;display:grid;place-items:center;border:1.5px solid var(--rg);}
+.np-jersey.has-img.imgfail{background:var(--kbg) !important;}
+.np-jersey.has-img.imgfail img{display:none;}
+.np-jersey.has-img.imgfail .num{position:static;min-width:0;height:auto;padding:0;border:none;background:none;color:var(--kfg);font-size:15px;}
+.np-name{direction:ltr;max-width:66px;font-size:9.5px;font-weight:800;color:#fff;background:rgba(7,11,24,.82);padding:2px 6px;border-radius:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;border:1px solid rgba(255,255,255,.12);}
+.np-legend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:11px 0 2px;font-size:10px;color:#aab2d0;}
+.np-legend span{display:inline-flex;align-items:center;gap:4px;}
+.np-legend i{width:9px;height:9px;border-radius:50%;display:inline-block;}
+.np-bench{margin-top:12px;}
+.np-bhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;}
+.np-bhd h6{font-family:"Changa",sans-serif;font-weight:800;font-size:12px;color:#f0c24b;display:flex;align-items:center;gap:6px;margin:0;}
+.np-coach{font-size:11px;color:#cfd6ee;white-space:nowrap;}
+.np-coach b{color:#fff;direction:ltr;display:inline-block;}
+.np-brow{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;}
+.np-bchip{flex:0 0 auto;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:5px 9px 5px 6px;}
+.np-bn{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Changa",sans-serif;font-weight:800;font-size:11px;border:1.5px solid var(--rg);}
+.np-bnm{font-size:11px;font-weight:700;color:#dfe4f2;direction:ltr;}
+.np-div{height:1px;background:rgba(255,255,255,.08);margin:13px 0;}
+@media(max-width:360px){.np-pl{width:58px;}.np-jersey{width:36px;height:36px;}.np-jersey .num{font-size:13px;}.np-name{max-width:58px;font-size:9px;}}
+
 .tc-chip img{height:11px; width:auto; border-radius:2px;}
 .tc-g{font-family:'Saira Condensed',sans-serif; font-weight:800; font-size:10px; color:var(--green,#2fe089); background:rgba(47,224,137,.14); border-radius:4px; padding:0 4px; min-width:14px; text-align:center;}
 .tc-nm{font-size:10px;}
@@ -1557,6 +1611,13 @@ function justFinished(m){
 }
 
 function statusOf(m){
+  // الأولوية لحالة المصدر المباشر (ESPN) لمنع ظهور "جارية الآن" لمباراة لم تبدأ فعليًا
+  var sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
+  if(sc && sc.found && sc.status){
+    if(sc.status==="finished") return "done";
+    if(sc.status==="live" || sc.status==="ht") return "live";
+    if(sc.status==="not_started") return "up";
+  }
   if(!m.d) return "up";
   var st=dateObj(m).getTime(), now=Date.now();
   if(now>=st && now<=st+150*60000) return "live";
@@ -2688,6 +2749,105 @@ function extShell(m){
     + '<button class="lu-btn" data-lu="'+m.n+'">⚡ جلب التشكيلة والقناة الناقلة الآن</button>'
     +'<div class="lu-note">يبحث مباشرة لحظة الضغط — التشكيلات تُعلن عادة قبل المباراة بساعة تقريبًا</div>';
 }
+
+/* ===== نظام عرض التشكيلة المطوّر (np) ===== */
+var NP_POSC={GK:"var(--gk)",DEF:"var(--def)",MID:"var(--mid)",FWD:"var(--fwd)"};
+function npPosClass(pos){
+  pos=(pos||"").toUpperCase();
+  if(pos.indexOf("G")===0) return "GK";
+  if(pos.charAt(0)==="D"||pos.indexOf("B")>-1&&pos.length<=2) return "DEF";
+  if(pos.charAt(0)==="M") return "MID";
+  if("FWST".indexOf(pos.charAt(0))>-1) return "FWD";
+  return "MID";
+}
+function npShort(nm){ nm=(nm||"").trim(); var a=nm.split(/\s+/); return a.length>1?a[a.length-1]:nm; }
+function npKit(team){
+  var bg=(typeof kitColor==="function"?kitColor(team):"")||"#2c3566";
+  var c=String(bg).replace("#","");
+  if(c.length===3) c=c.charAt(0)+c.charAt(0)+c.charAt(1)+c.charAt(1)+c.charAt(2)+c.charAt(2);
+  var r=parseInt(c.substr(0,2),16), g=parseInt(c.substr(2,2),16), b=parseInt(c.substr(4,2),16);
+  if(isNaN(r)){r=44;g=53;b=102;c="2c3566";}
+  var lum=(0.299*r+0.587*g+0.114*b)/255;
+  return {bg:"#"+c, fg:lum>0.6?"#0a1024":"#ffffff", ring:lum>0.6?"rgba(0,0,0,.28)":"rgba(255,255,255,.5)"};
+}
+function npLines(formation){
+  var n=String(formation||"").split(/[^0-9]+/).filter(Boolean).map(Number);
+  return (n.length && n.reduce(function(a,b){return a+b;},0)===10)?n:[4,3,3];
+}
+function npLayout(players, formation, isHome){
+  var hasC = players.length>=10 && players.every(function(p){return p.x!=null && p.y!=null;});
+  if(hasC){
+    return players.map(function(p){
+      var y=Math.max(0,Math.min(100,p.y)), x=Math.max(0,Math.min(100,p.x));
+      var top = isHome ? (95 - y*0.43) : (5 + y*0.43);
+      var left = isHome ? x : (100-x);
+      return Object.assign({},p,{top:top,left:left});
+    });
+  }
+  var L=npLines(formation), gk=players[0]||{}, rest=players.slice(1), out=[];
+  out.push(Object.assign({},gk,{top:isHome?94:6,left:50}));
+  var idx=0;
+  L.forEach(function(c,li){
+    var seg=rest.slice(idx,idx+c); idx+=c;
+    var t=L.length===1?0.5:li/(L.length-1);
+    var yy=isHome?(87-t*(87-55)):(13+t*(45-13));
+    seg.forEach(function(pp,ci){
+      var xx=c===1?50:(16+(84-16)*(ci/(c-1))); if(!isHome) xx=100-xx;
+      out.push(Object.assign({},pp,{top:yy,left:xx}));
+    });
+  });
+  if(idx<rest.length) rest.slice(idx).forEach(function(pp){ out.push(Object.assign({},pp,{top:isHome?58:42,left:50})); });
+  return out;
+}
+function npPlayer(p, kit){
+  var posc=NP_POSC[npPosClass(p.pos)]||"var(--mid)";
+  var num=p.num||"";
+  var cap=p.cap?'<span class="cap">C</span>':"";
+  var pdot='<span class="pdot" style="background:'+posc+'"></span>';
+  var jersey;
+  if(p.img){
+    jersey='<div class="np-jersey has-img"><img loading="lazy" src="'+p.img+'" alt="" onerror="this.parentNode.classList.add(\'imgfail\')"><span class="num">'+num+'</span>'+pdot+cap+'</div>';
+  } else {
+    jersey='<div class="np-jersey" style="background:'+kit.bg+'"><span class="num" style="color:'+kit.fg+'">'+num+'</span>'+pdot+cap+'</div>';
+  }
+  return '<div class="np-pl" style="top:'+p.top.toFixed(1)+'%;left:'+p.left.toFixed(1)+'%;--rg:'+kit.ring+';--kbg:'+kit.bg+';--kfg:'+kit.fg+'">'
+    +jersey+'<div class="np-name" title="'+(p.nm||"")+'">'+npShort(p.nm)+'</div></div>';
+}
+function npBench(teamName, subs, coach, kit){
+  subs=subs||[];
+  if(!subs.length && !coach) return "";
+  var chips=subs.map(function(sp){
+    return '<div class="np-bchip" style="--rg:'+kit.ring+'"><span class="np-bn" style="background:'+kit.bg+';color:'+kit.fg+'">'+(sp.num||"")+'</span><span class="np-bnm">'+npShort(sp.nm)+'</span></div>';
+  }).join("");
+  return '<div class="np-bench"><div class="np-bhd"><h6>🔁 بدلاء '+teamName+'</h6>'
+    +(coach?'<span class="np-coach">👔 المدرب: <b>'+coach+'</b></span>':"")
+    +'</div>'+(chips?'<div class="np-brow">'+chips+'</div>':"")+'</div>';
+}
+function npLum(hex){var h=String(hex).replace("#","");if(h.length===3)h=h.charAt(0)+h.charAt(0)+h.charAt(1)+h.charAt(1)+h.charAt(2)+h.charAt(2);var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)/255;}
+function npDist(c1,c2){function rgb(h){h=String(h).replace("#","");if(h.length===3)h=h.charAt(0)+h.charAt(0)+h.charAt(1)+h.charAt(1)+h.charAt(2)+h.charAt(2);return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}var a=rgb(c1),b=rgb(c2);return Math.sqrt(Math.pow(a[0]-b[0],2)+Math.pow(a[1]-b[1],2)+Math.pow(a[2]-b[2],2));}
+function newLineupHTML(m, j){
+  var kitH=npKit(m.h), kitA=npKit(m.a);
+  var lH=npLum(kitH.bg), lA=npLum(kitA.bg);
+  if((lH<0.45&&lA<0.45)||(lH>0.62&&lA>0.62)||npDist(kitH.bg,kitA.bg)<70){
+    kitA = (lH<0.5) ? {bg:"#eef0f4",fg:"#0a1024",ring:"rgba(0,0,0,.22)"} : {bg:"#16213f",fg:"#ffffff",ring:"rgba(255,255,255,.5)"};
+  }
+  var plH=npLayout(j.home, j.fH, true).map(function(p){return npPlayer(p,kitH);}).join("");
+  var plA=npLayout(j.away, j.fA, false).map(function(p){return npPlayer(p,kitA);}).join("");
+  var hasBenchH=(j.subsH&&j.subsH.length)||j.coachH, hasBenchA=(j.subsA&&j.subsA.length)||j.coachA;
+  return '<div class="np">'
+    +'<div class="np-hd">'
+      +'<div class="np-tcard"><span class="fg">'+flagImg(m.a)+'</span><div><div class="nm">'+m.a+'</div>'+(j.fA?'<div class="frm">'+j.fA+'</div>':"")+'</div></div>'
+      +'<div class="mid"><span class="vs">VS</span></div>'
+      +'<div class="np-tcard"><span class="fg">'+flagImg(m.h)+'</span><div><div class="nm">'+m.h+'</div>'+(j.fH?'<div class="frm">'+j.fH+'</div>':"")+'</div></div>'
+    +'</div>'
+    +'<div class="np-pitch"><div class="np-mid"></div><div class="np-circle"></div><div class="np-spot"></div><div class="np-pbox t"></div><div class="np-pbox b"></div><div class="np-gbox t"></div><div class="np-gbox b"></div><div class="np-goal t"></div><div class="np-goal b"></div><div class="np-pspot t"></div><div class="np-pspot b"></div>'+plH+plA+'</div>'
+    +'<div class="np-legend"><span><i style="background:var(--gk)"></i>حارس</span><span><i style="background:var(--def)"></i>دفاع</span><span><i style="background:var(--mid)"></i>وسط</span><span><i style="background:var(--fwd)"></i>هجوم</span></div>'
+    +npBench(m.h, j.subsH, j.coachH, kitH)
+    +(hasBenchH&&hasBenchA?'<div class="np-div"></div>':"")
+    +npBench(m.a, j.subsA, j.coachA, kitA)
+    +'</div>';
+}
+
 function renderLU(m, j){
   var html="", chips="";
   if(j.channel) chips+='<span class="chip tv">📺 '+j.channel+'</span>';
@@ -2699,7 +2859,7 @@ function renderLU(m, j){
   var structured = ok && typeof j.home[0]==="object";
 
   if(structured){
-    html+=pitchHTML(m, j);
+    html+=newLineupHTML(m, j);
     if(j.note) html+='<div class="lu-note">'+j.note+'</div>';
   } else if(ok){
     // احتياط: عرض قائمة (نصوص)
@@ -2899,13 +3059,21 @@ async function fetchLU(n, box, btn){
             if(rawX!=null && rawX<=1) rawX=rawX*100;
             if(rawY!=null && rawY<=1) rawY=rawY*100;
             return {nm:nm, num:p.jersey||"", pos:pos, img:img, fp:parseInt(p.formationPlace,10)||99,
-                    x:rawX, y:rawY};
+                    x:rawX, y:rawY, cap:!!p.captain};
           });
           var formation = (rt.formation && (rt.formation.name||rt.formation.text)) || "";
-          if(side==="h"){ home=arr; window._fH=formation; } else { away=arr; window._fA=formation; }
+          var bench=(rt.roster||[]).filter(function(p){return p && !p.starter;}).map(function(p){
+            var ath=p.athlete||{}, bimg="";
+            if(ath.headshot && ath.headshot.href) bimg=ath.headshot.href;
+            else if(ath.id) bimg="https://a.espncdn.com/i/headshots/soccer/players/full/"+ath.id+".png";
+            return {nm:ath.displayName||ath.fullName||"", num:p.jersey||"", pos:((p.position||{}).abbreviation)||"", img:bimg};
+          });
+          var coachNm="", cc=rt.coach||(rt.team&&rt.team.coach);
+          if(cc){ if(Array.isArray(cc)) cc=cc[0]; if(cc) coachNm=cc.displayName||cc.fullName||(((cc.firstName||"")+" "+(cc.lastName||"")).trim()); }
+          if(side==="h"){ home=arr; window._fH=formation; window._subsH=bench; window._coachH=coachNm; } else { away=arr; window._fA=formation; window._subsA=bench; window._coachA=coachNm; }
         });
         if(home.length>=7 && away.length>=7){
-          var jj={status:"ok", home:home, away:away, fH:window._fH||"", fA:window._fA||"", channel:"شبكة beIN Sports", note:"التشكيلات الرسمية من المصدر المباشر"};
+          var jj={status:"ok", home:home, away:away, fH:window._fH||"", fA:window._fA||"", subsH:window._subsH||[], subsA:window._subsA||[], coachH:window._coachH||"", coachA:window._coachA||"", channel:"شبكة beIN Sports", note:"التشكيلات الرسمية من المصدر المباشر"};
           var html=renderLU(m,jj); LU_CACHE[n]=html; box.innerHTML=html; return;
         }
         if(home.length===0 && away.length===0){
