@@ -1964,8 +1964,9 @@ function renderHomeLists(){
     : "";
 }
 function byKick(a,b){
-  if(a.t===b.t) return a.n-b.n;
-  return a.t<b.t?-1:1;
+  var da=(a.d||"")+" "+(a.t||""), db=(b.d||"")+" "+(b.t||"");
+  if(da===db) return a.n-b.n;
+  return da<db?-1:1;
 }
 
 /* ================= MATCHES TAB ================= */
@@ -2391,7 +2392,7 @@ function renderKO(){
 function renderKOList(el){
   var order=["r32","r16","qf","sf","third","final"];
   el.innerHTML=order.map(function(rk){
-    var arr=M.filter(function(m){return m.r===rk;}).sort(function(a,b){return a.n-b.n;});
+    var arr=M.filter(function(m){return m.r===rk;}).sort(byKick);
     var r=ROUNDS[rk];
     var h='<div class="ko-h"><span class="d" style="background:'+r.c+'"></span><b>'+r.l+'</b><small>'+KO_DATES[rk]+'</small></div>';
     if(rk==="r32") h+='<div class="ko-sub">يتأهل متصدر ووصيف كل مجموعة + أفضل 8 منتخبات من أصحاب المركز الثالث</div>';
