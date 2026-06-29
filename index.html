@@ -1614,17 +1614,23 @@ function justFinished(m){
 }
 
 function statusOf(m){
-  // الأولوية لحالة المصدر المباشر (ESPN) لمنع ظهور "جارية الآن" لمباراة لم تبدأ فعليًا
   var sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
-  if(sc && sc.found && sc.status){
-    if(sc.status==="finished") return "done";
-    if(sc.status==="live" || sc.status==="ht") return "live";
-    if(sc.status==="not_started") return "up";
+  // نتيجة نهائية مثبّتة = انتهت
+  if(typeof FINAL_RESULTS!=="undefined" && FINAL_RESULTS[m.n] && FINAL_RESULTS[m.n].status==="finished") return "done";
+  var KO=(m.r && m.r!=="group");
+  var liveMax = KO ? 150 : 125;   // أقصى مدة معقولة لبقاء المباراة مباشرة (دقائق منذ الانطلاق)
+  if(m.d){
+    var mins=(Date.now()-dateObj(m).getTime())/60000;
+    if(sc && sc.found && sc.status){
+      if(sc.status==="finished") return "done";
+      if(sc.status==="live" || sc.status==="ht") return (mins>liveMax) ? "done" : "live"; // حماية من بيانات قديمة عالقة على "مباشر"
+      if(sc.status==="not_started") return "up";
+    }
+    if(mins<0) return "up";
+    return (mins<=liveMax) ? "live" : "done";
   }
-  if(!m.d) return "up";
-  var st=dateObj(m).getTime(), now=Date.now();
-  if(now>=st && now<=st+150*60000) return "live";
-  if(now>st+150*60000) return "done";
+  if(sc && sc.found && sc.status==="finished") return "done";
+  if(sc && sc.found && (sc.status==="live"||sc.status==="ht")) return "live";
   return "up";
 }
 function relTag(d){
@@ -3289,8 +3295,17 @@ async function pollScores(){
   var now=Date.now();
   try{ await loadScoresESPN(ymd(new Date(now-36*3600000)), ymd(new Date(now+24*3600000))); }
   catch(e){ if(window._liveN!==null) fetchScore(window._liveN); }
+  /* تحقّق دقيق من المباريات الجارية المتأخّرة (قرب نهايتها) لالتقاط انتهائها فورًا */
+  try{
+    for(var i=0;i<M.length;i++){
+      var mm=M[i]; if(!mm.d) continue;
+      if(statusOf(mm)!=="live") continue;
+      if((now-dateObj(mm).getTime())/60000 >= 95){ try{ await fetchScore(mm.n); }catch(_e){} }
+    }
+  }catch(e){}
   try{ await fetchLiveGoals(); }catch(e){}
   try{ if(document.getElementById("groupGrid")){ Object.keys(GROUPS).forEach(renderStanding); renderThirdPlace(); } }catch(e){}
+  try{ renderHero(); if(typeof renderHomeLists==="function") renderHomeLists(); }catch(e){}
 }
 
 function vsHTML(m, tm, st){
