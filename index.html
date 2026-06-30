@@ -2605,14 +2605,22 @@ var FINAL_RESULTS={
      ga:[{who:"لاديسلاف كرايتشي", min:"59"}]},
   4:{sh:4, sa:1, status:"finished",
      gh:[{who:"هدف عكسي (بوباديلا)", min:"7"},{who:"فولارين بالوغون", min:"31"},{who:"فولارين بالوغون", min:"45"},{who:"جيوفاني رينا", min:"90"}],
-     ga:[{who:"ماوريسيو", min:"73"}]}
+     ga:[{who:"ماوريسيو", min:"73"}]},
+  73:{sh:0, sa:1, status:"finished",
+     gh:[], ga:[{who:"ستيفن يوستاكيو", min:"90+2"}]},
+  74:{sh:1, sa:1, status:"finished", winSide:"a", pH:3, pA:4,
+     gh:[{who:"كاي هافيرتس", min:"54"}], ga:[{who:"خوليو إنسيسو", min:"42"}]},
+  75:{sh:1, sa:1, status:"finished", winSide:"a", pH:2, pA:3,
+     gh:[{who:"كودي خاكبو", min:"72"}], ga:[{who:"عيسى ديوب", min:"90+1"}]},
+  76:{sh:2, sa:1, status:"finished",
+     gh:[{who:"كاسيميرو", min:"56"},{who:"غابرييل مارتينيلي", min:"90+5"}], ga:[{who:"كايشو سانو", min:"29"}]}
 };
 /* ملاحظة: المباراة 2 في جدولنا = كوريا الجنوبية (h) ضد التشيك (a) => كوريا 2-1 التشيك */
 function applyFinals(){
   setTimeout(function(){ if(document.getElementById('groupGrid')) Object.keys(GROUPS).forEach(renderStanding); if(document.getElementById('dayStrip')) buildDays(); },50);
   Object.keys(FINAL_RESULTS).forEach(function(k){
     var n=+k, f=FINAL_RESULTS[k];
-    SC_CACHE[n]={found:true, sh:f.sh, sa:f.sa, status:f.status, minute:""};
+    SC_CACHE[n]={found:true, sh:f.sh, sa:f.sa, status:f.status, minute:"", winSide:(f.winSide||null), pH:(f.pH!=null?f.pH:null), pA:(f.pA!=null?f.pA:null)};
     if(f.gh || f.ga) GOAL_CACHE[n]={home:(f.gh||[]).map(wrapG), away:(f.ga||[]).map(wrapG)};
     refreshCards(n);
   });
