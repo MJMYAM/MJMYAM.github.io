@@ -155,8 +155,8 @@ main{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:16px 
 .team .tn{font-weight:600; font-size:13.5px; line-height:1.3;}
 .team.ph .tn{color:var(--mut); font-weight:500; font-size:12px; border:1px dashed var(--line); border-radius:10px; padding:5px 8px; background:rgba(255,255,255,.02);}
 .team .fl{position:relative;}
-.team.win .tn{color:#46e08a; font-weight:800;}
-.win-badge{position:absolute; bottom:-2px; left:-4px; background:#2ecc71; color:#07210f; border-radius:50%; width:15px; height:15px; font-size:10px; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #101a30; box-shadow:0 2px 6px rgba(0,0,0,.45);}
+.team.win .tn{color:#ffce5a; font-weight:800;}
+.win-badge{position:absolute; bottom:-3px; left:-5px; background:linear-gradient(135deg,#ffdc5e,#e0a72e); color:#4a3500; border-radius:50%; width:17px; height:17px; font-size:11px; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #101a30; box-shadow:0 2px 7px rgba(0,0,0,.5);}
 .pens{display:flex; flex-direction:column; align-items:center; gap:0; margin:3px 0 1px;}
 .pen-lbl{font-size:9px; color:#ffb1b8; letter-spacing:.2px; opacity:.95;}
 .pen-sc{display:inline-flex; align-items:center; gap:6px; font-weight:800; color:#ffd0d5; font-size:14px; direction:rtl; line-height:1.15;}
@@ -726,7 +726,7 @@ nav#bn button .ic{font-size:18.5px;}
 .hf-line{display:flex; align-items:center; justify-content:center; gap:14px;}
 .hf-team{font-size:15px; font-weight:700; flex:1; max-width:35%;}
 .hf-score{font-family:"Changa",sans-serif; font-weight:800; font-size:34px; color:var(--gold2); letter-spacing:2px; direction:rtl; background:rgba(240,194,75,.1); border:1px solid rgba(240,194,75,.3); border-radius:12px; padding:4px 16px;}
-.hf-win{color:#46e08a !important;}
+.hf-win{color:#ffce5a !important;}
 .hf-pens{font-size:12px; color:#ffb1b8; margin-top:9px; font-weight:700; letter-spacing:.3px;}
 .hf-lbl{font-size:12px; color:var(--mut); margin-top:4px;}
 
@@ -1653,7 +1653,7 @@ function relTag(d){
 /* ================= MATCH CARD ================= */
 function teamHTML(name, win){
   var f=TEAMS[name];
-  if(f) return '<div class="team'+(win?' win':'')+'"><span class="fl">'+flagImg(name)+favStar(name)+(win?'<span class="win-badge">✓</span>':'')+'</span><span class="tn">'+name+'</span></div>';
+  if(f) return '<div class="team'+(win?' win':'')+'"><span class="fl">'+flagImg(name)+favStar(name)+(win?'<span class="win-badge">★</span>':'')+'</span><span class="tn">'+name+'</span></div>';
   // "أفضل ثالث (...)" → أعلام المرشّحين
   if(typeof name==="string" && name.indexOf("أفضل ثالث")===0){
     var tc=thirdCandidatesHTML(name);
@@ -1938,9 +1938,9 @@ function heroCardHTML(m){
     var scoreHTML;
     if(sh!=null && sa!=null){
       scoreHTML='<div class="hf-line">'
-        +'<span class="hf-team'+(_wS==="h"?" hf-win":"")+'">'+m.h+(_wS==="h"?' ✓':'')+'</span>'
+        +'<span class="hf-team'+(_wS==="h"?" hf-win":"")+'">'+m.h+(_wS==="h"?' ★':'')+'</span>'
         +'<span class="hf-score">'+sh+' - '+sa+'</span>'
-        +'<span class="hf-team'+(_wS==="a"?" hf-win":"")+'">'+m.a+(_wS==="a"?' ✓':'')+'</span>'
+        +'<span class="hf-team'+(_wS==="a"?" hf-win":"")+'">'+m.a+(_wS==="a"?' ★':'')+'</span>'
       +'</div>'
       +(_hasP?'<div class="hf-pens">ركلات الترجيح '+_R.pH+' - '+_R.pA+'</div>':'');
     } else {
@@ -2685,7 +2685,10 @@ async function fetchGoals(n, box, btn){
           var cstatus=comps.status||{}, stt=cstatus.type||{};
           var wH=cs[sd.hi].winner===true, wA=cs[sd.ai].winner===true;
           var pH=cs[sd.hi].shootoutScore, pA=cs[sd.ai].shootoutScore;
-          SC_CACHE[n]={found:true,sh:sh,sa:sa,status:stt.state==="post"?"finished":(stt.state==="in"?"live":"not_started"),minute:liveMinute(cstatus),winSide:(wH?"h":(wA?"a":null)),pH:(pH!=null&&pH!==""?parseInt(pH,10):null),pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
+          var _wasFin2 = SC_CACHE[n] && SC_CACHE[n].status==="finished";
+          var _fst = stt.state==="post"?"finished":(stt.state==="in"?"live":"not_started");
+          SC_CACHE[n]={found:true,sh:sh,sa:sa,status:_fst,minute:liveMinute(cstatus),winSide:(wH?"h":(wA?"a":null)),pH:(pH!=null&&pH!==""?parseInt(pH,10):null),pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
+          if(m.r && m.r!=="group" && _fst==="finished" && !_wasFin2) window._koDirty=true;
           refreshCards(n);
         }
       }
@@ -3277,7 +3280,9 @@ async function loadScoresESPN(fromYmd,toYmd){
       var sh=parseInt(cs[sd.hi].score||"0",10), sa=parseInt(cs[sd.ai].score||"0",10);
       var wH=cs[sd.hi].winner===true, wA=cs[sd.ai].winner===true;
       var pH=cs[sd.hi].shootoutScore, pA=cs[sd.ai].shootoutScore;
+      var _wasFin = SC_CACHE[mm.n] && SC_CACHE[mm.n].status==="finished";
       SC_CACHE[mm.n]={found:true, sh:isNaN(sh)?0:sh, sa:isNaN(sa)?0:sa, status:status, minute:liveMinute(st), winSide:(wH?"h":(wA?"a":null)), pH:(pH!=null&&pH!==""?parseInt(pH,10):null), pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
+      if(mm.r && mm.r!=="group" && status==="finished" && !_wasFin) window._koDirty=true;
       refreshCards(mm.n); changed=true;
     }catch(e){}
   });
@@ -3344,6 +3349,7 @@ async function pollScores(){
   }catch(e){}
   try{ await fetchLiveGoals(); }catch(e){}
   try{ if(document.getElementById("groupGrid")){ Object.keys(GROUPS).forEach(renderStanding); renderThirdPlace(); } }catch(e){}
+  try{ if(window._koDirty){ window._koDirty=false; renderKO(); applyFilters(); } }catch(e){}
   try{ renderHero(); if(typeof renderHomeLists==="function") renderHomeLists(); }catch(e){}
 }
 
