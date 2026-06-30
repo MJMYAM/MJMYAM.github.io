@@ -154,6 +154,13 @@ main{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:16px 
 .team .fl{font-size:30px; line-height:1;}
 .team .tn{font-weight:600; font-size:13.5px; line-height:1.3;}
 .team.ph .tn{color:var(--mut); font-weight:500; font-size:12px; border:1px dashed var(--line); border-radius:10px; padding:5px 8px; background:rgba(255,255,255,.02);}
+.team .fl{position:relative;}
+.team.win .tn{color:#46e08a; font-weight:800;}
+.win-badge{position:absolute; bottom:-2px; left:-4px; background:#2ecc71; color:#07210f; border-radius:50%; width:15px; height:15px; font-size:10px; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #101a30; box-shadow:0 2px 6px rgba(0,0,0,.45);}
+.pens{display:flex; flex-direction:column; align-items:center; gap:0; margin:3px 0 1px;}
+.pen-lbl{font-size:9px; color:#ffb1b8; letter-spacing:.2px; opacity:.95;}
+.pen-sc{display:inline-flex; align-items:center; gap:6px; font-weight:800; color:#ffd0d5; font-size:14px; direction:rtl; line-height:1.15;}
+.pen-sc .psep{opacity:.55; font-weight:700;}
 .vs{flex-shrink:0; width:84px; text-align:center;}
 .vs .t{font-family:"Changa",sans-serif; font-weight:800; font-size:16.5px; color:var(--gold2); font-variant-numeric:tabular-nums; line-height:1.2;}
 .vs .ap{display:block; font-size:10px; color:var(--mut);}
@@ -718,7 +725,9 @@ nav#bn button .ic{font-size:18.5px;}
 .hf-tag{font-size:12px; color:#2ecc71; font-weight:700; margin-bottom:10px;}
 .hf-line{display:flex; align-items:center; justify-content:center; gap:14px;}
 .hf-team{font-size:15px; font-weight:700; flex:1; max-width:35%;}
-.hf-score{font-family:"Changa",sans-serif; font-weight:800; font-size:34px; color:var(--gold2); letter-spacing:2px; direction:ltr; background:rgba(240,194,75,.1); border:1px solid rgba(240,194,75,.3); border-radius:12px; padding:4px 16px;}
+.hf-score{font-family:"Changa",sans-serif; font-weight:800; font-size:34px; color:var(--gold2); letter-spacing:2px; direction:rtl; background:rgba(240,194,75,.1); border:1px solid rgba(240,194,75,.3); border-radius:12px; padding:4px 16px;}
+.hf-win{color:#46e08a !important;}
+.hf-pens{font-size:12px; color:#ffb1b8; margin-top:9px; font-weight:700; letter-spacing:.3px;}
 .hf-lbl{font-size:12px; color:var(--mut); margin-top:4px;}
 
 /* ===== تمييز المتأهلين بالألوان ===== */
@@ -1642,9 +1651,9 @@ function relTag(d){
 }
 
 /* ================= MATCH CARD ================= */
-function teamHTML(name){
+function teamHTML(name, win){
   var f=TEAMS[name];
-  if(f) return '<div class="team"><span class="fl">'+flagImg(name)+favStar(name)+'</span><span class="tn">'+name+'</span></div>';
+  if(f) return '<div class="team'+(win?' win':'')+'"><span class="fl">'+flagImg(name)+favStar(name)+(win?'<span class="win-badge">✓</span>':'')+'</span><span class="tn">'+name+'</span></div>';
   // "أفضل ثالث (...)" → أعلام المرشّحين
   if(typeof name==="string" && name.indexOf("أفضل ثالث")===0){
     var tc=thirdCandidatesHTML(name);
@@ -1672,6 +1681,17 @@ function matchCard(m, opts){
   if(typeof resolveKOTeam==="function" && m.r && m.r!=="group"){
     teamH=resolveKOTeam(m.h); teamA=resolveKOTeam(m.a);
   }
+  var winH=false, winA=false;
+  if(st==="done" && m.r && m.r!=="group"){
+    var _fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null;
+    var _sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
+    var _R=(_fr&&_fr.status==="finished")?_fr:((_sc&&_sc.found&&_sc.status==="finished")?_sc:null);
+    if(_R){
+      if(_R.sh>_R.sa) winH=true; else if(_R.sa>_R.sh) winA=true;
+      else if(_R.winSide==="h") winH=true; else if(_R.winSide==="a") winA=true;
+      else if(_R.pH!=null&&_R.pA!=null){ if(_R.pH>_R.pA) winH=true; else if(_R.pA>_R.pH) winA=true; }
+    }
+  }
   var cls="match "+st+(m.r==="final"?" is-final":"");
   var badges="";
   if(st==="live") badges='<span class="tag live"><i></i> مباشر الآن</span>';
@@ -1681,9 +1701,9 @@ function matchCard(m, opts){
   var dline = (opts.showDate && m.d) ? '<span class="tag">'+fmtD(m.d)+'</span>' : "";
   return '<div class="'+cls+'" data-mn="'+m.n+'" style="--rc:'+r.c+'">'
     +'<div class="m-top"><span class="tag num">مباراة '+m.n+'</span>'+grp+'<span class="tag rnd">'+r.l+'</span>'+dline+'<span class="grow"></span>'+badges+'</div>'
-    +'<div class="m-mid">'+teamHTML(teamH)
+    +'<div class="m-mid">'+teamHTML(teamH, winH)
     +'<div class="vs">'+vsHTML(m,tm,st)+'</div>'
-    +teamHTML(teamA)+'</div>'
+    +teamHTML(teamA, winA)+'</div>'
     +'<div class="m-bot">🏟️ <b>'+(s.sn||s.n)+'</b><span>·</span>📍 '+s.c+' <span>'+flagImg(s.co)+'</span><span>·</span>👥 <span class="cap">'+nf(s.cap)+'</span></div>'
     +'<div class="m-tv"><span>📺 <span class="bein">شبكة beIN Sports</span></span><span class="m-tv-acts">'+shareBtnMini(m.n)+'<span class="chev">التشكيلة ▾</span></span></div>'
     +'<div class="m-ext"></div>'
@@ -1904,16 +1924,25 @@ function heroCardHTML(m){
     // اعرض النتيجة النهائية بين الفريقين مع "انتهت المباراة"
     var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null;
     var sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
+    var _R=(fr&&fr.status==="finished")?fr:((sc&&sc.found)?sc:null);
     var sh=null, sa=null;
-    if(fr){ sh=fr.sh; sa=fr.sa; }
-    else if(sc && sc.found){ sh=sc.sh; sa=sc.sa; }
+    if(_R){ sh=_R.sh; sa=_R.sa; }
+    var _wK=(m.r&&m.r!=="group"), _wS=null;
+    if(_R && sh!=null && sa!=null){
+      if(sh>sa) _wS="h"; else if(sa>sh) _wS="a";
+      else if(_R.winSide==="h") _wS="h"; else if(_R.winSide==="a") _wS="a";
+      else if(_R.pH!=null&&_R.pA!=null){ if(_R.pH>_R.pA) _wS="h"; else if(_R.pA>_R.pH) _wS="a"; }
+    }
+    if(!_wK) _wS=null;
+    var _hasP=_R && _R.pH!=null && _R.pA!=null;
     var scoreHTML;
     if(sh!=null && sa!=null){
       scoreHTML='<div class="hf-line">'
-        +'<span class="hf-team">'+m.h+'</span>'
+        +'<span class="hf-team'+(_wS==="h"?" hf-win":"")+'">'+m.h+(_wS==="h"?' ✓':'')+'</span>'
         +'<span class="hf-score">'+sh+' - '+sa+'</span>'
-        +'<span class="hf-team">'+m.a+'</span>'
-      +'</div>';
+        +'<span class="hf-team'+(_wS==="a"?" hf-win":"")+'">'+m.a+(_wS==="a"?' ✓':'')+'</span>'
+      +'</div>'
+      +(_hasP?'<div class="hf-pens">ركلات الترجيح '+_R.pH+' - '+_R.pA+'</div>':'');
     } else {
       scoreHTML='<div class="hf-score">انتهت</div>';
     }
@@ -3322,12 +3351,13 @@ function vsHTML(m, tm, st){
   var sc=SC_CACHE[m.n];
   if(sc && sc.found){
     var stl;
-    if(sc.status==="finished") stl='<span class="scst">انتهت'+((sc.pH!=null&&sc.pA!=null)?' · ر.ت '+sc.pH+'-'+sc.pA:'')+'</span>';
+    if(sc.status==="finished") stl='<span class="scst">انتهت</span>';
     else if(sc.status==="ht") stl='<span class="scst lv">استراحة</span>';
     else if(sc.status==="live") stl='<span class="scst lv">'+(sc.minute?"⏱ "+sc.minute:"🔴 مباشر")+'</span>';
     else stl='<span class="scst">'+tm.t+' '+tm.ap+'</span>';
     var b = st==="live" ? '<button class="scbtn" data-sc="'+m.n+'">تحديث ⟳</button>' : '';
-    return '<div class="sc"><span class="num">'+sc.sh+'</span><span class="sep">:</span><span class="num">'+sc.sa+'</span></div>'+stl+b;
+    var penLine=(sc.status==="finished"&&sc.pH!=null&&sc.pA!=null)?'<div class="pens"><span class="pen-lbl">ركلات الترجيح</span><span class="pen-sc"><span class="pn">'+sc.pH+'</span><span class="psep">:</span><span class="pn">'+sc.pA+'</span></span></div>':'';
+    return '<div class="sc"><span class="num">'+sc.sh+'</span><span class="sep">:</span><span class="num">'+sc.sa+'</span></div>'+penLine+stl+b;
   }
   var base='<span class="t">'+tm.t+'</span><span class="ap">'+tm.ap+'</span>';
   if(st==="live") base+='<button class="scbtn" data-sc="'+m.n+'">نتيجة لايف ⟳</button>';
