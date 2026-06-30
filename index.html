@@ -2343,7 +2343,13 @@ function koWinnerOf(matchNum, depth){
   var aName = resolveKOName(m.a, depth+1);
   if(sh>sa) return hName;
   if(sa>sh) return aName;
-  // تعادل: نحتاج ركلات الترجيح — غير متوفرة، نرجع null
+  // تعادل (ركلات ترجيح): استخدم الفائز أو نتيجة الركلات من المصدر
+  var ws=(fr&&fr.winSide)||(sc&&sc.winSide)||null;
+  if(ws==="h") return hName;
+  if(ws==="a") return aName;
+  var ph=(fr&&fr.pH!=null)?fr.pH:((sc&&sc.pH!=null)?sc.pH:null);
+  var pa=(fr&&fr.pA!=null)?fr.pA:((sc&&sc.pA!=null)?sc.pA:null);
+  if(ph!=null&&pa!=null){ if(ph>pa) return hName; if(pa>ph) return aName; }
   return null;
 }
 /* يحلّ أي اسم: فريق فعلي / متصدر-وصيف مجموعة / الفائز من مباراة */
@@ -2648,7 +2654,9 @@ async function fetchGoals(n, box, btn){
         var sh=parseInt(cs[sd.hi].score,10), sa=parseInt(cs[sd.ai].score,10);
         if(!isNaN(sh)&&!isNaN(sa)){
           var cstatus=comps.status||{}, stt=cstatus.type||{};
-          SC_CACHE[n]={found:true,sh:sh,sa:sa,status:stt.state==="post"?"finished":(stt.state==="in"?"live":"not_started"),minute:liveMinute(cstatus)};
+          var wH=cs[sd.hi].winner===true, wA=cs[sd.ai].winner===true;
+          var pH=cs[sd.hi].shootoutScore, pA=cs[sd.ai].shootoutScore;
+          SC_CACHE[n]={found:true,sh:sh,sa:sa,status:stt.state==="post"?"finished":(stt.state==="in"?"live":"not_started"),minute:liveMinute(cstatus),winSide:(wH?"h":(wA?"a":null)),pH:(pH!=null&&pH!==""?parseInt(pH,10):null),pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
           refreshCards(n);
         }
       }
@@ -3238,7 +3246,9 @@ async function loadScoresESPN(fromYmd,toYmd){
       EVTEAM[mm.n]={h:cs[sd.hi].team.id, a:cs[sd.ai].team.id};
       if(FINAL_RESULTS[mm.n]){ return; }
       var sh=parseInt(cs[sd.hi].score||"0",10), sa=parseInt(cs[sd.ai].score||"0",10);
-      SC_CACHE[mm.n]={found:true, sh:isNaN(sh)?0:sh, sa:isNaN(sa)?0:sa, status:status, minute:liveMinute(st)};
+      var wH=cs[sd.hi].winner===true, wA=cs[sd.ai].winner===true;
+      var pH=cs[sd.hi].shootoutScore, pA=cs[sd.ai].shootoutScore;
+      SC_CACHE[mm.n]={found:true, sh:isNaN(sh)?0:sh, sa:isNaN(sa)?0:sa, status:status, minute:liveMinute(st), winSide:(wH?"h":(wA?"a":null)), pH:(pH!=null&&pH!==""?parseInt(pH,10):null), pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
       refreshCards(mm.n); changed=true;
     }catch(e){}
   });
@@ -3312,7 +3322,7 @@ function vsHTML(m, tm, st){
   var sc=SC_CACHE[m.n];
   if(sc && sc.found){
     var stl;
-    if(sc.status==="finished") stl='<span class="scst">انتهت</span>';
+    if(sc.status==="finished") stl='<span class="scst">انتهت'+((sc.pH!=null&&sc.pA!=null)?' · ر.ت '+sc.pH+'-'+sc.pA:'')+'</span>';
     else if(sc.status==="ht") stl='<span class="scst lv">استراحة</span>';
     else if(sc.status==="live") stl='<span class="scst lv">'+(sc.minute?"⏱ "+sc.minute:"🔴 مباشر")+'</span>';
     else stl='<span class="scst">'+tm.t+' '+tm.ap+'</span>';
