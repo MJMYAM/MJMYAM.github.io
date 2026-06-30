@@ -289,6 +289,16 @@ main{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:16px 
 .match.open .m-tv .chev{transform:rotate(180deg);}
 .m-ext{display:none; margin-top:11px; padding-top:11px; border-top:1px solid var(--line);}
 .match.open .m-ext{display:block; animation:rise .3s ease both;}
+.watch-live{display:flex; align-items:center; justify-content:center; gap:7px; width:100%; margin:10px 0 2px; padding:11px; border:none; border-radius:12px; background:linear-gradient(135deg,#e23744,#b3162a); color:#fff; font-family:inherit; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 14px rgba(226,55,68,.4); animation:wpulse 2.2s ease-in-out infinite;}
+.watch-live:active{transform:scale(.98);}
+@keyframes wpulse{0%,100%{box-shadow:0 4px 14px rgba(226,55,68,.4);}50%{box-shadow:0 5px 24px rgba(226,55,68,.7);}}
+.hero-watch{margin:12px auto 0; max-width:320px;}
+.ltv-modal{position:fixed; inset:0; z-index:9999; background:rgba(4,8,18,.82); display:flex; align-items:center; justify-content:center; padding:18px; animation:fadein .2s ease;}
+.ltv-card{background:var(--card,#101a30); border:1px solid var(--line,#22304d); border-radius:18px; padding:18px 16px 16px; width:100%; max-width:380px; position:relative; box-shadow:0 18px 50px rgba(0,0,0,.6); animation:rise .25s ease both;}
+.ltv-x{position:absolute; top:12px; left:14px; width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.08); color:#cfd6e6; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px;}
+.ltv-title{font-weight:800; font-size:17px; color:#fff; text-align:center; margin-bottom:3px;}
+.ltv-teams{text-align:center; color:var(--gold2,#f0c24b); font-weight:700; font-size:14px; margin-bottom:12px;}
+@keyframes fadein{from{opacity:0;}to{opacity:1;}}
 .lu-btn{width:100%; background:linear-gradient(135deg,rgba(240,194,75,.2),rgba(240,194,75,.06)); border:1px solid rgba(240,194,75,.5); color:var(--gold2); font-family:inherit; font-size:12.5px; font-weight:700; border-radius:12px; padding:10px; cursor:pointer;}
 .lu-btn:disabled{opacity:.6; cursor:wait;}
 .lu-note{font-size:11px; color:var(--dim); text-align:center; margin-top:7px; line-height:1.9;}
@@ -1717,6 +1727,7 @@ function matchCard(m, opts){
     +'<div class="m-mid">'+teamHTML(teamH, winH)
     +'<div class="vs">'+vsHTML(m,tm,st)+'</div>'
     +teamHTML(teamA, winA)+'</div>'
+    +(st==="live"?'<button class="watch-live" onclick="event.stopPropagation();openLiveTVModal('+m.n+')">🔴 شاهد المباراة مباشرة</button>':'')
     +'<div class="m-bot">🏟️ <b>'+(s.sn||s.n)+'</b><span>·</span>📍 '+s.c+' <span>'+flagImg(s.co)+'</span><span>·</span>👥 <span class="cap">'+nf(s.cap)+'</span></div>'
     +'<div class="m-tv"><span>📺 <span class="bein">شبكة beIN Sports</span></span><span class="m-tv-acts">'+shareBtnMini(m.n)+'<span class="chev">التشكيلة ▾</span></span></div>'
     +'<div class="m-ext"></div>'
@@ -1958,7 +1969,8 @@ function heroCardHTML(m){
       +scoreHTML
     +'</div>';
   } else if(isLive){
-    cdBlock='<div id="heroScore-'+m.n+'"><div class="live-big">⚽ المباراة جارية الآن</div></div>';
+    cdBlock='<div id="heroScore-'+m.n+'"><div class="live-big">⚽ المباراة جارية الآن</div></div>'
+      +'<button class="watch-live hero-watch" onclick="event.stopPropagation();openLiveTVModal('+m.n+')">🔴 شاهد المباراة مباشرة</button>';
   } else {
     cdBlock='<div class="cd" data-hcd="'+m.n+'">'
       +'<div class="box"><div class="v" data-hcdd>0</div><div class="l">يوم</div></div>'
@@ -3653,6 +3665,30 @@ function openLiveTV(btn){
   box.innerHTML='<div class="livetv-head">📡 اختر موقع البث — إن لم يعمل الأول جرّب البديل</div>'
     +links
     +'<div class="livetv-note">⚠️ مواقع بث خارجية مستقلة · قد تظهر بها إعلانات · الروابط قد تتغير</div>';
+}
+function openLiveTVModal(mn){
+  var m=getM(+mn); if(!m) return;
+  var ex=document.getElementById("ltvModal"); if(ex) ex.remove();
+  var th=(typeof resolveKOTeam==="function")?resolveKOTeam(m.h):m.h;
+  var ta=(typeof resolveKOTeam==="function")?resolveKOTeam(m.a):m.a;
+  var links=LIVE_TV_SITES.map(function(st,i){
+    return '<a class="livetv-link" href="'+st.url+'" target="_blank" rel="noopener noreferrer">'
+      +'<span class="lt-num">'+(i+1)+'</span>'
+      +'<span class="lt-info"><b>'+st.name+'</b><small>'+st.desc+'</small></span>'
+      +'<span class="lt-go">فتح ↗</span></a>';
+  }).join("");
+  var ov=document.createElement("div");
+  ov.id="ltvModal"; ov.className="ltv-modal";
+  ov.innerHTML='<div class="ltv-card">'
+    +'<div class="ltv-x">✕</div>'
+    +'<div class="ltv-title">🔴 مشاهدة المباراة مباشرة</div>'
+    +'<div class="ltv-teams">'+th+' × '+ta+'</div>'
+    +'<div class="livetv-head">📡 اختر موقع البث — إن لم يعمل الأول جرّب البديل</div>'
+    +links
+    +'<div class="livetv-note">⚠️ مواقع بث خارجية مستقلة · قد تظهر بها إعلانات · الروابط قد تتغير</div>'
+    +'</div>';
+  ov.addEventListener("click", function(e){ if(e.target===ov || e.target.classList.contains("ltv-x")) ov.remove(); });
+  document.body.appendChild(ov);
 }
 
 
