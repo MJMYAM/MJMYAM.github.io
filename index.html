@@ -3384,6 +3384,7 @@ async function pollScores(){
   try{ if(document.getElementById("groupGrid")){ Object.keys(GROUPS).forEach(renderStanding); renderThirdPlace(); } }catch(e){}
   try{ if(window._koDirty){ window._koDirty=false; renderKO(); applyFilters(); } }catch(e){}
   try{ renderHero(); if(typeof renderHomeLists==="function") renderHomeLists(); }catch(e){}
+  try{ var _tm=document.getElementById("tab-matches"); if(_tm && _tm.classList.contains("active") && typeof applyFilters==="function") applyFilters(); }catch(e){}
 }
 
 function vsHTML(m, tm, st){
@@ -4087,7 +4088,30 @@ tick();
 setInterval(tick, 1000);
 setInterval(tickCd, 20000);
 setInterval(function(){renderHero(); renderHomeLists();}, 60000);
-setInterval(pollScores, 120000);
+function _pollDelay(){
+  var now=Date.now(), nearEnd=false, anyLive=false;
+  for(var i=0;i<M.length;i++){
+    var m=M[i]; if(!m.d) continue;
+    var st=statusOf(m);
+    if(st==="live"){
+      anyLive=true;
+      if((now-dateObj(m).getTime())/60000>=80) nearEnd=true;
+    } else if(st==="done" && m.r && m.r!=="group"){
+      var sc=SC_CACHE[m.n];
+      if(sc && sc.found && sc.status==="finished" && sc.sh===sc.sa && !sc.winSide && sc.pH==null){
+        if((now-dateObj(m).getTime())/60000<=360) nearEnd=true;
+      }
+    }
+  }
+  return nearEnd?15000:(anyLive?40000:120000);
+}
+function schedulePoll(){
+  clearTimeout(window._pollTimer);
+  window._pollTimer=setTimeout(function(){
+    pollScores().then(schedulePoll, schedulePoll);
+  }, _pollDelay());
+}
+schedulePoll();
 applyFinals();
 loadScoresESPN("20260610", ymd(new Date(Date.now()+24*3600000))).then(function(){
   applyFinals();
