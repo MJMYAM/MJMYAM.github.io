@@ -1651,6 +1651,28 @@ function relTag(d){
 }
 
 /* ================= MATCH CARD ================= */
+function koWonSide(m){
+  if(!m || !m.r || m.r==="group") return null;
+  var rs=(typeof resolveKOTeam==="function");
+  var th=rs?resolveKOTeam(m.h):m.h, ta=rs?resolveKOTeam(m.a):m.a;
+  if(typeof koWinnerOf==="function"){
+    var w=koWinnerOf(m.n);
+    if(w){ if(w===th) return "h"; if(w===ta) return "a"; }
+  }
+  var order=["r32","r16","qf","sf","final"], idx=order.indexOf(m.r);
+  if(idx<0 || idx>=order.length-1) return null;
+  function inLater(nm){
+    if(!nm || !TEAMS[nm]) return false;
+    for(var i=0;i<M.length;i++){ var x=M[i];
+      if(order.indexOf(x.r)<=idx) continue;
+      if((rs?resolveKOTeam(x.h):x.h)===nm || (rs?resolveKOTeam(x.a):x.a)===nm) return true;
+    }
+    return false;
+  }
+  if(TEAMS[th] && inLater(th)) return "h";
+  if(TEAMS[ta] && inLater(ta)) return "a";
+  return null;
+}
 function teamHTML(name, win){
   var f=TEAMS[name];
   if(f) return '<div class="team'+(win?' win':'')+'"><span class="fl">'+flagImg(name)+favStar(name)+(win?'<span class="win-badge">★</span>':'')+'</span><span class="tn">'+name+'</span></div>';
@@ -1681,17 +1703,8 @@ function matchCard(m, opts){
   if(typeof resolveKOTeam==="function" && m.r && m.r!=="group"){
     teamH=resolveKOTeam(m.h); teamA=resolveKOTeam(m.a);
   }
-  var winH=false, winA=false;
-  if(st==="done" && m.r && m.r!=="group"){
-    var _fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null;
-    var _sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
-    var _R=(_fr&&_fr.status==="finished")?_fr:((_sc&&_sc.found&&_sc.status==="finished")?_sc:null);
-    if(_R){
-      if(_R.sh>_R.sa) winH=true; else if(_R.sa>_R.sh) winA=true;
-      else if(_R.winSide==="h") winH=true; else if(_R.winSide==="a") winA=true;
-      else if(_R.pH!=null&&_R.pA!=null){ if(_R.pH>_R.pA) winH=true; else if(_R.pA>_R.pH) winA=true; }
-    }
-  }
+  var _ws=(st==="done")?koWonSide(m):null;
+  var winH=(_ws==="h"), winA=(_ws==="a");
   var cls="match "+st+(m.r==="final"?" is-final":"");
   var badges="";
   if(st==="live") badges='<span class="tag live"><i></i> مباشر الآن</span>';
@@ -1927,13 +1940,7 @@ function heroCardHTML(m){
     var _R=(fr&&fr.status==="finished")?fr:((sc&&sc.found)?sc:null);
     var sh=null, sa=null;
     if(_R){ sh=_R.sh; sa=_R.sa; }
-    var _wK=(m.r&&m.r!=="group"), _wS=null;
-    if(_R && sh!=null && sa!=null){
-      if(sh>sa) _wS="h"; else if(sa>sh) _wS="a";
-      else if(_R.winSide==="h") _wS="h"; else if(_R.winSide==="a") _wS="a";
-      else if(_R.pH!=null&&_R.pA!=null){ if(_R.pH>_R.pA) _wS="h"; else if(_R.pA>_R.pH) _wS="a"; }
-    }
-    if(!_wK) _wS=null;
+    var _wS=(m.r&&m.r!=="group")?koWonSide(m):null;
     var _hasP=_R && _R.pH!=null && _R.pA!=null;
     var scoreHTML;
     if(sh!=null && sa!=null){
