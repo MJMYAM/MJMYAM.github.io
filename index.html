@@ -2621,7 +2621,7 @@ function applyFinals(){
   Object.keys(FINAL_RESULTS).forEach(function(k){
     var n=+k, f=FINAL_RESULTS[k];
     SC_CACHE[n]={found:true, sh:f.sh, sa:f.sa, status:f.status, minute:"", winSide:(f.winSide||null), pH:(f.pH!=null?f.pH:null), pA:(f.pA!=null?f.pA:null)};
-    if(f.gh || f.ga) GOAL_CACHE[n]={home:(f.gh||[]).map(wrapG), away:(f.ga||[]).map(wrapG)};
+    if(f.gh || f.ga) GOAL_CACHE[n]={home:(f.gh||[]).map(wrapG), away:(f.ga||[]).map(wrapG), _fetched:true};
     refreshCards(n);
   });
   refreshHeroScore();
