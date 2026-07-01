@@ -1042,6 +1042,12 @@ nav#bn button.has-badge .badge{display:block;}
 .gp-clue:last-child{border-bottom:none;}
 .gp-q{font-family:"Changa",sans-serif; font-weight:800; font-size:17px; text-align:center; margin-bottom:12px; color:var(--gold2);}
 .gp-reveal{text-align:center; font-family:"Changa",sans-serif; font-weight:800; font-size:15px;}
+.gp-ring{width:132px; height:132px; margin:0 auto; border-radius:50%; padding:5px; background:radial-gradient(circle,#1a2740,#0a1220); border:2px solid rgba(240,194,75,.4); box-shadow:0 8px 24px rgba(0,0,0,.45);}
+.gp-face{width:100%; height:100%; border-radius:50%; overflow:hidden; transition:filter .55s ease;}
+.gp-face svg{width:100%; height:100%; display:block;}
+.gp-blurhint{text-align:center; font-size:11px; color:var(--mut); margin:8px 0 12px;}
+.gp-hint{display:block; width:100%; padding:9px; margin:-2px 0 14px; border:1px dashed rgba(240,194,75,.5); background:rgba(240,194,75,.08); color:var(--gold2); font-family:inherit; font-weight:700; font-size:12.5px; border-radius:10px; cursor:pointer;}
+.gp-hint:active{background:rgba(240,194,75,.15);}
 
 /* المقارنة */
 .cmp-grid{display:grid; grid-template-columns:1fr auto 1fr; gap:8px; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px 12px; margin-bottom:14px;}
@@ -4431,74 +4437,101 @@ function handleQuizAnswer(chosen, correct, btn){
   setTimeout(function(){ quizState.idx++; quizState.answered=false; if(quizState.idx>=QUIZ.length) quizState.finished=true; renderQuiz(); }, 1400);
 }
 function restartQuiz(){ quizState={idx:0,score:0,answered:false,finished:false}; renderQuiz(); }
-/* ===== خمّن اللاعب ===== */
+/* ===== خمّن اللاعب (نسخة متطوّرة: تغبيش الوجه + تلميحات تدريجية + صعوبة) ===== */
 var GUESS_PLAYERS=[
-  {name:"ليونيل ميسي", country:"الأرجنتين", clues:["⚽ مهاجم وصانع ألعاب","🏟️ يلعب لنادي إنتر ميامي","🏆 قاد بلاده للقب كأس العالم 2022","🐐 حاصل على 8 كرات ذهبية","🔢 يرتدي القميص رقم 10"]},
-  {name:"كريستيانو رونالدو", country:"البرتغال", clues:["⚽ مهاجم","🏟️ يلعب لنادي النصر السعودي","👑 أفضل هدّاف دولي في التاريخ","🏅 حاصل على 5 كرات ذهبية","🔢 يرتدي القميص رقم 7"]},
-  {name:"كيليان مبابي", country:"فرنسا", clues:["⚽ مهاجم سريع","🏟️ يلعب لنادي ريال مدريد","🏆 بطل كأس العالم 2018","⚡ من أسرع لاعبي العالم","🔢 يرتدي القميص رقم 10"]},
-  {name:"إيرلينغ هالاند", country:"النرويج", clues:["⚽ رأس حربة صريح","🏟️ يلعب لنادي مانشستر سيتي","🎯 آلة أهداف نادرة","🇳🇴 نجم منتخب النرويج","🔢 يرتدي القميص رقم 9"]},
-  {name:"فينيسيوس جونيور", country:"البرازيل", clues:["⚽ جناح أيسر مراوغ","🏟️ يلعب لنادي ريال مدريد","🇧🇷 نجم هجوم البرازيل","✨ خطير في السرعة والمراوغة","🔢 يرتدي القميص رقم 7"]},
-  {name:"محمد صلاح", country:"مصر", clues:["⚽ جناح أيمن","🏟️ يلعب لنادي ليفربول","👑 يُلقّب بـ«الملك المصري»","🎯 من أفضل هدّافي الدوري الإنجليزي","🔢 يرتدي القميص رقم 11"]},
-  {name:"هاري كين", country:"إنجلترا", clues:["⚽ مهاجم ورأس حربة","🏟️ يلعب لنادي بايرن ميونخ","🏴 قائد منتخب إنجلترا","🎯 هدّاف تاريخي غزير","🔢 يرتدي القميص رقم 9"]},
-  {name:"لوكا مودريتش", country:"كرواتيا", clues:["⚽ صانع ألعاب في الوسط","🇭🇷 قائد منتخب كرواتيا","🏅 كرة ذهبية 2018","🎩 من أفضل صنّاع الألعاب","🔢 يرتدي القميص رقم 10"]},
-  {name:"أشرف حكيمي", country:"المغرب", clues:["⚽ ظهير أيمن هجومي","🏟️ يلعب لباريس سان جيرمان","🇲🇦 نجم منتخب المغرب","⚡ سريع وخطير على الأطراف","🔢 يرتدي القميص رقم 2"]},
-  {name:"جود بيلينغهام", country:"إنجلترا", clues:["⚽ لاعب خط وسط","🏟️ يلعب لنادي ريال مدريد","🏴 نجم إنجلترا الشاب","💫 من أفضل مواهب جيله","🔢 يرتدي القميص رقم 5"]},
-  {name:"لامين يامال", country:"إسبانيا", clues:["⚽ جناح موهوب","🏟️ يلعب لنادي برشلونة","🇪🇸 من أصغر نجوم إسبانيا","🌟 موهبة استثنائية في سنّ صغيرة","🔢 يرتدي القميص رقم 19"]},
-  {name:"فيرجيل فان دايك", country:"هولندا", clues:["🛡️ قلب دفاع قوي","🏟️ يلعب لنادي ليفربول","🇳🇱 قائد منتخب هولندا","💪 من أفضل المدافعين في العالم","🔢 يرتدي القميص رقم 4"]}
+  {name:"ليونيل ميسي", color:"#75AADB", clues:["⚽ مهاجم صغير الحجم وصانع ألعاب","🎩 يعتمد على المهارة والمراوغة أكثر من القوة","🏟️ انتقل للعب في الدوري الأمريكي","🇦🇷 قاد منتخبه للقب كأس العالم 2022","🐐 حاصل على 8 كرات ذهبية ويرتدي رقم 10"]},
+  {name:"كريستيانو رونالدو", color:"#C8102E", clues:["⚽ مهاجم قوي بدنياً وخطير بالرأسيات","💪 مشهور بلياقته العالية رغم تقدّم عمره","🏟️ يلعب حالياً في الدوري السعودي","🇵🇹 أفضل هدّاف دولي في التاريخ","🏅 حاصل على 5 كرات ذهبية ويرتدي رقم 7"]},
+  {name:"كيليان مبابي", color:"#1E2A5A", clues:["⚽ مهاجم يعتمد على السرعة الصاروخية","⚡ من أسرع اللاعبين في العالم","🏟️ انتقل إلى ريال مدريد","🇫🇷 بطل كأس العالم 2018 مع بلاده","🔢 نجم فرنسا ويرتدي رقم 10"]},
+  {name:"إيرلينغ هالاند", color:"#BA0C2F", clues:["⚽ رأس حربة طويل القامة","🎯 آلة أهداف داخل منطقة الجزاء","🏟️ يلعب لنادي مانشستر سيتي","🇳🇴 نجم منتخب النرويج","💪 قوي جداً ويرتدي رقم 9"]},
+  {name:"فينيسيوس جونيور", color:"#FFDF00", clues:["⚽ جناح أيسر سريع ومراوغ","✨ استعراضي وخطير في الواحد ضد واحد","🏟️ يلعب لنادي ريال مدريد","🇧🇷 من نجوم هجوم البرازيل","🔢 يرتدي القميص رقم 7"]},
+  {name:"محمد صلاح", color:"#CE1126", clues:["⚽ جناح أيمن يقطع للداخل ويسدّد","🎯 هدّاف غزير في الدوري الإنجليزي","🏟️ نجم نادي ليفربول","🇪🇬 يُلقّب بـ«الملك المصري»","🔢 يرتدي القميص رقم 11"]},
+  {name:"هاري كين", color:"#8A1538", clues:["⚽ مهاجم صريح يجيد صناعة اللعب","🎯 هدّاف تاريخي بأرقام ضخمة","🏟️ انتقل إلى بايرن ميونخ","🏴 قائد منتخب إنجلترا","🔢 يرتدي القميص رقم 9"]},
+  {name:"لوكا مودريتش", color:"#E01A22", clues:["⚽ صانع ألعاب في خط الوسط","🎩 يتميّز بالرؤية والتمرير رغم عمره","🏟️ لعب سنوات طويلة لريال مدريد","🇭🇷 قائد منتخب كرواتيا","🏅 حاصل على الكرة الذهبية 2018"]},
+  {name:"أشرف حكيمي", color:"#C1272D", clues:["⚽ ظهير أيمن هجومي وسريع","⚡ يصعد كثيراً على الطرف الأيمن","🏟️ يلعب لباريس سان جيرمان","🇲🇦 من نجوم منتخب المغرب","🔢 يرتدي القميص رقم 2"]},
+  {name:"جود بيلينغهام", color:"#0A2472", clues:["⚽ لاعب خط وسط شاب وقوي","💫 يجيد التسجيل وصناعة اللعب","🏟️ يلعب لريال مدريد","🏴 نجم صاعد لمنتخب إنجلترا","🔢 يرتدي القميص رقم 5"]},
+  {name:"لامين يامال", color:"#AA151B", clues:["⚽ جناح موهوب صغير السن جداً","🌟 انفجر مبكراً كأحد أفضل المواهب","🏟️ نجم نادي برشلونة","🇪🇸 يمثّل منتخب إسبانيا","🔢 يرتدي القميص رقم 19"]},
+  {name:"فيرجيل فان دايك", color:"#FF6C00", clues:["🛡️ قلب دفاع طويل وقوي","💪 قائد ومنظّم لخط الدفاع","🏟️ نجم نادي ليفربول","🇳🇱 قائد منتخب هولندا","🔢 يرتدي القميص رقم 4"]},
+  {name:"كيفن دي بروين", color:"#C8102E", clues:["⚽ صانع ألعاب بتمريرات حاسمة","🎯 من أفضل الممرّرين في العالم","🏟️ لمع لسنوات مع مانشستر سيتي","🇧🇪 نجم الجيل الذهبي لبلجيكا","🔢 يرتدي القميص رقم 7"]},
+  {name:"رودري", color:"#AA151B", clues:["⚽ لاعب ارتكاز في خط الوسط","🧠 عقل الفريق وموزّع الكرات","🏟️ يلعب لمانشستر سيتي","🇪🇸 من نجوم منتخب إسبانيا","🏅 فاز بالكرة الذهبية 2024"]},
+  {name:"بوكايو ساكا", color:"#EF0107", clues:["⚽ جناح أيمن سريع ومراوغ","✨ خطير في العرضيات والتسديد","🏟️ نجم نادي آرسنال","🏴 يمثّل منتخب إنجلترا","🔢 يرتدي القميص رقم 7"]},
+  {name:"أنطوان غريزمان", color:"#1E2A5A", clues:["⚽ مهاجم وصانع ألعاب متكامل","🎩 يربط الخطوط ويصنع الفارق","🏟️ نجم نادي أتلتيكو مدريد","🇫🇷 بطل عالم 2018 مع فرنسا","🔢 يرتدي القميص رقم 7"]}
 ];
-var MYSTERY_SVG='<svg viewBox="0 0 120 120" class="gp-svg" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="gpg" cx="50%" cy="34%" r="75%"><stop offset="0%" stop-color="#22334f"/><stop offset="100%" stop-color="#0a1220"/></radialGradient></defs><circle cx="60" cy="60" r="56" fill="url(#gpg)" stroke="rgba(240,194,75,.35)" stroke-width="2"/><path d="M26 110 Q26 74 60 74 Q94 74 94 110 Z" fill="#101a2c"/><circle cx="60" cy="46" r="22" fill="#101a2c"/><text x="60" y="58" font-size="34" font-weight="800" text-anchor="middle" fill="#f0c24b" font-family="Changa,sans-serif">؟</text></svg>';
-var guessState={idx:0,score:0,streak:0,best:0,answered:false,finished:false,order:[],opts:[],correct:0};
+function mysterySVG(color){
+  return '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">'
+    +'<rect width="120" height="120" fill="#0b1322"/>'
+    +'<path d="M16 120 Q16 76 60 76 Q104 76 104 120 Z" fill="'+color+'"/>'
+    +'<rect x="52" y="60" width="16" height="18" fill="#d9a97e"/>'
+    +'<circle cx="60" cy="45" r="21" fill="#e3b489"/>'
+    +'<path d="M39 43 Q40 21 60 21 Q80 21 81 43 Q71 30 60 30 Q49 30 39 43 Z" fill="#2b2018"/>'
+    +'<circle cx="52" cy="45" r="2.3" fill="#241a14"/><circle cx="68" cy="45" r="2.3" fill="#241a14"/>'
+    +'<path d="M54 55 Q60 59 66 55" stroke="#8a5443" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
+    +'</svg>';
+}
+var GAME_LEN=10;
+var guessState={idx:0,score:0,streak:0,best:0,shown:2,answered:false,finished:false,order:[],cur:null};
 function _shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
-function startGuess(){ guessState={idx:0,score:0,streak:0,best:0,answered:false,finished:false,order:_shuffle(GUESS_PLAYERS.map(function(_,i){return i;})),opts:[],correct:0}; }
-function buildGuessQ(){
+function startGuess(){
+  var all=_shuffle(GUESS_PLAYERS.map(function(_,i){return i;}));
+  guessState={idx:0,score:0,streak:0,best:0,shown:2,answered:false,finished:false,order:all.slice(0,Math.min(GAME_LEN,all.length)),cur:null};
+  nextGuessQ();
+}
+function nextGuessQ(){
   var p=GUESS_PLAYERS[guessState.order[guessState.idx]];
   var others=GUESS_PLAYERS.filter(function(x){return x.name!==p.name;});
   _shuffle(others);
   var opts=[p.name, others[0].name, others[1].name, others[2].name];
   _shuffle(opts);
-  guessState.opts=opts; guessState.correct=opts.indexOf(p.name);
-  return p;
+  guessState.cur={p:p, opts:opts, correct:opts.indexOf(p.name)};
+  guessState.shown=2; guessState.answered=false;
 }
+function guessBlur(){ var b=[10,10,7,5,3]; return guessState.answered?0:(b[Math.min(guessState.shown,4)]!=null?b[Math.min(guessState.shown,4)]:3); }
 function renderGuess(){
   var box=document.getElementById("guessBox"); if(!box) return;
-  if(!guessState.order.length) startGuess();
+  if(!guessState.order.length){ startGuess(); }
   if(guessState.finished){
-    var pct=Math.round(guessState.score/GUESS_PLAYERS.length*100), msg;
-    if(pct>=80) msg="🔥 خبير كرة! معرفتك رهيبة"; else if(pct>=50) msg="👍 مستوى ممتاز"; else msg="💪 راجع النجوم وحاول مرّة ثانية";
-    box.innerHTML='<div class="quiz-card" style="text-align:center"><div style="font-size:56px;margin:12px 0">🕵️</div><div class="quiz-score">'+guessState.score+'/'+GUESS_PLAYERS.length+'</div><div style="font-size:13px;color:var(--mut);margin-bottom:14px">'+msg+'</div><button class="pred-btn gold" onclick="restartGuess()">↻ العب مرّة ثانية</button></div>';
+    var mx=guessState.order.length*5, pct=Math.round(guessState.score/mx*100), msg;
+    if(pct>=80) msg="🔥 خبير كرة حقيقي! معرفتك رهيبة"; else if(pct>=50) msg="👍 مستوى ممتاز"; else msg="💪 حاول مرّة ثانية وارفع نتيجتك";
+    box.innerHTML='<div class="quiz-card" style="text-align:center"><div style="font-size:56px;margin:12px 0">🏅</div><div class="quiz-score">'+guessState.score+'</div><div style="font-size:12px;color:var(--mut);margin-bottom:4px">نقطة من '+mx+' · أفضل سلسلة: '+guessState.best+'</div><div style="font-size:13px;color:var(--mut);margin-bottom:14px">'+msg+'</div><button class="pred-btn gold" onclick="restartGuess()">↻ العب مرّة ثانية</button></div>';
     return;
   }
-  var p=buildGuessQ();
-  var cluesHTML=p.clues.map(function(c){return '<div class="gp-clue">'+c+'</div>';}).join("");
+  var c=guessState.cur, p=c.p;
+  var shown=guessState.answered?p.clues.length:guessState.shown;
+  var cluesHTML=p.clues.slice(0,shown).map(function(x){return '<div class="gp-clue">'+x+'</div>';}).join("");
+  var moreBtn=(guessState.shown<p.clues.length && !guessState.answered)
+    ? '<button class="gp-hint" id="gpHint">💡 كشف تلميح إضافي ('+(p.clues.length-guessState.shown)+' متبقّية)</button>' : '';
   box.innerHTML='<div class="quiz-card">'
-    +'<div class="gp-prog">🕵️ لاعب '+(guessState.idx+1)+' من '+GUESS_PLAYERS.length+' &nbsp;·&nbsp; 🔥 سلسلة: '+guessState.streak+'</div>'
-    +'<div class="gp-avatar">'+MYSTERY_SVG+'</div>'
-    +'<div class="gp-flag">'+flagImg(p.country)+' <span>'+p.country+'</span></div>'
+    +'<div class="gp-prog">🕵️ لاعب '+(guessState.idx+1)+' من '+guessState.order.length+' &nbsp;·&nbsp; ⭐ '+guessState.score+' &nbsp;·&nbsp; 🔥 '+guessState.streak+'</div>'
+    +'<div class="gp-avatar"><div class="gp-ring"><div class="gp-face" style="filter:blur('+guessBlur()+'px)">'+mysterySVG(p.color)+'</div></div></div>'
+    +'<div class="gp-blurhint">🌫️ الوجه مغبّش — كل تلميح يوضّحه أكثر</div>'
     +'<div class="gp-clues">'+cluesHTML+'</div>'
+    + moreBtn
     +'<div class="gp-q">من هو اللاعب؟ 🤔</div>'
-    +'<div class="quiz-opts" id="gpOpts">'+guessState.opts.map(function(o,i){return '<button class="quiz-opt" data-i="'+i+'">'+o+'</button>';}).join("")+'</div>'
+    +'<div class="quiz-opts" id="gpOpts">'+c.opts.map(function(o,i){return '<button class="quiz-opt" data-i="'+i+'">'+o+'</button>';}).join("")+'</div>'
     +'<div id="gpFb" style="margin-top:12px"></div>'
     +'</div>';
+  var hb=document.getElementById("gpHint");
+  if(hb) hb.addEventListener("click", function(){ if(guessState.shown<p.clues.length){ guessState.shown++; renderGuess(); } });
   document.querySelectorAll("#gpOpts .quiz-opt").forEach(function(btn){ btn.addEventListener("click", function(){ handleGuess(parseInt(btn.dataset.i,10), btn); }); });
 }
 function handleGuess(chosen, btn){
   if(guessState.answered) return; guessState.answered=true;
-  var opts=document.querySelectorAll("#gpOpts .quiz-opt");
+  var c=guessState.cur, opts=document.querySelectorAll("#gpOpts .quiz-opt");
   opts.forEach(function(b){ b.disabled=true; });
-  var correct=guessState.correct;
-  var name=GUESS_PLAYERS[guessState.order[guessState.idx]].name;
-  if(chosen===correct){
-    guessState.score++; guessState.streak++; if(guessState.streak>guessState.best) guessState.best=guessState.streak;
+  var name=c.p.name;
+  if(chosen===c.correct){
+    var pts=Math.max(2, 7-guessState.shown);
+    guessState.score+=pts; guessState.streak++; if(guessState.streak>guessState.best) guessState.best=guessState.streak;
     if(typeof haptic==="function") haptic(50);
     opts[chosen].classList.add("correct");
-    document.getElementById("gpFb").innerHTML='<div class="gp-reveal" style="color:#2ecc71">✅ صحيح! إنه '+name+'</div>';
+    document.getElementById("gpFb").innerHTML='<div class="gp-reveal" style="color:#2ecc71">✅ صحيح! إنه '+name+' (+'+pts+' نقاط)</div>';
   } else {
     guessState.streak=0;
     if(typeof haptic==="function") haptic([20,30,20]);
-    opts[chosen].classList.add("wrong"); opts[correct].classList.add("correct");
+    opts[chosen].classList.add("wrong"); if(opts[c.correct]) opts[c.correct].classList.add("correct");
     document.getElementById("gpFb").innerHTML='<div class="gp-reveal" style="color:#e84855">❌ اللاعب هو '+name+'</div>';
   }
-  setTimeout(function(){ guessState.idx++; guessState.answered=false; if(guessState.idx>=GUESS_PLAYERS.length) guessState.finished=true; renderGuess(); }, 1500);
+  var face=document.querySelector(".gp-face"); if(face) face.style.filter="blur(0px)";
+  setTimeout(function(){ guessState.idx++; if(guessState.idx>=guessState.order.length){ guessState.finished=true; } else { nextGuessQ(); } renderGuess(); }, 1800);
 }
 function restartGuess(){ startGuess(); renderGuess(); }
 function switchQMode(mode){
