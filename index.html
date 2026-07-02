@@ -630,15 +630,26 @@ nav#bn button .ic{font-size:19px;}
 .rtf-wrap{overflow:hidden; padding:6px 0 14px; direction:ltr;}
 .rtf{position:relative; transform-origin:top left; direction:ltr;}
 .rtf-svg{position:absolute; left:0; top:0; z-index:0; pointer-events:none; overflow:visible;}
-.rtf-cell{position:absolute; z-index:2; display:flex; flex-direction:column; justify-content:center; gap:2px; padding:2px; border-radius:7px; background:var(--card); border:1px solid var(--line); cursor:pointer; box-sizing:border-box; transition:transform .12s, border-color .12s;}
+.rtf-cell{position:absolute; z-index:2; display:flex; flex-direction:column; justify-content:center; gap:3px; padding:3px; border-radius:11px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.10); cursor:pointer; box-sizing:border-box; transition:transform .12s, border-color .12s; box-shadow:0 5px 16px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05);}
 .rtf-cell:active{transform:scale(.92); border-color:var(--gold);}
 .rtf-cell.rtf-sm{background:var(--card2); border-color:rgba(255,255,255,.1);}
-.rtf-cell.rtf-finbox{border-color:rgba(240,194,75,.55); box-shadow:0 0 14px rgba(240,194,75,.25);}
-.rtf-f{flex:1; min-height:0; border-radius:4px; overflow:hidden; border:1px solid rgba(255,255,255,.14); background:#0a1024; display:flex; align-items:center; justify-content:center;}
-.rtf-f img{width:100%; height:100%; object-fit:cover; display:block;}
+.rtf-cell.rtf-finbox{border:1.5px solid var(--gold); background:linear-gradient(180deg,rgba(240,194,75,.12),rgba(240,194,75,.03)); box-shadow:0 0 20px rgba(240,194,75,.28), inset 0 1px 0 rgba(255,255,255,.08);}
+.rtf-f{flex:1; min-height:0; border-radius:4px; overflow:visible; position:relative; border:1px solid rgba(255,255,255,.14); background:#0a1024; display:flex; align-items:center; justify-content:center;}
+.rtf-f img{width:100%; height:100%; object-fit:cover; display:block; border-radius:3px;}
 .rtf-f.tbd{background:rgba(255,255,255,.04); border-style:dashed; border-color:rgba(255,255,255,.12);}
+.rtf-f.win{border-color:rgba(240,194,75,.85); box-shadow:0 0 9px rgba(240,194,75,.55); z-index:3;}
+.rtf-f.win::after{content:"\2605"; position:absolute; top:-6px; left:-7px; width:13px; height:13px; border-radius:50%; background:linear-gradient(135deg,#ffe9a8,var(--gold)); color:#1a1200; font-size:8.5px; line-height:13px; text-align:center; box-shadow:0 2px 5px rgba(0,0,0,.45); z-index:4;}
+.rtf-f.lose img{filter:grayscale(.85) brightness(.6); opacity:.8;}
+.rtf-cell.done{border-color:rgba(240,194,75,.45); box-shadow:0 4px 18px rgba(240,194,75,.12), inset 0 1px 0 rgba(255,255,255,.06);}
+.rtf-cell.tbdc{border-style:dashed; border-color:rgba(255,255,255,.16); background:rgba(255,255,255,.02);}
+.rtf-score{position:absolute; bottom:-9px; left:50%; transform:translateX(-50%); font-family:"Changa",sans-serif; font-size:8.5px; font-weight:800; color:#eaf0ff; background:#0d1730; border:1px solid rgba(255,255,255,.18); padding:0 7px; border-radius:99px; white-space:nowrap; direction:ltr; z-index:4; line-height:14px;}
+.rtf-score b{color:var(--gold2); font-weight:800;}
+.rtf-pills{display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin:2px 0 10px;}
+.rtf-pill{font-family:"Changa",sans-serif; font-size:10px; font-weight:700; color:#9fb0d0; border:1px solid rgba(255,255,255,.12); padding:2px 10px; border-radius:99px; background:rgba(255,255,255,.03);}
+.rtf-pill.hot{color:#1a1200; background:linear-gradient(135deg,var(--gold),#ffd873); border-color:var(--gold);}
+@keyframes rtfPulse{0%,100%{box-shadow:0 0 0 5px rgba(240,194,75,.08),0 0 16px rgba(240,194,75,.26);}50%{box-shadow:0 0 0 9px rgba(240,194,75,.04),0 0 30px rgba(240,194,75,.5);}}
 .rtf-trophy{position:absolute; z-index:3; width:52px; display:flex; flex-direction:column; align-items:center; gap:4px; pointer-events:none;}
-.rtf-trophy .tr-ic{width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; background:radial-gradient(circle at 50% 35%, rgba(240,194,75,.3), rgba(240,194,75,.04)); border:1.5px solid rgba(240,194,75,.55); box-shadow:0 0 20px rgba(240,194,75,.3);}
+.rtf-trophy .tr-ic{width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; background:radial-gradient(circle at 50% 35%, #263a63, #0c1428); border:2px solid var(--gold); animation:rtfPulse 2.6s ease-in-out infinite;}
 .rtf-trophy span{font-family:"Changa",sans-serif; font-weight:800; font-size:10.5px; background:linear-gradient(110deg,#ffe9b0,var(--gold) 55%,#d9a02c); -webkit-background-clip:text; background-clip:text; color:transparent;}
 .rtf-third{margin-top:18px;}
 .rtf-third-h{text-align:center; font-family:"Changa",sans-serif; font-weight:700; font-size:12px; color:#cd9a2e; margin-bottom:8px;}
@@ -2518,7 +2529,19 @@ function renderKOTree(el){
       var h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
       var a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
       var extra = (m.r==="final") ? " rtf-finbox" : (big?"":" rtf-sm");
-      cells.push('<div class="rtf-cell'+extra+'" data-mn="'+m.n+'" style="left:'+left.toFixed(1)+'px;top:'+(c-hh/2).toFixed(1)+'px;width:'+w+'px;height:'+hh+'px">'+rtfFlag(h,big)+rtfFlag(a,big)+'</div>');
+      var stq=(typeof statusOf==="function")?statusOf(m):"up";
+      var wsq=(stq==="done"&&typeof koWonSide==="function")?koWonSide(m):null;
+      var fH=rtfFlag(h,big), fA=rtfFlag(a,big);
+      if(wsq==="h"){ fH=fH.replace("rtf-f","rtf-f win"); fA=fA.replace("rtf-f","rtf-f lose"); }
+      else if(wsq==="a"){ fA=fA.replace("rtf-f","rtf-f win"); fH=fH.replace("rtf-f","rtf-f lose"); }
+      if(wsq) extra+=" done"; else if(!TEAMS[h]&&!TEAMS[a]) extra+=" tbdc";
+      var chip="";
+      if(w>=40){
+        var frq=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null, scq=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
+        var Rq=(frq&&frq.status==="finished")?frq:((scq&&scq.found&&scq.status==="finished")?scq:null);
+        if(Rq&&Rq.sh!=null) chip='<div class="rtf-score">'+Rq.sh+'-'+Rq.sa+((Rq.pH!=null&&Rq.pA!=null)?' <b>\u0631.\u062a '+Rq.pH+'-'+Rq.pA+'</b>':'')+'</div>';
+      }
+      cells.push('<div class="rtf-cell'+extra+'" data-mn="'+m.n+'" style="left:'+left.toFixed(1)+'px;top:'+(c-hh/2).toFixed(1)+'px;width:'+w+'px;height:'+hh+'px">'+fH+fA+chip+'</div>');
       var outX = big ? (side==="L"?xOutL:mir(xOutL)) : (side==="L"?(xRef+w/2):(xRef-w/2));
       pos[m.n]={cy:c, side:side, w:w, xc:(big?(left+w/2):xRef), outX:outX};
     });
@@ -2545,13 +2568,23 @@ function renderKOTree(el){
     var mOut=p.outX, mcy=p.cy, ncy=np.cy;
     var nIn = (p.side==="L") ? (np.xc - np.w/2) : (np.xc + np.w/2);
     var midx=(mOut+nIn)/2;
-    paths+='<path d="M'+mOut.toFixed(1)+' '+mcy.toFixed(1)+' H'+midx.toFixed(1)+' V'+ncy.toFixed(1)+' H'+nIn.toFixed(1)+'" fill="none" stroke="rgba(240,194,75,.45)" stroke-width="1.6" stroke-linejoin="round"/>';
+    var hotP=(typeof koWinnerOf==="function")&&!!koWinnerOf(mn);
+    paths+='<path d="M'+mOut.toFixed(1)+' '+mcy.toFixed(1)+' C '+midx.toFixed(1)+' '+mcy.toFixed(1)+', '+midx.toFixed(1)+' '+ncy.toFixed(1)+', '+nIn.toFixed(1)+' '+ncy.toFixed(1)+'" fill="none" stroke="'+(hotP?"url(#rtfGld)":"rgba(255,255,255,.14)")+'" stroke-width="'+(hotP?2.4:1.5)+'"'+(hotP?' filter="url(#rtfGlow)"':'')+' stroke-linecap="round"/>';
   });
-  var svg='<svg class="rtf-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+paths+'</svg>';
+  var defs='<defs><linearGradient id="rtfGld" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f0c24b"/><stop offset="1" stop-color="#ffd873"/></linearGradient><filter id="rtfGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  var svg='<svg class="rtf-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+defs+paths+'</svg>';
   var trophy='<div class="rtf-trophy" style="left:'+(finCx-26).toFixed(1)+'px;top:'+(finCy-SMH/2-66).toFixed(1)+'px"><div class="tr-ic">🏆</div><span>\u0627\u0644\u0646\u0647\u0627\u0626\u064a</span></div>';
+  function rHot(rk){ var L=RR[rk]||[]; for(var i2=0;i2<L.length;i2++){ var hn=resolveKOName(L[i2].h), an=resolveKOName(L[i2].a); if(TEAMS[hn]||TEAMS[an]) return true; } return false; }
+  var pills='<div class="rtf-pills">'
+    +'<span class="rtf-pill'+(rHot("r32")?" hot":"")+'">\u062f\u0648\u0631 \u0627\u0644\u064032</span>'
+    +'<span class="rtf-pill'+(rHot("r16")?" hot":"")+'">\u062f\u0648\u0631 \u0627\u0644\u064016</span>'
+    +'<span class="rtf-pill'+(rHot("qf")?" hot":"")+'">\u0631\u0628\u0639 \u0627\u0644\u0646\u0647\u0627\u0626\u064a</span>'
+    +'<span class="rtf-pill'+(rHot("sf")?" hot":"")+'">\u0646\u0635\u0641 \u0627\u0644\u0646\u0647\u0627\u0626\u064a</span>'
+    +'<span class="rtf-pill">\u0627\u0644\u0646\u0647\u0627\u0626\u064a \ud83c\udfc6</span>'
+    +'</div>';
   var third=M.filter(function(m){return m.r==="third";})[0];
   var thirdHtml = third ? '<div class="rtf-third"><div class="rtf-third-h">🥉 \u0645\u0628\u0627\u0631\u0627\u0629 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u062b\u0627\u0644\u062b</div>'+koMatchMini(third)+'</div>' : '';
-  el.innerHTML='<div class="rtf-hint">👆 \u0627\u0636\u063a\u0637 \u0623\u064a \u0645\u0628\u0627\u0631\u0627\u0629 \u0644\u0639\u0631\u0636 \u062a\u0641\u0627\u0635\u064a\u0644\u0647\u0627</div>'
+  el.innerHTML=pills+'<div class="rtf-hint">👆 \u0627\u0636\u063a\u0637 \u0623\u064a \u0645\u0628\u0627\u0631\u0627\u0629 \u0644\u0639\u0631\u0636 \u062a\u0641\u0627\u0635\u064a\u0644\u0647\u0627</div>'
     +'<div class="rtf-wrap"><div class="rtf" id="rtfTree" data-w="'+W+'" data-h="'+H+'" style="width:'+W+'px;height:'+H+'px">'+svg+cells.join("")+trophy+'</div></div>'
     + thirdHtml;
   requestAnimationFrame(function(){ rtfFit(); setTimeout(rtfFit,80); setTimeout(rtfFit,320); });
