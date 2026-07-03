@@ -856,7 +856,7 @@ nav#bn button .ic{font-size:18.5px;}
 .kt-pair .tc-chip .flg, .kt-pair .tc-chip img{width:18px; height:13px;}
 
 /* ===== تصميم التشكيلة المطوّر v2 (np) ===== */
-.np{--gk:#f5c542;--def:#3b82f6;--mid:#22c55e;--fwd:#ef4444;}
+.np{--gk:#f4c531;--def:#3d7bff;--mid:#2ee6a8;--fwd:#ff5c6b;}
 .np-hd{display:flex;align-items:stretch;gap:8px;margin:4px 0 12px;}
 .np-tcard{flex:1;display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:14px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);}
 .np-tcard .fg{font-size:22px;line-height:1;display:flex;align-items:center;}
@@ -865,7 +865,9 @@ nav#bn button .ic{font-size:18.5px;}
 .np-tcard .frm{font-size:10px;color:#f0c24b;font-weight:700;margin-top:2px;}
 .np-hd .mid{display:flex;align-items:center;justify-content:center;padding:0 2px;}
 .np-hd .mid .vs{font-family:"Changa",sans-serif;font-weight:800;font-size:12px;color:#8a93b2;}
-.np-pitch{position:relative;width:100%;aspect-ratio:62/100;border-radius:16px;overflow:hidden;background:repeating-linear-gradient(0deg,#1f7a44 0 9.5%,#1c7340 9.5% 19%),linear-gradient(0deg,#1c7340,#1f7a44);border:2px solid rgba(255,255,255,.22);box-shadow:0 14px 40px rgba(0,0,0,.45),inset 0 0 60px rgba(0,0,0,.25);}
+.np-pitch{position:relative;width:100%;aspect-ratio:62/100;border-radius:18px;overflow:hidden;background:repeating-linear-gradient(0deg,#0d5c33 0 10%,#0e6238 10% 20%);border:1px solid rgba(255,255,255,.16);box-shadow:0 14px 40px rgba(0,0,0,.5),inset 0 0 60px rgba(0,0,0,.45);}
+.np-lnk{position:absolute;height:2px;background:rgba(255,255,255,.22);border-radius:99px;z-index:1;}
+.np-pl{z-index:2;}
 .np-mid{position:absolute;left:0;right:0;top:50%;border-top:2px solid rgba(255,255,255,.42);}
 .np-circle{position:absolute;left:50%;top:50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border:2px solid rgba(255,255,255,.42);border-radius:50%;}
 .np-spot{position:absolute;left:50%;top:50%;width:5px;height:5px;background:rgba(255,255,255,.7);border-radius:50%;transform:translate(-50%,-50%);}
@@ -3016,14 +3018,8 @@ function npPlayer(p, kit){
   var posc=NP_POSC[npPosClass(p.pos)]||"var(--mid)";
   var num=p.num||"";
   var cap=p.cap?'<span class="cap">C</span>':"";
-  var pdot='<span class="pdot" style="background:'+posc+'"></span>';
-  var jersey;
-  if(p.img){
-    jersey='<div class="np-jersey has-img"><img loading="lazy" src="'+p.img+'" alt="" onerror="this.parentNode.classList.add(\'imgfail\')"><span class="num">'+num+'</span>'+pdot+cap+'</div>';
-  } else {
-    jersey='<div class="np-jersey" style="background:'+kit.bg+'"><span class="num" style="color:'+kit.fg+'">'+num+'</span>'+pdot+cap+'</div>';
-  }
-  return '<div class="np-pl" style="top:'+p.top.toFixed(1)+'%;left:'+p.left.toFixed(1)+'%;--rg:'+kit.ring+';--kbg:'+kit.bg+';--kfg:'+kit.fg+'">'
+  var jersey='<div class="np-jersey" style="background:'+kit.bg+';border-color:'+posc+'"><span class="num" style="color:'+kit.fg+'">'+num+'</span>'+cap+'</div>';
+  return '<div class="np-pl" style="top:'+p.top.toFixed(1)+'%;left:'+p.left.toFixed(1)+'%;--rg:'+posc+'">'
     +jersey+'<div class="np-name" title="'+(p.nm||"")+'">'+npShort(p.nm)+'</div></div>';
 }
 function npBench(teamName, subs, coach, kit){
@@ -3054,8 +3050,18 @@ function newLineupHTML(m, j){
   if((lH<0.45&&lA<0.45)||(lH>0.62&&lA>0.62)||npDist(kitH.bg,kitA.bg)<70){
     kitA = (lH<0.5) ? {bg:"#eef0f4",fg:"#0a1024",ring:"rgba(0,0,0,.22)"} : {bg:"#16213f",fg:"#ffffff",ring:"rgba(255,255,255,.5)"};
   }
-  var plH=npLayout(j.home, j.fH, true).map(function(p){return npPlayer(p,kitH);}).join("");
-  var plA=npLayout(j.away, j.fA, false).map(function(p){return npPlayer(p,kitA);}).join("");
+  var LH=npLayout(j.home, j.fH, true), LA=npLayout(j.away, j.fA, false);
+  function npLinks(list){
+    var g={}; list.slice(1).forEach(function(p){var k=p.top.toFixed(1);(g[k]=g[k]||[]).push(p.left);});
+    var h=""; Object.keys(g).forEach(function(k){
+      var xs=g[k]; if(xs.length<2) return;
+      var x1=Math.min.apply(null,xs), x2=Math.max.apply(null,xs);
+      h+='<div class="np-lnk" style="left:'+x1.toFixed(1)+'%;width:'+(x2-x1).toFixed(1)+'%;top:calc('+k+'% - 1px)"></div>';
+    });
+    return h;
+  }
+  var plH=npLinks(LH)+LH.map(function(p){return npPlayer(p,kitH);}).join("");
+  var plA=npLinks(LA)+LA.map(function(p){return npPlayer(p,kitA);}).join("");
   var coH=COACHES[m.h]||j.coachH||"", coA=COACHES[m.a]||j.coachA||"";
   var hasBenchH=(j.subsH&&j.subsH.length)||coH, hasBenchA=(j.subsA&&j.subsA.length)||coA;
   return '<div class="np">'
@@ -3285,7 +3291,14 @@ async function fetchLU(n, box, btn){
             return {nm:nm, num:p.jersey||"", pos:pos, img:img, fp:parseInt(p.formationPlace,10)||99,
                     x:rawX, y:rawY, cap:!!p.captain};
           });
-          var formation = (rt.formation && (rt.formation.name||rt.formation.text)) || "";
+          var formation = "";
+          if(rt.formation){ formation = (typeof rt.formation==="string") ? rt.formation : (rt.formation.name||rt.formation.text||rt.formation.displayName||""); }
+          if(!formation && arr.length>=10){
+            // استنتج خطة الفريق من مراكز لاعبيه (كل فريق على حدة)
+            var _d=0,_m=0,_f=0;
+            arr.forEach(function(pp){ var c=npPosClass(pp.pos); if(c==="DEF")_d++; else if(c==="FWD")_f++; else if(c!=="GK")_m++; });
+            if(_d&&(_m||_f)) formation=_d+"-"+(_m||0)+(_f?("-"+_f):"");
+          }
           var bench=(rt.roster||[]).filter(function(p){return p && !p.starter;}).map(function(p){
             var ath=p.athlete||{}, bimg="";
             if(ath.headshot && ath.headshot.href) bimg=ath.headshot.href;
