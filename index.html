@@ -1248,7 +1248,6 @@ if("serviceWorker" in navigator){
     </div>
     <div class="st-head">
       <span class="st-upd" id="stUpd"></span>
-      <button class="st-rf" id="stRefresh">↻ تحديث مباشر</button>
     </div>
     <div id="statList"></div>
     <div class="st-foot" id="stFoot"></div>
@@ -4044,7 +4043,6 @@ document.addEventListener("click", function(e){
     renderStats();
     return;
   }
-  if(e.target.closest("#stRefresh")){ refreshStats(); }
 });
 document.body.addEventListener("click", function(e){
   var cdp=e.target.closest("[data-cdscope]");
