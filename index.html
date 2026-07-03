@@ -2349,7 +2349,9 @@ function koMatchMini(m){
   +'</div>';
 }
 
+var KO_FEEDS={89:[74,77],90:[73,75],91:[76,78],92:[79,80],93:[83,84],94:[81,82],95:[86,88],96:[85,87],97:[89,90],98:[93,94],99:[91,92],100:[95,96],101:[97,98],102:[99,100],104:[101,102]};
 function koFeedersOf(n){
+  if(KO_FEEDS[n]) return KO_FEEDS[n].slice();
   var m=getM(n); if(!m) return [];
   var res=[];
   [m.h, m.a].forEach(function(side){
@@ -3341,7 +3343,7 @@ function attachKnockout(ev,n1,n2){
     if(Math.abs(dateObj(m).getTime()-et)<=100*60000){cand=m; cnt++;}
   }
   if(cnt!==1) return null;
-  cand.h=a1; cand.a=a2; window._koDirty=true;
+  /* لا نكتب فوق نص (الفائز من المباراة X) — ترتيب الشجرة يعتمد عليه، والأسماء تنحلّ تلقائياً من النتائج */
   return cand;
 }
 function liveMinute(st){
