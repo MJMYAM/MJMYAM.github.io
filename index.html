@@ -54,6 +54,16 @@ header{
 }
 .brand{display:flex; align-items:center; gap:10px; min-width:0;}
 .brand-col{display:flex; flex-direction:column; gap:5px; min-width:0;}
+.tkbar{background:#070a14; border-block:1px solid var(--line); padding:6px 0; overflow:hidden; position:relative;}
+.tkbar::before,.tkbar::after{content:""; position:absolute; top:0; bottom:0; width:26px; z-index:2; pointer-events:none;}
+.tkbar::before{right:0; background:linear-gradient(270deg,#070a14,transparent);}
+.tkbar::after{left:0; background:linear-gradient(90deg,#070a14,transparent);}
+.tk{display:inline-block; white-space:nowrap; animation:tkm 30s linear infinite; padding-right:100%; will-change:transform;}
+.tk span{font-family:"Changa",sans-serif; font-size:11px; font-weight:700; color:var(--mut); margin:0 16px;}
+.tk b{color:var(--gold2); font-weight:800;}
+.tk i{color:#2ee6a8; font-style:normal; font-weight:800;}
+.tk .lv{color:#ff5c6b; font-weight:800;}
+@keyframes tkm{to{transform:translateX(100%);}}
 .brand .cup{font-size:24px; filter:drop-shadow(0 0 12px rgba(240,194,75,.55));}
 .brand h1{
   margin:0; font-family:"Changa",sans-serif; font-weight:800; font-size:19px; line-height:1.15; white-space:nowrap;
@@ -1191,6 +1201,7 @@ if("serviceWorker" in navigator){
   </div>
   <div class="header-tools"></div>
 </header>
+<div class="tkbar"><div class="tk" id="tkBar"></div></div>
 
 <main>
 
@@ -3893,6 +3904,7 @@ function refreshAll(btn){
       if(typeof renderStanding==="function" && document.getElementById("groupGrid")){ Object.keys(GROUPS).forEach(renderStanding); }
       if(typeof renderHome==="function") renderHome();
       if(typeof renderHero==="function") renderHero();
+      if(typeof renderTickerBar==="function") renderTickerBar();
       if(msg){ var t=new Date(); var hh=(t.getHours()<10?"0":"")+t.getHours(); var mm=(t.getMinutes()<10?"0":"")+t.getMinutes(); msg.textContent="تم التحديث "+hh+":"+mm; }
       if(btn){ btn.classList.remove("spinning"); btn.disabled=false; }
     });
@@ -4159,7 +4171,39 @@ renderHomeLists();
 tick();
 setInterval(tick, 1000);
 setInterval(tickCd, 20000);
-setInterval(function(){renderHero(); renderHomeLists();}, 60000);
+function renderTickerBar(){
+  try{
+    var el=document.getElementById("tkBar"); if(!el) return;
+    var parts=[];
+    // مباشر الآن
+    M.filter(function(m){return m.d && statusOf(m)==="live";}).slice(0,2).forEach(function(m){
+      var sc=SC_CACHE[m.n], h=resolveKOName(m.h), a=resolveKOName(m.a);
+      var scr=(sc&&sc.found)?(sc.sh+"-"+sc.sa):"";
+      parts.push('<span><span class="lv">🔴 مباشر:</span> <b>'+h+' '+scr+' '+a+'</b>'+((sc&&sc.minute)?" ⏱ "+sc.minute:"")+'</span>');
+    });
+    // آخر النتائج (إقصائيات ثم مجموعات)
+    var fin=M.filter(function(m){
+      if(!m.d) return false;
+      var fr=FINAL_RESULTS[m.n], sc=SC_CACHE[m.n];
+      return (fr&&fr.status==="finished")||(sc&&sc.found&&sc.status==="finished");
+    }).sort(function(a,b){return dateObj(b)-dateObj(a);}).slice(0,6);
+    fin.forEach(function(m){
+      var R=(FINAL_RESULTS[m.n]&&FINAL_RESULTS[m.n].status==="finished")?FINAL_RESULTS[m.n]:SC_CACHE[m.n];
+      var h=resolveKOName(m.h), a=resolveKOName(m.a);
+      var t="<b>"+h+" "+R.sh+"-"+R.sa+" "+a+"</b>";
+      if(R.pH!=null&&R.pA!=null) t+=" (ر.ت "+R.pH+"-"+R.pA+")";
+      parts.push("<span>⚡ "+t+"</span>");
+    });
+    // القادمة
+    M.filter(function(m){return m.d && statusOf(m)==="up";}).sort(function(a,b){return dateObj(a)-dateObj(b);}).slice(0,3).forEach(function(m){
+      parts.push('<span><i>قادمة:</i> '+resolveKOName(m.h)+' × '+resolveKOName(m.a)+' — '+m.t+'</span>');
+    });
+    var html=parts.join("")||"<span>🏆 كأس العالم 2026 — بتوقيت الكويت</span>";
+    if(el.innerHTML!==html) el.innerHTML=html;
+  }catch(e){}
+}
+renderTickerBar();
+setInterval(function(){renderHero(); renderHomeLists(); renderTickerBar();}, 60000);
 function _pollDelay(){
   var now=Date.now(), nearEnd=false, anyLive=false;
   for(var i=0;i<M.length;i++){
