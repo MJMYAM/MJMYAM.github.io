@@ -2942,28 +2942,74 @@ function npLines(formation){
   return (n.length && n.reduce(function(a,b){return a+b;},0)===10)?n:[4,3,3];
 }
 function npLayout(players, formation, isHome){
-  var hasC = players.length>=10 && players.every(function(p){return p.x!=null && p.y!=null;});
-  if(hasC){
-    return players.map(function(p){
-      var y=Math.max(0,Math.min(100,p.y)), x=Math.max(0,Math.min(100,p.x));
-      var top = isHome ? (95 - y*0.43) : (5 + y*0.43);
-      var left = isHome ? x : (100-x);
-      return Object.assign({},p,{top:top,left:left});
-    });
+  /* توزيع احترافي:
+     - تصنيف: حارس/دفاع/وسط/هجوم (ترتيب داخلي حسب مكان الخطة ثم الرقم)
+     - الدفاع يملأ الخطوط الخلفية، الهجوم يملأ الأمامية (المهاجم الصريح أولاً في المقدمة)، الوسط يكمل ما بينهما
+     - داخل الخط المختلط: الوسط في المنتصف والأجنحة على الأطراف */
+  function key(p){ var fp=(p.fp&&p.fp<99)?p.fp:99; var nu=parseInt(p.num,10); return fp*1000+(isNaN(nu)?999:nu); }
+  var G=[],D=[],Md=[],F=[];
+  (players||[]).forEach(function(p){
+    var c=npPosClass(p.pos); p._c=c;
+    if(c==="GK")G.push(p); else if(c==="DEF")D.push(p); else if(c==="FWD")F.push(p); else Md.push(p);
+  });
+  [G,D,Md,F].forEach(function(a){a.sort(function(x,y){return key(x)-key(y);});});
+  var gk=G.shift()||D.shift()||Md.shift()||{};
+  var rest=D.concat(Md,F,G);
+  var L=npLines(formation);
+  if(L.reduce(function(a,b){return a+b;},0)!==rest.length){
+    var d=Math.min(5,Math.max(3,D.length||4));
+    var f=Math.min(3,Math.max(1,F.length||2));
+    var mC=Math.max(0,rest.length-d-f);
+    L=(mC>0)?[d,mC,f]:[d,f];
+    var diff=rest.length-L.reduce(function(a,b){return a+b;},0);
+    if(diff!==0) L[Math.max(0,L.length-2)]+=diff;
   }
-  var L=npLines(formation), gk=players[0]||{}, rest=players.slice(1), out=[];
-  out.push(Object.assign({},gk,{top:isHome?94:6,left:50}));
-  var idx=0;
-  L.forEach(function(c,li){
-    var seg=rest.slice(idx,idx+c); idx+=c;
-    var t=L.length===1?0.5:li/(L.length-1);
+  // وزّع على الخطوط: دفاع من الخلف، هجوم من الأمام، وسط يكمل
+  var slots=L.map(function(c){return new Array(c);});
+  var dq=D.slice(), fq=F.slice(), mq=Md.slice().concat(G);
+  // الدفاع → من الخط الأول
+  outerD:
+  for(var li=0; li<slots.length; li++){
+    for(var ci=0; ci<slots[li].length; ci++){
+      if(!dq.length) break outerD;
+      slots[li][ci]=dq.shift();
+    }
+  }
+  // الهجوم → من الخط الأخير للخلف (المهاجم الأول في أضيق خط أمامي)
+  outerF:
+  for(var lj=slots.length-1; lj>=0; lj--){
+    for(var cj=0; cj<slots[lj].length; cj++){
+      if(!fq.length) break outerF;
+      if(slots[lj][cj]) continue;
+      slots[lj][cj]=fq.shift();
+    }
+  }
+  // الوسط (+أي فائض) → الفراغات من الخلف للأمام
+  var leftover=mq.concat(dq,fq);
+  for(var lk=0; lk<slots.length; lk++){
+    for(var ck=0; ck<slots[lk].length; ck++){
+      if(slots[lk][ck]) continue;
+      slots[lk][ck]=leftover.shift()||null;
+    }
+  }
+  var out=[Object.assign({},gk,{top:isHome?94:6,left:50})];
+  slots.forEach(function(seg,li2){
+    seg=seg.filter(Boolean);
+    var c=seg.length; if(!c) return;
+    var t=slots.length===1?0.5:li2/(slots.length-1);
     var yy=isHome?(87-t*(87-55)):(13+t*(45-13));
-    seg.forEach(function(pp,ci){
-      var xx=c===1?50:(16+(84-16)*(ci/(c-1))); if(!isHome) xx=100-xx;
+    // مواضع الخط، ثم: الوسط في المنتصف والهجوم على الأطراف
+    var xs=[]; for(var q=0;q<c;q++){ xs.push(c===1?50:(14+(86-14)*(q/(c-1)))); }
+    var order=xs.map(function(x,i){return {x:x,d:Math.abs(x-50),i:i};}).sort(function(a,b){return a.d-b.d;});
+    var mids=seg.filter(function(p){return p._c!=="FWD";});
+    var fwds=seg.filter(function(p){return p._c==="FWD";});
+    var byCenter=mids.concat(fwds); // الأقرب للمنتصف: وسط، ثم الأطراف: هجوم
+    order.forEach(function(o,oi){
+      var pp=byCenter[oi]; if(!pp) return;
+      var xx=o.x; if(!isHome) xx=100-xx;
       out.push(Object.assign({},pp,{top:yy,left:xx}));
     });
   });
-  if(idx<rest.length) rest.slice(idx).forEach(function(pp){ out.push(Object.assign({},pp,{top:isHome?58:42,left:50})); });
   return out;
 }
 function npPlayer(p, kit){
