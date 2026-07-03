@@ -1682,12 +1682,16 @@ function statusOf(m){
   // نتيجة نهائية مثبّتة = انتهت
   if(typeof FINAL_RESULTS!=="undefined" && FINAL_RESULTS[m.n] && FINAL_RESULTS[m.n].status==="finished") return "done";
   var KO=(m.r && m.r!=="group");
-  var liveMax = KO ? 150 : 125;   // أقصى مدة معقولة لبقاء المباراة مباشرة (دقائق منذ الانطلاق)
+  var liveMax = KO ? 175 : 125;   // الإقصائيات قد تمتد بالأشواط الإضافية وركلات الترجيح
   if(m.d){
     var mins=(Date.now()-dateObj(m).getTime())/60000;
     if(sc && sc.found && sc.status){
       if(sc.status==="finished") return "done";
-      if(sc.status==="live" || sc.status==="ht") return (mins>liveMax) ? "done" : "live"; // حماية من بيانات قديمة عالقة على "مباشر"
+      if(sc.status==="live" || sc.status==="ht"){
+        var fresh = sc._ts && (Date.now()-sc._ts) < 6*60000; // بيانات حديثة من المصدر خلال آخر 6 دقائق
+        if(fresh) return "live";                              // المصدر يقول مباشر الآن → مباشر (حتى مع الركلات)
+        return (mins>liveMax) ? "done" : "live";              // حماية من بيانات قديمة عالقة على "مباشر"
+      }
       if(sc.status==="not_started") return "up";
     }
     if(mins<0) return "up";
@@ -2794,7 +2798,7 @@ async function fetchGoals(n, box, btn){
           var pH=cs[sd.hi].shootoutScore, pA=cs[sd.ai].shootoutScore;
           var _wasFin2 = SC_CACHE[n] && SC_CACHE[n].status==="finished";
           var _fst = stt.state==="post"?"finished":(stt.state==="in"?"live":"not_started");
-          SC_CACHE[n]={found:true,sh:sh,sa:sa,status:_fst,minute:liveMinute(cstatus),winSide:(wH?"h":(wA?"a":null)),pH:(pH!=null&&pH!==""?parseInt(pH,10):null),pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
+          SC_CACHE[n]={found:true,sh:sh,sa:sa,status:_fst,minute:liveMinute(cstatus),_ts:Date.now(), winSide:(wH?"h":(wA?"a":null)),pH:(pH!=null&&pH!==""?parseInt(pH,10):null),pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
           if(m.r && m.r!=="group" && _fst==="finished" && !_wasFin2) window._koDirty=true;
           refreshCards(n);
         }
@@ -3388,7 +3392,7 @@ async function loadScoresESPN(fromYmd,toYmd){
       var wH=(cs[sd.hi].winner===true||cs[sd.hi].winner==="true"||cs[sd.hi].winner==1), wA=(cs[sd.ai].winner===true||cs[sd.ai].winner==="true"||cs[sd.ai].winner==1);
       var pH=cs[sd.hi].shootoutScore, pA=cs[sd.ai].shootoutScore;
       var _wasFin = SC_CACHE[mm.n] && SC_CACHE[mm.n].status==="finished";
-      SC_CACHE[mm.n]={found:true, sh:isNaN(sh)?0:sh, sa:isNaN(sa)?0:sa, status:status, minute:liveMinute(st), winSide:(wH?"h":(wA?"a":null)), pH:(pH!=null&&pH!==""?parseInt(pH,10):null), pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
+      SC_CACHE[mm.n]={found:true, sh:isNaN(sh)?0:sh, sa:isNaN(sa)?0:sa, status:status, minute:liveMinute(st), _ts:Date.now(), winSide:(wH?"h":(wA?"a":null)), pH:(pH!=null&&pH!==""?parseInt(pH,10):null), pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
       if(mm.r && mm.r!=="group" && status==="finished" && !_wasFin) window._koDirty=true;
       refreshCards(mm.n); changed=true;
     }catch(e){}
