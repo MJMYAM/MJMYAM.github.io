@@ -3397,7 +3397,13 @@ async function loadScoresESPN(fromYmd,toYmd){
       var wH=(cs[sd.hi].winner===true||cs[sd.hi].winner==="true"||cs[sd.hi].winner==1), wA=(cs[sd.ai].winner===true||cs[sd.ai].winner==="true"||cs[sd.ai].winner==1);
       var pH=cs[sd.hi].shootoutScore, pA=cs[sd.ai].shootoutScore;
       var _wasFin = SC_CACHE[mm.n] && SC_CACHE[mm.n].status==="finished";
-      SC_CACHE[mm.n]={found:true, sh:isNaN(sh)?0:sh, sa:isNaN(sa)?0:sa, status:status, minute:liveMinute(st), _ts:Date.now(), winSide:(wH?"h":(wA?"a":null)), pH:(pH!=null&&pH!==""?parseInt(pH,10):null), pA:(pA!=null&&pA!==""?parseInt(pA,10):null)};
+      var _prev=SC_CACHE[mm.n]||{};
+      SC_CACHE[mm.n]={found:true, sh:isNaN(sh)?0:sh, sa:isNaN(sa)?0:sa, status:status, minute:liveMinute(st), _ts:Date.now(), winSide:(wH?"h":(wA?"a":null)),
+        pH:(pH!=null&&pH!==""?parseInt(pH,10):(_prev.pH!=null?_prev.pH:null)),
+        pA:(pA!=null&&pA!==""?parseInt(pA,10):(_prev.pA!=null?_prev.pA:null)),
+        eid:(ev&&ev.id)||_prev.eid||null,
+        hid:(((cs[sd.hi]||{}).team||{}).id)||(cs[sd.hi]||{}).id||_prev.hid||null,
+        aid:(((cs[sd.ai]||{}).team||{}).id)||(cs[sd.ai]||{}).id||_prev.aid||null};
       if(mm.r && mm.r!=="group" && status==="finished" && !_wasFin) window._koDirty=true;
       refreshCards(mm.n); changed=true;
     }catch(e){}
@@ -3460,7 +3466,11 @@ async function pollScores(){
     for(var i=0;i<M.length;i++){
       var mm=M[i]; if(!mm.d) continue;
       var _mins=(now-dateObj(mm).getTime())/60000, _stt=statusOf(mm);
-      if(_stt==="live" && _mins>=95){ try{ await fetchScore(mm.n); }catch(_e){} continue; }
+      if(_stt==="live" && _mins>=95){
+        try{ await fetchScore(mm.n); }catch(_e){}
+        if(mm.r && mm.r!=="group" && _mins>=118){ try{ await fetchShootoutLive(mm); }catch(_e){} }
+        continue;
+      }
       if(mm.r && mm.r!=="group" && _stt==="done" && _mins>=90 && _mins<=360){
         var _sc=SC_CACHE[mm.n];
         if(_sc && _sc.found && _sc.status==="finished" && _sc.sh===_sc.sa && !_sc.winSide && _sc.pH==null){
@@ -3472,7 +3482,7 @@ async function pollScores(){
   try{ await fetchLiveGoals(); }catch(e){}
   try{ if(document.getElementById("groupGrid")){ Object.keys(GROUPS).forEach(renderStanding); renderThirdPlace(); } }catch(e){}
   try{ if(window._koDirty){ window._koDirty=false; renderKO(); applyFilters(); } }catch(e){}
-  try{ renderHero(); if(typeof renderHomeLists==="function") renderHomeLists(); }catch(e){}
+  try{ renderHero(); if(typeof renderHomeLists==="function") renderHomeLists(); if(typeof renderTickerBar==="function") renderTickerBar(); }catch(e){}
   try{ var _tm=document.getElementById("tab-matches"); if(_tm && _tm.classList.contains("active") && typeof applyFilters==="function") applyFilters(); }catch(e){}
 }
 
@@ -3556,6 +3566,51 @@ async function fetchLiveGoals(){
     try{ await fetchGoalsSilent(live[k].n, live[k].id); }catch(e){}
   }
   if(live.length) refreshHeroScore();
+}
+function tallyShootout(j, hid, aid){
+  try{
+    var out={seen:false, pH:0, pA:0, done:false};
+    // 1) من رأس الملخص (يتحدث لايف غالبًا)
+    try{
+      var cc=(((j.header||{}).competitions||[])[0]||{}).competitors||[];
+      var got=false;
+      cc.forEach(function(c){
+        if(c.shootoutScore==null||c.shootoutScore==="") return;
+        var v=parseInt(c.shootoutScore,10); if(isNaN(v)) return;
+        var id=((c.team||{}).id)||c.id;
+        if(String(id)===String(hid)){ out.pH=v; got=true; }
+        else if(String(id)===String(aid)){ out.pA=v; got=true; }
+      });
+      if(got){ out.seen=true; return out; }
+    }catch(e1){}
+    // 2) عدّ ركلة بركلة من الأحداث (الشوط 5 = ركلات الترجيح)
+    var plays=(j.plays||[]).concat(j.keyEvents||[]);
+    plays.forEach(function(x){
+      var per=((x.period||{}).number)||0;
+      var tx=(((x.type||{}).text)||"")+" "+(x.text||"");
+      var isSO = per===5 || /shoot\s*-?\s*out/i.test(tx);
+      if(!isSO) return;
+      out.seen=true;
+      var scored = x.scoringPlay===true || (/goal|scores|converted/i.test(tx) && !/miss|saved|wide|post|no goal|fails/i.test(tx));
+      if(!scored) return;
+      var tid=String(((x.team||{}).id)||"");
+      if(tid===String(hid)) out.pH++;
+      else if(tid===String(aid)) out.pA++;
+    });
+    return out;
+  }catch(e){ return {seen:false,pH:0,pA:0}; }
+}
+async function fetchShootoutLive(m){
+  try{
+    var sc=SC_CACHE[m.n]; if(!sc||!sc.eid||!sc.hid) return;
+    var r=await fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event="+sc.eid, {cache:"no-store"});
+    if(!r.ok) return; var j=await r.json();
+    var t=tallyShootout(j, sc.hid, sc.aid);
+    if(t.seen){
+      sc.pH=t.pH; sc.pA=t.pA; sc._ts=Date.now();
+      refreshCards(m.n); renderHero(); if(typeof renderTickerBar==="function") renderTickerBar();
+    }
+  }catch(e){}
 }
 async function fetchScore(n, btn){
   var m=getM(n); if(!m) return;
