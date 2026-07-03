@@ -169,6 +169,8 @@ main{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:16px 
 .win-badge{position:absolute; bottom:-3px; left:-5px; background:linear-gradient(135deg,#ffdc5e,#e0a72e); color:#4a3500; border-radius:50%; width:17px; height:17px; font-size:11px; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #101a30; box-shadow:0 2px 7px rgba(0,0,0,.5);}
 .pens{display:flex; flex-direction:column; align-items:center; gap:0; margin:3px 0 1px;}
 .pen-lbl{font-size:9px; color:#ffb1b8; letter-spacing:.2px; opacity:.95;}
+.pens.plive{animation:bl 1.4s infinite;}
+.pens.plive .pen-lbl{color:#ff5c6b;}
 .pen-sc{display:inline-flex; align-items:center; gap:6px; font-weight:800; color:#ffd0d5; font-size:14px; direction:rtl; line-height:1.15;}
 .pen-sc .psep{opacity:.55; font-weight:700;}
 .vs{flex-shrink:0; width:84px; text-align:center;}
@@ -2018,7 +2020,10 @@ function heroCardHTML(m){
       +scoreHTML
     +'</div>';
   } else if(isLive){
-    cdBlock='<div id="heroScore-'+m.n+'"><div class="live-big">⚽ المباراة جارية الآن</div></div>'
+    var _hsc=SC_CACHE[m.n];
+    var _hpen=(_hsc&&_hsc.found&&_hsc.pH!=null&&_hsc.pA!=null)?'<div class="pens plive" style="justify-content:center"><span class="pen-lbl">🥅 ركلات الترجيح</span><span class="pen-sc"><span class="pn">'+_hsc.pH+'</span><span class="psep">:</span><span class="pn">'+_hsc.pA+'</span></span></div>':'';
+    var _hln=(_hsc&&_hsc.found&&_hsc.sh!=null)?('<div class="live-big">'+((_hpen)?'🥅 ركلات الترجيح جارية':'⚽ المباراة جارية الآن')+' — <b style="direction:ltr;display:inline-block">'+_hsc.sh+' : '+_hsc.sa+'</b></div>'):'<div class="live-big">⚽ المباراة جارية الآن</div>';
+    cdBlock='<div id="heroScore-'+m.n+'">'+_hln+_hpen+'</div>'
       +'<button class="watch-live hero-watch" onclick="event.stopPropagation();openLiveTVModal('+m.n+')">🔴 شاهد المباراة مباشرة</button>';
   } else {
     cdBlock='<div class="cd" data-hcd="'+m.n+'">'
@@ -3477,10 +3482,11 @@ function vsHTML(m, tm, st){
     var stl;
     if(sc.status==="finished") stl='<span class="scst">انتهت</span>';
     else if(sc.status==="ht") stl='<span class="scst lv">استراحة</span>';
-    else if(sc.status==="live") stl='<span class="scst lv">'+(sc.minute?"⏱ "+sc.minute:"🔴 مباشر")+'</span>';
+    else if(sc.status==="live") stl='<span class="scst lv">'+((sc.pH!=null&&sc.pA!=null)?"🥅 ركلات الترجيح الآن":(sc.minute?"⏱ "+sc.minute:"🔴 مباشر"))+'</span>';
     else stl='<span class="scst">'+tm.t+' '+tm.ap+'</span>';
     var b = st==="live" ? '<button class="scbtn" data-sc="'+m.n+'">تحديث ⟳</button>' : '';
-    var penLine=(sc.status==="finished"&&sc.pH!=null&&sc.pA!=null)?'<div class="pens"><span class="pen-lbl">ركلات الترجيح</span><span class="pen-sc"><span class="pn">'+sc.pH+'</span><span class="psep">:</span><span class="pn">'+sc.pA+'</span></span></div>':'';
+    var _pLive=(sc.status==="live"||sc.status==="ht");
+    var penLine=(sc.pH!=null&&sc.pA!=null)?'<div class="pens'+(_pLive?" plive":"")+'"><span class="pen-lbl">'+(_pLive?"🥅 ركلات الترجيح":"ركلات الترجيح")+'</span><span class="pen-sc"><span class="pn">'+sc.pH+'</span><span class="psep">:</span><span class="pn">'+sc.pA+'</span></span></div>':'';
     return '<div class="sc"><span class="num">'+sc.sh+'</span><span class="sep">:</span><span class="num">'+sc.sa+'</span></div>'+penLine+stl+b;
   }
   var base='<span class="t">'+tm.t+'</span><span class="ap">'+tm.ap+'</span>';
@@ -4183,7 +4189,8 @@ function renderTickerBar(){
     M.filter(function(m){return m.d && statusOf(m)==="live";}).slice(0,2).forEach(function(m){
       var sc=SC_CACHE[m.n], h=resolveKOName(m.h), a=resolveKOName(m.a);
       var scr=(sc&&sc.found)?(sc.sh+"-"+sc.sa):"";
-      parts.push('<span><span class="lv">🔴 مباشر:</span> <b>'+h+' '+scr+' '+a+'</b>'+((sc&&sc.minute)?" ⏱ "+sc.minute:"")+'</span>');
+      var pn=(sc&&sc.pH!=null&&sc.pA!=null)?" · ر.ت "+sc.pH+"-"+sc.pA+" 🥅":"";
+      parts.push('<span><span class="lv">🔴 مباشر:</span> <b>'+h+' '+scr+' '+a+'</b>'+pn+((sc&&sc.minute&&!pn)?" ⏱ "+sc.minute:"")+'</span>');
     });
     // آخر النتائج (إقصائيات ثم مجموعات)
     var fin=M.filter(function(m){
