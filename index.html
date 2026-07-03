@@ -4490,10 +4490,12 @@ document.addEventListener("click", function(e){
 });
 
 /* ===== الأبطال التاريخيون ===== */
+var CH_ISO={"الأوروغواي":"uy","إيطاليا":"it","ألمانيا الغربية":"de","ألمانيا":"de","إنجلترا":"gb-eng","البرازيل":"br","الأرجنتين":"ar","فرنسا":"fr","إسبانيا":"es"};
 function renderChampions(){
   var el=document.getElementById("chList"); if(!el) return;
   el.innerHTML=CHAMPIONS_HISTORY.slice().reverse().map(function(c){
-    var iso=ISO[c.winner]||"un";
+    var iso=CH_ISO[c.winner]||ISO[c.winner]||"";
+    if(!iso) return '<div class="champ-card"><div class="champ-year">'+c.year+'</div><div class="champ-info"><div class="champ-winner"><span style="font-size:18px">'+c.emoji+'</span><span>'+c.winner+'</span></div><div class="champ-host">📍 '+c.host+'</div><div><span class="champ-score">'+c.score+'</span> <span style="font-size:11px;color:var(--mut)">ضد '+c.runner+'</span></div></div></div>';
     return '<div class="champ-card"><div class="champ-year">'+c.year+'</div><div class="champ-info">'
       +'<div class="champ-winner"><img class="flg" src="https://flagcdn.com/h40/'+iso+'.png" alt="'+c.emoji+'" onerror="this.replaceWith(this.alt)"><span>'+c.winner+' '+c.emoji+'</span></div>'
       +'<div class="champ-host">📍 '+c.host+'</div>'
