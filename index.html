@@ -4318,7 +4318,7 @@ function renderTickerBar(){
       var h=resolveKOName(m.h), a=resolveKOName(m.a);
       var t="<b>"+h+" "+R.sh+"-"+R.sa+" "+a+"</b>";
       if(R.pH!=null&&R.pA!=null) t+=" (ر.ت "+R.pH+"-"+R.pA+")";
-      var w=(m.r&&m.r!=="group"&&typeof koWinnerOf==="function")?koWinnerOf(m.n):null;
+      var w=(R.pH!=null&&R.pA!=null&&m.r&&m.r!=="group"&&typeof koWinnerOf==="function")?koWinnerOf(m.n):null;
       if(w) t+=' — <i>تأهل '+w+' ★</i>';
       parts.push("<span>⚡ "+t+"</span>");
     });
