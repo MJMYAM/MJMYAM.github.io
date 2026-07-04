@@ -926,7 +926,7 @@ nav#bn button .ic{font-size:18.5px;}
 .np-bhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;}
 .np-bhd h6{font-family:"Changa",sans-serif;font-weight:800;font-size:12px;color:#f0c24b;display:flex;align-items:center;gap:6px;margin:0;}
 .np-coach{font-size:11px;color:#cfd6ee;white-space:nowrap;}
-.np-coach b{color:#fff;direction:ltr;display:inline-block;}
+.np-coach b{color:#fff;}
 .np-brow{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;}
 .np-bchip{flex:0 0 auto;display:flex;align-items:center;gap:6px;background:var(--s5);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:5px 9px 5px 6px;}
 .np-bn{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Changa",sans-serif;font-weight:800;font-size:11px;border:1.5px solid var(--rg);}
@@ -2151,9 +2151,9 @@ function heroCardHTML(m){
     var scoreHTML;
     if(sh!=null && sa!=null){
       scoreHTML='<div class="hf-line">'
-        +'<span class="hf-team'+(_wS==="h"?" hf-win":"")+'">'+m.h+(_wS==="h"?' ★':'')+'</span>'
+        +'<span class="hf-team'+(_wS==="h"?" hf-win":"")+'">'+_hN+(_wS==="h"?' ★':'')+'</span>'
         +'<span class="hf-score">'+sh+' - '+sa+'</span>'
-        +'<span class="hf-team'+(_wS==="a"?" hf-win":"")+'">'+m.a+(_wS==="a"?' ★':'')+'</span>'
+        +'<span class="hf-team'+(_wS==="a"?" hf-win":"")+'">'+_aN+(_wS==="a"?' ★':'')+'</span>'
       +'</div>'
       +(_hasP?'<div class="hf-pens">ركلات الترجيح '+_R.pH+' - '+_R.pA+'</div>':'');
     } else {
@@ -3021,7 +3021,7 @@ async function fetchGoals(n, box, btn){
   }catch(err){
     if(!isReal(m)){ box.innerHTML='<div class="lu-note">🔒 طرفا المباراة يتحددان لاحقًا</div>'; return; }
     box.innerHTML='<div class="lu-err">تعذّر جلب الأهداف الآن — تظهر بعد بدء المباراة.'
-      +'<br><a href="https://www.google.com/search?q='+encodeURIComponent("أهداف "+m.h+" ضد "+m.a+" كأس العالم 2026")+'" target="_blank" rel="noopener">🔎 فتح في المتصفح</a>'
+      +'<br><a href="https://www.google.com/search?q='+encodeURIComponent("أهداف "+((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" كأس العالم 2026")+'" target="_blank" rel="noopener">🔎 فتح في المتصفح</a>'
       +' &nbsp;·&nbsp; <button class="lu-alt" data-goals="'+n+'">↻ إعادة المحاولة</button></div>';
   }
 }
@@ -3104,7 +3104,7 @@ function extShell(m){
   }
   // بدل زر عرض الأهداف: اعرض ترتيب مجموعة المباراة (لمباريات دور المجموعات)
   if(m.g && GROUPS[m.g]){
-    goalsBlock = '<div class="mini-stand">'+miniStandingHTML(m.g, m.h, m.a)+'</div><div class="ext-div"></div>';
+    goalsBlock = '<div class="mini-stand">'+miniStandingHTML(m.g, (typeof resolveKOName==="function")?resolveKOName(m.h):m.h, (typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+'</div><div class="ext-div"></div>';
   }
   if(LU_CACHE[m.n]) return scorersBox+summaryBox+liveTvBox+goalsBlock+LU_CACHE[m.n];
   return scorersBox+summaryBox+liveTvBox+goalsBlock
@@ -3259,6 +3259,7 @@ function newLineupHTML(m, j){
   var plH=npLinks(LH)+LH.map(function(p){return npPlayer(p,kitH);}).join("");
   var plA=npLinks(LA)+LA.map(function(p){return npPlayer(p,kitA);}).join("");
   var coH=COACHES[hN]||j.coachH||"", coA=COACHES[aN]||j.coachA||"";
+  if(typeof arName==="function"){ if(coH) coH=arName(coH); if(coA) coA=arName(coA); }
   var hasBenchH=(j.subsH&&j.subsH.length)||coH, hasBenchA=(j.subsA&&j.subsA.length)||coA;
   return '<div class="np">'
     +'<div class="np-hd">'
@@ -3437,15 +3438,16 @@ function teamTag(team, formation){
   return '<div class="half-tag">'+flagImg(team)+' <b>'+team+'</b>'+(formation?'<span class="frm">'+formation+'</span>':'')+'</div>';
 }
 function pitchHTML(m, j){
-  // التوزيع بالصفوف من نظام اللعب = الأوضح والأدق (نفس أسلوب livescore/BBC)
+  var _ph=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+  var _pa=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
   return '<div class="pitch">'
-    + teamTag(m.h, j.fH)
+    + teamTag(_ph, j.fH)
     + '<div class="pitch-grass">'
       + '<div class="midline"></div><div class="centercircle"></div>'
-      + '<div class="half home">'+halfPitch(m.h, j.home, j.fH, false)+'</div>'
-      + '<div class="half away">'+halfPitch(m.a, j.away, j.fA, true)+'</div>'
+      + '<div class="half home">'+halfPitch(_ph, j.home, j.fH, false)+'</div>'
+      + '<div class="half away">'+halfPitch(_pa, j.away, j.fA, true)+'</div>'
     + '</div>'
-    + teamTag(m.a, j.fA)
+    + teamTag(_pa, j.fA)
   + '</div>';
 }
 
@@ -4393,8 +4395,8 @@ function translitAr(name){
         if(two){ ch=two[1]; adv=two[0].length; }
         else { var c=w[i]; ch=(c in MO)?MO[c]:""; adv=1; }
         if(first){
-          var vowel="aeiou".indexOf(w[i])>=0;
-          if(vowel){ out+="أ"+ch; } else { out+=ch; }
+          var LV={"a":"أ","e":"إ","i":"إي","o":"أو","u":"أو"};
+          if(w[i] in LV){ out+=LV[w[i]]; } else { out+=ch; }
           first=false;
         } else { out+=ch; }
         i+=adv;
@@ -4707,6 +4709,7 @@ function runHealthCheck(manual){
         }else{
           var _html=newLineupHTML(lnx,{home:[],away:[],subsH:[],subsA:[],fH:"",fA:"",coachH:"",coachA:""});
           var _co=COACHES[_h]||COACHES[_a]||"";
+          if(typeof arName==="function" && _co) _co=arName(_co);   // طابق التعريب المطبّق في العرض
           var _ok=_html.indexOf("المباراة")<0 && _html.indexOf(_h)>=0 && _html.indexOf(_a)>=0 && (!_co||_html.indexOf(_co)>=0) && (typeof isReal!=="function" || isReal(lnx));
           add(_ok,"مسار التشكيلة",_h+" × "+_a);
         }
