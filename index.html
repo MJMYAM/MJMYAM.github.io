@@ -2685,7 +2685,7 @@ function renderKOTree(el){
   var RR={r32:arrOf("r32"), r16:arrOf("r16"), qf:arrOf("qf"), sf:arrOf("sf"), final:arrOf("final")};
   function half(a,s){ var h=Math.ceil(a.length/2); return s==="L"?a.slice(0,h):a.slice(h); }
   // ----- الأبعاد (إحداثيات ثابتة محسوبة) -----
-  var CW=58, CH=58, GAP=12, UNIT=CH+GAP, SEG=34, PADX=4, PADY=10, CEN=52, SMW=22, SMH=42, R16W=44, R16H=54;
+  var CW=58, CH=58, GAP=12, UNIT=CH+GAP, SEG=52, PADX=4, PADY=10, CEN=52, SMW=22, SMH=42, R16W=44, R16H=54, QFW=50, QFH=58;
   var nL=Math.max(1, Math.ceil(RR.r32.length/2));
   var H=Math.round(PADY*2 + nL*CH + (nL-1)*GAP);
   function baseCy(i){ return PADY + CH/2 + i*UNIT; }
@@ -2726,11 +2726,11 @@ function renderKOTree(el){
   }
   add(half(RR.r32,"L"),"L",cy.r32L,true,null);
   add(half(RR.r16,"L"),"L",cy.r16L,false,xR16L,R16W,R16H);
-  add(half(RR.qf,"L"),"L",cy.qfL,false,xQFL);
+  add(half(RR.qf,"L"),"L",cy.qfL,false,xQFL,QFW,QFH);
   add(half(RR.sf,"L"),"L",cy.sfL,false,xSFL);
   add(half(RR.r32,"R"),"R",cy.r32R,true,null);
   add(half(RR.r16,"R"),"R",cy.r16R,false,mir(xR16L),R16W,R16H);
-  add(half(RR.qf,"R"),"R",cy.qfR,false,mir(xQFL));
+  add(half(RR.qf,"R"),"R",cy.qfR,false,mir(xQFL),QFW,QFH);
   add(half(RR.sf,"R"),"R",cy.sfR,false,mir(xSFL));
   if(RR.final[0]){
     var fm=RR.final[0]; var fh=resolveKOName(fm.h), fa=resolveKOName(fm.a);
