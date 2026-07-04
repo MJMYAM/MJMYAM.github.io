@@ -2932,8 +2932,19 @@ function renderGoals(m, g){
   }
   function col(side, list){
     if(!list.length) return '<div class="gl-col"><h6>'+flagImg(side)+' '+side+'</h6><div class="gl-non">—</div></div>';
-    var items=list.map(function(x){
-      return '<div class="gl-it"><span class="gl-min">'+(x.min||"")+"'</span><span class=\"gl-ic\">"+goalIcon(x.type)+'</span><span class="gl-pl">'+x.who+'</span></div>';
+    // اجمع أهداف نفس اللاعب في سطر واحد بكل دقائقه
+    var order=[], byName={};
+    list.forEach(function(x){
+      var nm=x.who||"هدف";
+      var og=/own\s*goal/i.test(x.type||"")||/عكسي/i.test(x.type||"");
+      var key=nm+(og?"|og":"");
+      if(!byName[key]){ byName[key]={who:nm, type:x.type, og:og, mins:[]}; order.push(key); }
+      if(x.min!=null && x.min!=="") byName[key].mins.push(parseInt(x.min,10));
+    });
+    var items=order.map(function(key){
+      var e=byName[key]; e.mins.sort(function(a,b){return a-b;});
+      var mn=e.mins.map(function(v){return v+"'";}).join(" ");
+      return '<div class="gl-it"><span class="gl-min">'+mn+'</span><span class="gl-ic">'+goalIcon(e.type)+'</span><span class="gl-pl">'+e.who+'</span></div>';
     }).join("");
     return '<div class="gl-col"><h6>'+flagImg(side)+' '+side+'</h6>'+items+'</div>';
   }
@@ -3756,15 +3767,24 @@ function liveScorersHTML(mn, m){
   var gc = (typeof GOAL_CACHE!=="undefined") ? GOAL_CACHE[mn] : null;
   if(!gc) return "";
   function line(list, teamName){
-    var items=(list||[]).map(function(g){
+    // اجمع أهداف نفس اللاعب: الاسم مرة واحدة ودقائقه كلها بعده
+    var order=[], byName={};
+    (list||[]).forEach(function(g){
       var nm = g.rawName || (typeof stripGoalHTML==="function"?stripGoalHTML(g.who):g.who) || "";
       if(!nm || nm==="هدف") nm="هدف";
-      var t = g.min ? (g.min+"'") : "";
       var og = /own\s*goal/i.test(g.type||"") || /عكسي/i.test(g.type||"");
+      var key = nm+(og?"|og":"");
+      if(!byName[key]){ byName[key]={nm:nm, og:og, mins:[]}; order.push(key); }
+      if(g.min) byName[key].mins.push(parseInt(g.min,10));
+    });
+    var items=order.map(function(key){
+      var e=byName[key];
+      e.mins.sort(function(a,b){return a-b;});
+      var t=e.mins.map(function(x){return x+"'";}).join(" ");
       return '<span class="hs-g">'
-        + '<span style="direction:ltr;unicode-bidi:embed">'+nm+'</span>'
+        + '<span style="direction:ltr;unicode-bidi:embed">'+e.nm+'</span>'
         + (t?' <i>'+t+'</i>':'')
-        + (og?' <span class="hs-og">(عكسي)</span>':'')
+        + (e.og?' <span class="hs-og">(عكسي)</span>':'')
         + '</span>';
     });
     if(!items.length) return "";
