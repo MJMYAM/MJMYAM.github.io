@@ -516,6 +516,9 @@ nav#bn button .ic{font-size:19px;}
 .cd-time2{font-size:10.5px; color:var(--mut);}
 .cd-c-teams{grid-area:teams; display:flex; align-items:center; gap:8px; font-size:14px; flex-wrap:wrap;}
 .cd-tm{display:flex; align-items:center; gap:5px; font-weight:600;}
+.cd-cands{display:inline-flex;align-items:center;gap:3px;}
+.cd-cands .flg{height:13px;width:auto;border-radius:2px;}
+.cd-cands b{font-size:9px;color:var(--mut);}
 .cd-x{font-family:"Changa",sans-serif; font-weight:800; font-size:10px; color:var(--dim);}
 .cd-c-timer{grid-area:timer; text-align:center; min-width:74px; padding:8px 10px; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:13px;}
 .cd-timer{display:inline-block; line-height:1.3; direction:rtl;}
@@ -3818,7 +3821,20 @@ function renderCdFinal(){
   var p=cdDiffParts(st-now);
   el.innerHTML='<div class="cd-final">'
     +'<div class="cf-top">🏆 النهائي الكبير</div>'
-    +'<div class="cf-duel">'+fin.h+' × '+fin.a+'</div>'
+    +(function(){
+        var fh=(typeof resolveKOName==="function")?resolveKOName(fin.h):fin.h;
+        var fa=(typeof resolveKOName==="function")?resolveKOName(fin.a):fin.a;
+        function cell(nm){
+          if(TEAMS[nm]) return flagImg(nm)+' '+nm;
+          var mw=String(nm||"").match(/(?:الفائز|خاسر)\s+(?:من\s+)?المباراة\s+(\d+)/);
+          if(mw && typeof koCandidates==="function"){
+            var cs=koCandidates(parseInt(mw[1],10));
+            if(cs.length>=2) return '<span class="cd-cands">'+cs.slice(0,4).map(function(t){return flagImg(t);}).join("")+(cs.length>4?'<b>+'+(cs.length-4)+'</b>':'')+'</span>';
+          }
+          return nm;
+        }
+        return '<div class="cf-duel">'+cell(fh)+' × '+cell(fa)+'</div>';
+      })()
     +'<div class="cf-cd">'
       +'<div class="cf-box"><b>'+p.d+'</b><span>يوم</span></div>'
       +'<span class="cf-sep">:</span>'
@@ -3855,6 +3871,14 @@ function renderCdList(){
       if(m.r && m.r!=="group" && typeof resolveKOTeam==="function"){ th=resolveKOTeam(m.h); ta=resolveKOTeam(m.a); }
       function cdTeamCell(orig, resolved){
         if(TEAMS[resolved]) return flagImg(resolved)+' <span class="cd-tnm">'+resolved+'</span>';
+        var mwc=String(resolved||"").match(/(الفائز|خاسر)\s+(?:من\s+)?المباراة\s+(\d+)/);
+        if(mwc && typeof koCandidates==="function"){
+          var csc=koCandidates(parseInt(mwc[2],10));
+          if(csc.length>=2){
+            var fl=csc.slice(0,4).map(function(t){return flagImg(t);}).join("");
+            return '<span class="cd-cands">'+fl+(csc.length>4?'<b>+'+(csc.length-4)+'</b>':'')+'</span>';
+          }
+        }
         if(typeof resolved==="string" && resolved.indexOf("أفضل ثالث")===0 && typeof thirdCandidatesHTML==="function"){
           var tc=thirdCandidatesHTML(resolved); if(tc) return tc;
         }
@@ -3975,7 +3999,7 @@ function goTab(id){
   if(id==="info" && !window._stadDone){ if(typeof renderStadiums==="function"){ renderStadiums(); window._stadDone=true; } }
   if(id==="ko"){ renderKO(); }
   if(id==="cd"){ renderCd(); }
-  if(id==="stats"){ renderStats(); }
+  if(id==="stats"){ try{buildLeaderboard();}catch(_e){} renderStats(); }
   if(id==="info" && !window._infoDone){ renderInfo(); window._infoDone=true; }
   document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active", t.id==="tab-"+id);});
   document.querySelectorAll("#bn button").forEach(function(b){b.classList.toggle("on", b.dataset.tab===id);});
@@ -4414,6 +4438,7 @@ function schedulePoll(){
 }
 schedulePoll();
 applyFinals();
+try{ if(typeof buildLeaderboard==="function") buildLeaderboard(); }catch(_e){}
 loadScoresESPN("20260610", ymd(new Date(Date.now()+24*3600000))).then(function(){
   applyFinals();
   return fetchAllGoals();
