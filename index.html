@@ -4209,6 +4209,7 @@ function refreshAll(btn){
       if(typeof renderHero==="function") renderHero();
       if(typeof renderTickerBar==="function") renderTickerBar();
       if(msg){ var t=new Date(); var hh=(t.getHours()<10?"0":"")+t.getHours(); var mm=(t.getMinutes()<10?"0":"")+t.getMinutes(); msg.textContent="تم التحديث "+hh+":"+mm; }
+      if(typeof runHealthCheck==="function"){ try{ runHealthCheck(false); }catch(e){} }
       if(btn){ btn.classList.remove("spinning"); btn.disabled=false; }
     });
 }
@@ -4646,8 +4647,12 @@ function runHealthCheck(manual){
   var allOk = pass===checks.length;
   var badge=document.getElementById("hcBadge");
   if(badge){
-    badge.className = allOk ? "ok" : "warn";
-    badge.querySelector(".msg").textContent = allOk ? ("كل شي تمام ✓ ("+pass+"/"+checks.length+")") : ("⚠ "+ (checks.length-pass) +" ملاحظة — اضغط للتفاصيل");
+    // صامت عند السلامة؛ يظهر تنبيهًا أحمر فقط عند وجود خلل
+    if(allOk){ badge.style.display="none"; badge.className="ok"; }
+    else{
+      badge.style.display="flex"; badge.className="warn";
+      badge.querySelector(".msg").textContent = "⚠ "+(checks.length-pass)+" ملاحظة — اضغط للتفاصيل";
+    }
   }
   window._hcLast={checks:checks, pass:pass, total:checks.length, time:new Date()};
   var panel=document.getElementById("hcPanel");
@@ -5337,7 +5342,7 @@ try{ renderTourist(); }catch(e){}
 setTimeout(function(){ var sp=document.getElementById("splash"); if(sp) sp.classList.add("hidden"); }, 1700);
 
 </script>
-<div id="hcBadge" class="ok" onclick="hcShow()"><span class="dot"></span><span class="msg">الفاحص الذاتي: جاري…</span><span class="cx">▾</span></div>
+<div id="hcBadge" class="ok" onclick="hcShow()" style="display:none"><span class="dot"></span><span class="msg"></span><span class="cx">▾</span></div>
 <div id="hcPanel" onclick="if(event.target.id==='hcPanel')hcHide()"><div class="hc-card" style="position:relative"><div class="hc-x" onclick="hcHide()">✕</div><h3>🩺 فحص صحة التطبيق</h3><div class="hc-sub" id="hcTime"></div><div id="hcList"></div><button class="pred-btn gold" style="margin-top:12px;width:100%" onclick="runHealthCheck(true)">↻ افحص الآن</button></div></div>
 </body>
 </html>
