@@ -1750,9 +1750,11 @@ function teamHTML(name, win){
     var mw=name.match(/الفائز من المباراة\s+(\d+)/);
     if(mw){
       var fm=getM(parseInt(mw[1],10));
-      if(fm && TEAMS[fm.h] && TEAMS[fm.a]){
-        var kchips='<span class="tc-chip">'+flagImg(fm.h)+'<span class="tc-nm">'+fm.h+'</span></span>'
-                  +'<span class="tc-chip">'+flagImg(fm.a)+'<span class="tc-nm">'+fm.a+'</span></span>';
+      var fmH=fm?((typeof resolveKOName==="function")?resolveKOName(fm.h):fm.h):null;
+      var fmA=fm?((typeof resolveKOName==="function")?resolveKOName(fm.a):fm.a):null;
+      if(fm && TEAMS[fmH] && TEAMS[fmA]){
+        var kchips='<span class="tc-chip">'+flagImg(fmH)+'<span class="tc-nm">'+fmH+'</span></span>'
+                  +'<span class="tc-chip">'+flagImg(fmA)+'<span class="tc-nm">'+fmA+'</span></span>';
         return '<div class="team ph tc-team"><div class="tc-wrap"><div class="tc-title">الفائز من مباراة '+mw[1]+':</div><div class="tc-chips">'+kchips+'</div></div></div>';
       }
     }
