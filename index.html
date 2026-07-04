@@ -2943,6 +2943,7 @@ function renderGoals(m, g){
     list.forEach(function(x){
       var raw=String(x.rawName||x.who||"هدف").replace(/<[^>]*>/g,"").replace(/\s+/g," ").trim();
       var nm=raw.replace(/[\s\u2019'`\d+]+$/,"").trim()||"هدف";
+      if(typeof arName==="function" && nm!=="هدف" && !/عكسي/.test(nm)) nm=arName(nm);
       var og=/own\s*goal/i.test(x.type||"")||/عكسي/i.test(x.type||"");
       var key=nm.toLowerCase().replace(/[^a-z\u0600-\u06ff]/g,"")+(og?"|og":"");
       if(!byName[key]){ byName[key]={who:nm, type:x.type, og:og, mins:[]}; order.push(key); }
@@ -3642,7 +3643,11 @@ async function loadScoresESPN(fromYmd,toYmd){
       var comp=(ev.competitions||[])[0]; if(!comp) return;
       var cs=comp.competitors||[]; if(cs.length<2) return;
       var n1=cs[0].team.displayName, n2=cs[1].team.displayName;
-      var mm=findByNames(n1,n2) || attachKnockout(ev,n1,n2);
+      // 1) لو سبق وربطنا هذا الحدث بمباراة (وهي جارية/انتهت)، استخدم نفس الربط دائمًا
+      var mm=null;
+      if(ev.id){ for(var _q=0;_q<M.length;_q++){ if(String(EV_ID[M[_q].n])===String(ev.id)){ mm=M[_q]; break; } } }
+      // 2) وإلا طابق بالاسم ثم بالوقت
+      if(!mm) mm=findByNames(n1,n2) || attachKnockout(ev,n1,n2);
       if(!mm) return;
       EV_ID[mm.n]=ev.id;
       var st=ev.status||{}, ty=st.type||{}, desc=(ty.description||"")+" "+(ty.detail||"")+" "+(ty.name||"");
@@ -3784,6 +3789,7 @@ function liveScorersHTML(mn, m){
       raw = String(raw).replace(/<[^>]*>/g,"").replace(/\s+/g," ").trim();
       var nm = raw.replace(/[\s\u2019'`\d+]+$/,"").trim();   // انزع أي دقيقة ملتصقة بآخر الاسم
       if(!nm || nm==="هدف") nm="هدف";
+      if(typeof arName==="function" && nm!=="هدف") nm=arName(nm);   // تعريب تلقائي (لا اسم إنجليزي)
       var og = /own\s*goal/i.test(g.type||"") || /عكسي/i.test(g.type||"");
       var key = nm.toLowerCase().replace(/[^a-z\u0600-\u06ff]/g,"")+(og?"|og":"");  // مفتاح موحّد
       if(!byName[key]){ byName[key]={nm:nm, og:og, mins:[]}; order.push(key); }
