@@ -739,6 +739,33 @@ html{scroll-padding-top:80px;}
 .st-rf{font-family:inherit; font-size:11.5px; font-weight:700; color:var(--gold); background:var(--card); border:1px solid var(--line); border-radius:99px; padding:6px 13px; cursor:pointer; white-space:nowrap; transition:.15s;}
 .st-rf:active{transform:scale(.96);}
 .st-rf:disabled{opacity:.55;}
+/* خانة الأهداف */
+.gt-head{display:flex; gap:8px; align-items:center; margin-bottom:12px;}
+.gt-search{flex:1; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 13px; color:var(--txt); font-family:inherit; font-size:13px; outline:none;}
+.gt-search:focus{border-color:var(--gold);}
+.gt-block{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px 12px; margin-bottom:12px;}
+.gt-mhead{display:flex; align-items:center; justify-content:space-between; gap:8px; padding-bottom:8px; margin-bottom:6px; border-bottom:1px dashed var(--line);}
+.gt-mt{font-weight:800; font-size:13px; display:flex; align-items:center; gap:5px; flex-wrap:wrap;}
+.gt-mt img{width:22px; height:15px; object-fit:cover; border-radius:2px; vertical-align:middle;}
+.gt-sc{color:var(--gold2); font-family:"Changa",sans-serif; font-size:15px; margin:0 4px;}
+.gt-md{font-size:10.5px; color:var(--mut); white-space:nowrap;}
+.gt-goal{display:flex; align-items:center; gap:9px; padding:8px 6px; border-radius:9px; text-decoration:none; color:var(--txt); transition:background .15s;}
+.gt-goal:hover{background:var(--s5,rgba(255,255,255,.05));}
+.gt-goal:not(:last-child){border-bottom:1px solid var(--s3,rgba(255,255,255,.03));}
+.gt-yt{font-size:17px; flex-shrink:0;}
+.gt-min{font-family:"Changa",sans-serif; font-weight:800; color:var(--gold2); min-width:34px; font-size:13px; direction:ltr;}
+.gt-pl{flex:1; font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px;}
+.gt-pl img{width:20px; height:14px; object-fit:cover; border-radius:2px;}
+.gt-pl i{color:var(--mut); font-size:11px; font-weight:400;}
+.gt-go{font-size:13px; opacity:.5;}
+/* كروت اللاعبين */
+.lr-cards{display:flex; gap:8px; align-items:center; font-family:"Changa",sans-serif; font-weight:800; font-size:14px;}
+.lr-cards .cd-y{color:#f4c531;}
+.lr-cards .cd-r{color:#ff5c6b;}
+/* مقاييس إحصائيات الفرق */
+.ts-sub{display:flex; gap:6px; overflow-x:auto; padding-bottom:10px; margin-bottom:4px; -webkit-overflow-scrolling:touch;}
+.ts-mbtn{flex-shrink:0; background:var(--card); border:1px solid var(--line); border-radius:99px; padding:7px 13px; color:var(--mut); font-family:inherit; font-weight:800; font-size:12px; cursor:pointer; white-space:nowrap;}
+.ts-mbtn.on{background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#1a1200; border-color:transparent;}
 .lead-row{display:flex; align-items:center; gap:11px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px 13px; margin-bottom:8px; animation:rise .3s ease both;}
 .lr-rank{flex-shrink:0; width:26px; text-align:center; font-family:"Changa",sans-serif; font-weight:800; font-size:17px; color:var(--dim);}
 .lead-row.top1,.lead-row.top2,.lead-row.top3{border-color:rgba(240,194,75,.34);}
@@ -1379,7 +1406,9 @@ if("serviceWorker" in navigator){
     <div class="sec-t"><i></i>الإحصائيات <span class="cnt" id="stCnt">سباق الحذاء الذهبي</span></div>
     <div class="st-toggle">
       <button class="st-mode on" data-stmode="g">⚽ الهدّافون</button>
-      <button class="st-mode" data-stmode="a">🅰️ صناعة الأهداف</button>
+      <button class="st-mode" data-stmode="a">🅰️ الصنّاع</button>
+      <button class="st-mode" data-stmode="c">🟨 الكروت</button>
+      <button class="st-mode" data-stmode="t">📈 إحصائيات الفرق</button>
     </div>
     <div class="st-head">
       <span class="st-upd" id="stUpd"></span>
@@ -1387,6 +1416,17 @@ if("serviceWorker" in navigator){
     </div>
     <div id="statList"></div>
     <div class="st-foot" id="stFoot"></div>
+  </section>
+
+  <!-- ============ GOALS (أهداف البطولة) ============ -->
+  <section id="tab-goals" class="tab">
+    <div class="sec-t"><i></i>أهداف البطولة <span class="cnt" id="goalsCnt">كل الأهداف</span></div>
+    <div class="gt-head">
+      <input id="goalSearch" class="gt-search" placeholder="🔎 ابحث بلاعب أو منتخب...">
+      <button class="st-rf" id="goalsRefresh">↻ تحديث</button>
+    </div>
+    <div id="goalsList"></div>
+    <div class="st-foot">اضغط 🎬 لمشاهدة الهدف على يوتيوب · الأرقام تُحدّث بعد كل مباراة</div>
   </section>
 
   <!-- ============ GROUPS ============ -->
@@ -1531,6 +1571,7 @@ if("serviceWorker" in navigator){
   <button data-tab="home" class="on"><span class="ic">📡</span>اليوم</button>
   <button data-tab="matches"><span class="ic">📅</span>المباريات</button>
   <button data-tab="stats"><span class="ic">📊</span>الإحصائيات</button>
+  <button data-tab="goals"><span class="ic">⚽</span>الأهداف</button>
   <button data-tab="cd"><span class="ic">⏳</span>العدّاد</button>
   <button data-tab="groups"><span class="ic">🧩</span>المجموعات</button>
   <button data-tab="ko"><span class="ic">🏆</span>الإقصائيات</button>
@@ -2889,6 +2930,8 @@ function wrapG(x){return {who:'<span style="direction:rtl">'+x.who+'</span>', mi
 
 /* ===== الأهداف والهدّافون (من نفس المصدر المباشر) ===== */
 var GOAL_CACHE={};
+var CARD_CACHE={};
+var TEAMSTAT_CACHE={};
 function goalIcon(ty){
   ty=(ty||"").toLowerCase();
   if(ty.indexOf("penalty")!==-1) return "🥅";
@@ -4199,12 +4242,15 @@ function goTab(id){
   if(id==="ko"){ renderKO(); }
   if(id==="cd"){ renderCd(); }
   if(id==="stats"){ try{buildLeaderboard();}catch(_e){} renderStats(); }
+  if(id==="goals"){ try{buildLeaderboard();}catch(_e){} renderGoalsTab(); }
   if(id==="info" && !window._infoDone){ renderInfo(); window._infoDone=true; }
   document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active", t.id==="tab-"+id);});
   document.querySelectorAll("#bn button").forEach(function(b){b.classList.toggle("on", b.dataset.tab===id);});
   if(id==="groups" && !window._stAt){ loadStandingsESPN().catch(function(){}); }
   window.scrollTo({top:0, behavior:"instant" in window ? "auto" : "auto"});
 }
+var _gs=document.getElementById("goalSearch");
+if(_gs){ _gs.addEventListener("input", function(){ if(typeof renderGoalsTab==="function") renderGoalsTab(); }); }
 document.getElementById("bn").addEventListener("click", function(e){
   var b=e.target.closest("button[data-tab]");
   if(b) goTab(b.dataset.tab);
@@ -4284,6 +4330,7 @@ function refreshAll(btn){
       if(typeof renderHome==="function") renderHome();
       if(typeof renderHero==="function") renderHero();
       if(typeof renderTickerBar==="function") renderTickerBar();
+      if(typeof renderGoalsTab==="function" && document.getElementById("tab-goals") && document.getElementById("tab-goals").classList.contains("active")) renderGoalsTab();
       if(msg){ var t=new Date(); var hh=(t.getHours()<10?"0":"")+t.getHours(); var mm=(t.getMinutes()<10?"0":"")+t.getMinutes(); msg.textContent="تم التحديث "+hh+":"+mm; }
       if(typeof runHealthCheck==="function"){ try{ runHealthCheck(false); }catch(e){} }
       if(btn){ btn.classList.remove("spinning"); btn.disabled=false; }
@@ -4292,9 +4339,23 @@ function refreshAll(btn){
 
 function renderStats(){
   var list=document.getElementById("statList"); if(!list) return;
+  var cnt=document.getElementById("stCnt");
+  if(statMode==="c"){
+    list.innerHTML = renderCards();
+    if(cnt) cnt.textContent="أكثر اللاعبين إنذارات وطردًا";
+    var upC=document.getElementById("stUpd"); if(upC) upC.innerHTML='🟨🟥 البطاقات';
+    var ftC=document.getElementById("stFoot"); if(ftC) ftC.innerHTML='الأحمر يُحتسب بثقل أعلى في الترتيب';
+    return;
+  }
+  if(statMode==="t"){
+    list.innerHTML = renderTeamStats();
+    if(cnt) cnt.textContent="إحصائيات المنتخبات";
+    var upT=document.getElementById("stUpd"); if(upT) upT.innerHTML='📈 حسب المباريات المُجلبة';
+    var ftT=document.getElementById("stFoot"); if(ftT) ftT.innerHTML='الاستحواذ متوسط، والباقي إجمالي عبر مبارياتها';
+    return;
+  }
   var arr=(STAT_DATA[statMode]||[]).slice().sort(function(a,b){return b.v-a.v;});
   list.innerHTML = arr.length ? arr.map(statCard).join("") : '<div class="lu-note">لا تتوفر بيانات بعد.</div>';
-  var cnt=document.getElementById("stCnt");
   if(cnt) cnt.textContent = statMode==="g" ? "سباق الحذاء الذهبي" : "صنّاع الأهداف";
   var upd=document.getElementById("stUpd");
   if(upd) upd.innerHTML = STAT_DATA.live ? '🟢 مُحدّث مباشرةً' : ('🗓️ آخر تحديث: '+STAT_DATA.upd);
@@ -4303,6 +4364,150 @@ function renderStats(){
     + '<a href="https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/statistics/player-statistics" target="_blank" rel="noopener">📊 إحصائيات FIFA الرسمية</a>';
 }
 /* ===== جلب الأهداف والتمريرات الحاسمة من ESPN لكل المباريات المنتهية ===== */
+
+/* ============ خانة أهداف البطولة (يوتيوب) ============ */
+function ytLink(q){ return "https://www.youtube.com/results?search_query="+encodeURIComponent(q); }
+function goalRows(m){
+  var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null;
+  var gc=(typeof GOAL_CACHE!=="undefined")?GOAL_CACHE[m.n]:null;
+  var homeG=[], awayG=[];
+  if(fr && ((fr.gh&&fr.gh.length)||(fr.ga&&fr.ga.length))){ homeG=fr.gh||[]; awayG=fr.ga||[]; }
+  else if(gc){ homeG=gc.home||[]; awayG=gc.away||[]; }
+  return {homeG:homeG, awayG:awayG, sh:(fr?fr.sh:(gc&&SC_CACHE[m.n]?SC_CACHE[m.n].sh:null)), sa:(fr?fr.sa:(gc&&SC_CACHE[m.n]?SC_CACHE[m.n].sa:null))};
+}
+function cleanName(x){
+  var raw=String(x.rawName||x.who||"").replace(/<[^>]*>/g,"").replace(/[\s\u2019'`\d+]+$/,"").trim();
+  if(!raw||raw==="هدف") return "هدف";
+  return (typeof arName==="function")?arName(raw):raw;
+}
+function renderGoalsTab(){
+  var box=document.getElementById("goalsList"); if(!box) return;
+  var q=(document.getElementById("goalSearch")||{}).value||"";
+  q=q.trim().toLowerCase();
+  var done=M.filter(function(m){ return (statusOf(m)==="done"||FINAL_RESULTS[m.n]); })
+            .sort(function(a,b){ return dateObj(b).getTime()-dateObj(a).getTime(); });
+  var html="", totalGoals=0, shown=0;
+  done.forEach(function(m){
+    var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+    var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+    var gr=goalRows(m);
+    if(!gr.homeG.length && !gr.awayG.length) return;
+    // اجمع كل الأهداف مع الجانب
+    var goals=[];
+    gr.homeG.forEach(function(g){ goals.push({nm:cleanName(g),min:g.min,team:hN,og:/عكسي|own/i.test(g.type||g.who||"")}); });
+    gr.awayG.forEach(function(g){ goals.push({nm:cleanName(g),min:g.min,team:aN,og:/عكسي|own/i.test(g.type||g.who||"")}); });
+    totalGoals+=goals.length;
+    // فلتر البحث
+    if(q){
+      var hit=(hN.toLowerCase().indexOf(q)>=0)||(aN.toLowerCase().indexOf(q)>=0)||goals.some(function(g){return g.nm.toLowerCase().indexOf(q)>=0;});
+      if(!hit) return;
+    }
+    // رتّب بالدقيقة
+    goals.sort(function(a,b){ return (parseInt(a.min,10)||0)-(parseInt(b.min,10)||0); });
+    shown++;
+    var scoreTxt=(gr.sh!=null&&gr.sa!=null)?(gr.sh+" - "+gr.sa):"";
+    var head='<div class="gt-mhead">'
+      +'<span class="gt-mt">'+flagImg(hN)+' '+hN+' <b class="gt-sc">'+scoreTxt+'</b> '+aN+' '+flagImg(aN)+'</span>'
+      +'<span class="gt-md">'+(m.d?fmtD(m.d):"")+'</span></div>';
+    var items=goals.map(function(g){
+      var yq="أهداف "+hN+" ضد "+aN+" "+(g.nm!=="هدف"?g.nm:"")+" هدف كأس العالم 2026 beIN";
+      return '<a class="gt-goal" href="'+ytLink(yq)+'" target="_blank" rel="noopener">'
+        +'<span class="gt-yt">🎬</span>'
+        +'<span class="gt-min">'+(g.min?(g.min+"'"):"")+'</span>'
+        +'<span class="gt-pl">'+flagImg(g.team)+' '+g.nm+(g.og?' <i>(عكسي)</i>':'')+'</span>'
+        +'<span class="gt-go">⚽</span></a>';
+    }).join("");
+    html+='<div class="gt-block">'+head+items+'</div>';
+  });
+  var cnt=document.getElementById("goalsCnt");
+  if(cnt) cnt.textContent = totalGoals+" هدف";
+  box.innerHTML = html || '<div class="lu-note">لا توجد أهداف مطابقة'+(q?' لبحثك':'')+' بعد.</div>';
+}
+
+/* ============ تجميع الكروت وإحصائيات الفرق ============ */
+function _num(v){ if(v==null) return 0; var m=String(v).match(/-?\d+(\.\d+)?/); return m?parseFloat(m[0]):0; }
+function buildCards(){
+  var map={};
+  Object.keys(CARD_CACHE||{}).forEach(function(n){
+    var m=getM(+n); if(!m) return;
+    var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+    var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+    var cc=CARD_CACHE[n];
+    function add(list, team){
+      (list||[]).forEach(function(c){
+        var nm=(typeof arName==="function")?arName(c.who):c.who;
+        if(!nm||nm==="هدف") return;
+        var key=nm.toLowerCase().replace(/[^a-z\u0600-\u06ff]/g,"")+"|"+team;
+        if(!map[key]) map[key]={n:nm,t:team,y:0,r:0};
+        if(c.red) map[key].r++; else map[key].y++;
+      });
+    }
+    add(cc.home,hN); add(cc.away,aN);
+  });
+  return Object.keys(map).map(function(k){return map[k];})
+    .filter(function(x){return x.y+x.r>0;})
+    .sort(function(a,b){ var sa=a.r*3+a.y, sb=b.r*3+b.y; return sb-sa || b.r-a.r; });
+}
+function buildTeamStats(){
+  var map={};
+  Object.keys(TEAMSTAT_CACHE||{}).forEach(function(n){
+    var m=getM(+n); if(!m) return;
+    var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+    var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+    var ts=TEAMSTAT_CACHE[n];
+    function add(st, team){
+      if(!st) return;
+      if(!map[team]) map[team]={t:team,mt:0,poss:0,shots:0,sot:0,corners:0,offs:0,fouls:0};
+      var e=map[team]; e.mt++;
+      e.poss+=_num(st["possessionpct"]!=null?st["possessionpct"]:st["possession"]);
+      e.shots+=_num(st["totalshots"]);
+      e.sot+=_num(st["shotsontarget"]!=null?st["shotsontarget"]:st["ontargetshotsattempts"]);
+      e.corners+=_num(st["woncorners"]!=null?st["woncorners"]:st["corners"]);
+      e.offs+=_num(st["offsides"]);
+      e.fouls+=_num(st["foulscommitted"]!=null?st["foulscommitted"]:st["fouls"]);
+    }
+    add(ts.home,hN); add(ts.away,aN);
+  });
+  return map;
+}
+var teamStatMetric="poss";
+var TS_META={poss:{lbl:"الاستحواذ",unit:"%",avg:true,ic:"⚽"},shots:{lbl:"التسديدات",unit:"",avg:false,ic:"🎯"},
+  sot:{lbl:"على المرمى",unit:"",avg:false,ic:"🥅"},corners:{lbl:"الركنيات",unit:"",avg:false,ic:"🚩"},
+  offs:{lbl:"التسلل",unit:"",avg:false,ic:"🚫"}};
+function renderCards(list){
+  var arr=buildCards();
+  if(!arr.length) return '<div class="lu-note">لم تُسجّل كروت بعد — تظهر بعد جلب بيانات المباريات.<br><span style="font-size:11px">جرّب زر ↻ تحديث مباشر.</span></div>';
+  return arr.slice(0,40).map(function(p,i){
+    return '<div class="lead-row'+(i<3?" top"+(i+1):"")+'">'
+      +'<div class="lr-rank">'+(i+1)+'</div>'
+      +'<div class="lr-flag">'+(flagImg(p.t)||"🏳️")+'</div>'
+      +'<div class="lr-info"><div class="lr-name">'+p.n+'</div><div class="lr-team">'+p.t+'</div></div>'
+      +'<div class="lr-cards">'+(p.y?'<span class="cd-y">🟨 '+p.y+'</span>':'')+(p.r?'<span class="cd-r">🟥 '+p.r+'</span>':'')+'</div>'
+      +'</div>';
+  }).join("");
+}
+function renderTeamStats(){
+  var map=buildTeamStats();
+  var teams=Object.keys(map).map(function(k){return map[k];});
+  if(!teams.length) return '<div class="lu-note">لا تتوفر إحصائيات فرق بعد — تظهر بعد جلب بيانات المباريات.<br><span style="font-size:11px">جرّب زر ↻ تحديث مباشر.</span></div>';
+  var meta=TS_META[teamStatMetric];
+  teams.forEach(function(e){ e._val = meta.avg ? (e.mt?e[teamStatMetric]/e.mt:0) : e[teamStatMetric]; });
+  teams.sort(function(a,b){ return b._val-a._val; });
+  var sub='<div class="ts-sub">'+Object.keys(TS_META).map(function(k){
+    return '<button class="ts-mbtn'+(k===teamStatMetric?" on":"")+'" data-tsm="'+k+'">'+TS_META[k].ic+' '+TS_META[k].lbl+'</button>';
+  }).join("")+'</div>';
+  var rows=teams.slice(0,32).map(function(e,i){
+    var v=meta.avg?e._val.toFixed(1):Math.round(e._val);
+    return '<div class="lead-row'+(i<3?" top"+(i+1):"")+'">'
+      +'<div class="lr-rank">'+(i+1)+'</div>'
+      +'<div class="lr-flag">'+(flagImg(e.t)||"🏳️")+'</div>'
+      +'<div class="lr-info"><div class="lr-name">'+e.t+'</div><div class="lr-team">'+e.mt+' مباريات'+(meta.avg?" · متوسط":" · إجمالي")+'</div></div>'
+      +'<div class="lr-count"><b>'+v+'</b><span>'+(meta.unit||meta.lbl)+'</span></div>'
+      +'</div>';
+  }).join("");
+  return sub+rows;
+}
+
 async function fetchGoalsSilent(n, evId){
   try{
     var res=await fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event="+evId);
@@ -4351,6 +4556,45 @@ async function fetchGoalsSilent(n, evId){
       if(side==="a") away.push(rec); else home.push(rec);
     });
     GOAL_CACHE[n]={home:home,away:away,_fetched:true};
+    /* ===== استخراج الكروت (صفراء/حمراء) من نفس الملخص ===== */
+    try{
+      var cardsH=[], cardsA=[];
+      var cev=(d1.keyEvents&&d1.keyEvents.length)?d1.keyEvents:((d1.details&&d1.details.length)?d1.details:[]);
+      cev.forEach(function(ev){
+        var tx=(((ev.type||{}).text)||"")+" "+((ev.penaltyType&&ev.penaltyType.text)||"");
+        var isY=/yellow\s*card/i.test(tx), isR=/red\s*card|second\s*yellow/i.test(tx);
+        if(!isY && !isR) return;
+        var who=espnGoalName(ev)||""; if(!who) return;
+        var mn=""; if(ev.clock&&ev.clock.displayValue) mn=String(ev.clock.displayValue).replace(/[‘’':].*$/,"").replace(/[‘’']/g,"");
+        var rawTid=ev.team?(ev.team.id||""):""; if(!rawTid&&ev.team&&ev.team.$ref){var rm=ev.team.$ref.match(/teams\/(\d+)/);if(rm)rawTid=rm[1];}
+        var side=tMap[String(rawTid)]||null;
+        if(side===null&&ev.team&&ev.team.displayName){var dn=ev.team.displayName.toLowerCase();if(dn===hTeamName)side="h";else if(dn===aTeamName)side="a";}
+        if(side===null&&ev.homeAway) side=ev.homeAway==="away"?"a":"h";
+        var rec={who:who, min:mn, red:isR};
+        if(side==="a") cardsA.push(rec); else cardsH.push(rec);
+      });
+      CARD_CACHE[n]={home:cardsH, away:cardsA, _fetched:true};
+    }catch(e){}
+    /* ===== إحصائيات الفرق (استحواذ/تسديدات/ركنيات/تسلل...) ===== */
+    try{
+      var bx=(d1.boxscore&&d1.boxscore.teams)?d1.boxscore.teams:[];
+      if(bx.length>=2){
+        function grab(teamObj){
+          var o={}; (teamObj.statistics||[]).forEach(function(st){
+            var key=(st.name||st.abbreviation||"").toLowerCase();
+            var val=st.displayValue!=null?st.displayValue:st.value;
+            o[key]=val;
+          }); return o;
+        }
+        // اربط جانب كل فريق
+        var s0=grab(bx[0]), s1=grab(bx[1]);
+        var id0=String((bx[0].team||{}).id||""), id1=String((bx[1].team||{}).id||"");
+        var sideOf={}; sideOf[id0]=tMap[id0]||"h"; sideOf[id1]=tMap[id1]||"a";
+        var stH = (tMap[id0]==="h")?s0:((tMap[id1]==="h")?s1:s0);
+        var stA = (tMap[id0]==="a")?s0:((tMap[id1]==="a")?s1:s1);
+        TEAMSTAT_CACHE[n]={home:stH, away:stA, _fetched:true};
+      }
+    }catch(e){}
   }catch(e){}
 }
 async function fetchAllGoals(){
@@ -4496,6 +4740,9 @@ async function refreshStats(){
 }
 document.addEventListener("click", function(e){
   if(e.target.closest("#stRefresh")){ refreshStats(); }
+  if(e.target.closest("#goalsRefresh")){ (typeof refreshStats==="function"?refreshStats():null); if(typeof renderGoalsTab==="function") setTimeout(renderGoalsTab,300); }
+  var tsm=e.target.closest("[data-tsm]");
+  if(tsm){ teamStatMetric=tsm.dataset.tsm; renderStats(); return; }
   var sm=e.target.closest("[data-stmode]");
   if(sm){
     statMode=sm.dataset.stmode;
