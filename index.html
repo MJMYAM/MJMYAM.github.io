@@ -1813,9 +1813,13 @@ function statusOf(m){
     if(sc && sc.found && sc.status){
       if(sc.status==="finished") return "done";
       if(sc.status==="live" || sc.status==="ht"){
-        var fresh = sc._ts && (Date.now()-sc._ts) < 6*60000; // بيانات حديثة من المصدر خلال آخر 6 دقائق
-        if(fresh) return "live";                              // المصدر يقول مباشر الآن → مباشر (حتى مع الركلات)
-        return (mins>liveMax) ? "done" : "live";              // حماية من بيانات قديمة عالقة على "مباشر"
+        // سقف مطلق: بعد تجاوز أقصى مدة ممكنة، تُعتبر منتهية حتى لو المصدر ما زال يرسل "مباشر"
+        // (يمنع بقاء المباراة عالقة على "مباشر" حين يتأخر المصدر في وسم الانتهاء، خصوصًا مع التحديث كل 5ث)
+        var hardCap = KO ? 165 : 118;   // 90+وقت بدل+فاصل؛ الإقصائي مع تمديد وترجيح
+        if(mins>hardCap) return "done";
+        var fresh = sc._ts && (Date.now()-sc._ts) < 6*60000;  // بيانات حديثة خلال آخر 6 دقائق
+        if(fresh) return "live";
+        return (mins>liveMax) ? "done" : "live";
       }
       if(sc.status==="not_started") return "up";
     }
@@ -2866,7 +2870,9 @@ var FINAL_RESULTS={
      gh:[{who:"ليونيل ميسي", min:"29"},{who:"ليساندرو مارتينيز", min:"93"},{who:"هدف عكسي (بورجيس)", min:"111", type:"عكسي"}],
      ga:[{who:"ديروي دوارتي", min:"59"},{who:"سيدني لوبيش كابرال", min:"103"}]},
   87:{sh:1, sa:0, status:"finished",
-     gh:[{who:"خون أرياس", min:"14"}], ga:[]}
+     gh:[{who:"خون أرياس", min:"14"}], ga:[]},
+  90:{sh:0, sa:3, status:"finished", winSide:"a",
+     gh:[], ga:[{who:"عز الدين أوناحي", min:"50"},{who:"عز الدين أوناحي", min:"82"},{who:"سفيان رحيمي", min:"90+8"}]}
 };
 /* ملاحظة: المباراة 2 في جدولنا = كوريا الجنوبية (h) ضد التشيك (a) => كوريا 2-1 التشيك */
 function applyFinals(){
@@ -4360,10 +4366,48 @@ function stripGoalHTML(s){return (s||"").replace(/<[^>]*>/g,"").trim();}
 var STAT_BASE={g:STAT_DATA.g.map(function(x){return {n:x.n,t:x.t,v:x.v};}), a:STAT_DATA.a.map(function(x){return {n:x.n,t:x.t,v:x.v};})};
 var STAT_CUT=new Date("2026-07-01T08:00:00+03:00").getTime();
 var AR_NAME={"kylian mbappe":"كيليان مبابي","mbappe":"كيليان مبابي","lionel messi":"ليونيل ميسي","messi":"ليونيل ميسي","erling haaland":"إيرلينغ هالاند","haaland":"إيرلينغ هالاند","harry kane":"هاري كين","vinicius junior":"فينيسيوس جونيور","vinicius jr":"فينيسيوس جونيور","vinicius jr.":"فينيسيوس جونيور","ousmane dembele":"عثمان ديمبيلي","michael olise":"مايكل أوليسي","ismael saibari":"إسماعيل الصيباري","jonathan david":"جوناثان ديفيد","matheus cunha":"ماتيوس كونيا","brian brobbey":"برايان بروبي","ismaila sarr":"إسماعيلا سار","deniz undav":"دينيز أونداف","bruno guimaraes":"برونو غيماريش","alexander isak":"ألكسندر إيساك","martin odegaard":"مارتن أوديغارد","florian wirtz":"فلوريان فيرتز","brahim diaz":"براهيم دياز","julio enciso":"خوليو إنسيسو","joshua kimmich":"يوشوا كيميش","crysencio summerville":"كريسينسيو سامرفيل","mohamed salah":"محمد صلاح","bukayo saka":"بوكايو ساكا","ryan gravenberch":"ريان غرافينبيرش","cody gakpo":"كودي خاكبو","kai havertz":"كاي هافيرتس","casemiro":"كاسيميرو","gabriel martinelli":"غابرييل مارتينيلي","romelu lukaku":"روميلو لوكاكو","youri tielemans":"يوري تيليمانس","habib diarra":"حبيب ديارا","cristiano ronaldo":"كريستيانو رونالدو","goncalo ramos":"غونسالو راموش","ivan perisic":"إيفان بيريشيتش","bradley barcola":"برادلي باركولا","antonio nusa":"أنطونيو نوسا","amad diallo":"أماد ديالو","stephen eustaquio":"ستيفن يوستاكيو","raul jimenez":"راؤول خيمينيس","emam ashour":"إمام عاشور","breel embolo":"بريل إمبولو","dan ndoye":"دان ندوي","achraf hakimi":"أشرف حكيمي","lamine yamal":"لامين يامال","nico williams":"نيكو ويليامز","mikel oyarzabal":"ميكل أويارثابال","folarin balogun":"فولارين بالوغون","malik tillman":"مالك تيلمان","pedri":"بيدري","jamal musiala":"جمال موسيالا","serhou guirassy":"سيرهو غيراسي","azzedine ounahi":"عز الدين أوناحي","ounahi":"عز الدين أوناحي","youssef en-nesyri":"يوسف النصيري","en-nesyri":"يوسف النصيري","youssef en nesyri":"يوسف النصيري","brahim diaz":"إبراهيم دياز","hakim ziyech":"حكيم زياش","sofiane boufal":"سفيان بوفال","noussair mazraoui":"نصير مزراوي","youssef nesyri":"يوسف النصيري","abde ezzalzouli":"عبد الصمد الزلزولي","ezzalzouli":"عبد الصمد الزلزولي","eljif elmaselli":"إليف المسالي","bilal el khannouss":"بلال الخنوس","el khannouss":"بلال الخنوس","jonathan david":"جوناثان ديفيد","alphonso davies":"ألفونسو ديفيز","davies":"ألفونسو ديفيز","cyle larin":"كايل لارين","larin":"كايل لارين","tajon buchanan":"تاجون بوكانان","jonathan osorio":"جوناثان أوسوريو","jacob shaffelburg":"جيكوب شافلبرغ","ismael kone":"إسماعيل كوني","phil foden":"فيل فودين","jude bellingham":"جود بيلينغهام","bellingham":"جود بيلينغهام","cole palmer":"كول بالمر","marcus rashford":"ماركوس راشفورد","declan rice":"ديكلان رايس","bukayo saka":"بوكايو ساكا","raphinha":"رافينيا","rodrygo":"رودريغو","neymar":"نيمار","richarlison":"ريتشارليسون","vinicius":"فينيسيوس جونيور","lautaro martinez":"لاوتارو مارتينيز","julian alvarez":"خوليان ألفاريز","angel di maria":"أنخيل دي ماريا","di maria":"أنخيل دي ماريا","nicolas gonzalez":"نيكولاس غونزاليس","enzo fernandez":"إنزو فيرنانديز","alexis mac allister":"أليكسيس ماك أليستر","kevin de bruyne":"كيفن دي بروين","de bruyne":"كيفن دي بروين","jeremy doku":"جيريمي دوكو","leandro trossard":"لياندرو تروسارد","jimenez":"راؤول خيمينيس","hirving lozano":"إيرفينغ لوزانو","lozano":"إيرفينغ لوزانو","santiago gimenez":"سانتياغو خيمينيز","edson alvarez":"إدسون ألفاريز","antoine griezmann":"أنطوان غريزمان","griezmann":"أنطوان غريزمان","kingsley coman":"كينغسلي كومان","randal kolo muani":"راندال كولو مواني","kolo muani":"راندال كولو مواني","martin odegaard":"مارتن أوديغارد","erling braut haaland":"إيرلينغ هالاند","oscar bobb":"أوسكار بوب","xavi simons":"تشافي سيمونز","memphis depay":"ممفيس ديباي","depay":"ممفيس ديباي","donyell malen":"دونيال مالين","rafael leao":"رافائيل لياو","leao":"رافائيل لياو","bruno fernandes":"برونو فيرنانديز","bernardo silva":"برناردو سيلفا","joao felix":"جواو فيليكس","pedro neto":"بيدرو نيتو","omar marmoush":"عمر مرموش","marmoush":"عمر مرموش","mostafa mohamed":"مصطفى محمد","trezeguet":"تريزيغيه","mahmoud trezeguet":"تريزيغيه"};
+/* تعريب تلقائي حرف-بحرف لأي اسم لاتيني بلا ترجمة يدوية — احتياط يضمن عدم ظهور اسم إنجليزي */
+function translitAr(name){
+  try{
+    var base=String(name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    var words=base.split(/\s+/).filter(Boolean);
+    // ثنائيات الحروف أولًا ثم الأحرف المفردة
+    var DI=[["sch","ش"],["tsch","تش"],["sh","ش"],["ch","تش"],["th","ث"],["ph","ف"],["gh","غ"],["kh","خ"],
+            ["ou","و"],["oo","و"],["ee","ي"],["ei","اي"],["ai","اي"],["ay","اي"],["ey","ي"],["au","او"],["aa","ا"],
+            ["ck","ك"],["qu","كو"],["ss","س"],["ll","ل"],["nn","ن"],["mm","م"],["tt","ت"],["pp","ب"],["ño","نيو"],["ny","ني"]];
+    var MO={"a":"ا","b":"ب","c":"ك","d":"د","e":"","f":"ف","g":"غ","h":"ه","i":"ي","j":"ج","k":"ك","l":"ل","m":"م",
+            "n":"ن","o":"و","p":"ب","q":"ك","r":"ر","s":"س","t":"ت","u":"و","v":"ف","w":"و","x":"كس","y":"ي","z":"ز","ç":"س","ñ":"ن"};
+    function word(w){
+      w=w.toLowerCase(); var out="", i=0, first=true;
+      // همزة وصل لبداية بحرف علة
+      while(i<w.length){
+        var two=null;
+        for(var d=0;d<DI.length;d++){ var key=DI[d][0]; if(w.substr(i,key.length)===key){ two=DI[d]; break; } }
+        var ch, adv;
+        if(two){ ch=two[1]; adv=two[0].length; }
+        else { var c=w[i]; ch=(c in MO)?MO[c]:""; adv=1; }
+        if(first){
+          var vowel="aeiou".indexOf(w[i])>=0;
+          if(vowel){ out+="أ"+ch; } else { out+=ch; }
+          first=false;
+        } else { out+=ch; }
+        i+=adv;
+      }
+      return out||w;
+    }
+    return words.map(word).join(" ").replace(/\s+/g," ").trim() || name;
+  }catch(e){ return name; }
+}
 function arName(nm){
   try{
-    var k=String(nm||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
-    return AR_NAME[k]||nm;
+    var raw=String(nm||"");
+    if(!/[A-Za-z]/.test(raw)) return raw;              // عربي أصلًا
+    var k=raw.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
+    if(AR_NAME[k]) return AR_NAME[k];                  // 1) القائمة اليدوية (الأدق)
+    // 2) طابق اللقب وحده لو موجود
+    var parts=k.split(" ");
+    if(parts.length>1){ var last=parts[parts.length-1]; if(AR_NAME[last]) return AR_NAME[last]; }
+    return translitAr(raw);                            // 3) تعريب تلقائي
   }catch(e){ return nm; }
 }
 function buildLeaderboard(){
