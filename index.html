@@ -320,6 +320,7 @@ main{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:16px 
 @keyframes fadein{from{opacity:0;}to{opacity:1;}}
 .lu-btn{width:100%; background:linear-gradient(135deg,rgba(240,194,75,.2),rgba(240,194,75,.06)); border:1px solid rgba(240,194,75,.5); color:var(--gold2); font-family:inherit; font-size:12.5px; font-weight:700; border-radius:12px; padding:10px; cursor:pointer;}
 .lu-btn:disabled{opacity:.6; cursor:wait;}
+.lu-retry{display:block;margin:8px auto 0;padding:7px 16px;border-radius:10px;border:1px dashed var(--gold);background:transparent;color:var(--gold);font-family:inherit;font-weight:800;font-size:11px;cursor:pointer;}
 .lu-note{font-size:11px; color:var(--dim); text-align:center; margin-top:7px; line-height:1.9;}
 .chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;}
 .chip{font-size:11px; font-weight:600; padding:4px 11px; border-radius:99px; background:var(--s6); border:1px solid var(--line); color:var(--ink2);}
@@ -2977,9 +2978,17 @@ function openBeinMatch(btn){
 
 /* ================= LINEUPS & TV (live fetch) ================= */
 var LU_CACHE = {};
-function isReal(m){return !!(TEAMS[m.h] && TEAMS[m.a]);}
+function isReal(m){
+  var h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+  var a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+  return !!(TEAMS[h] && TEAMS[a]);
+}
 function getM(n){for(var i=0;i<M.length;i++){if(M[i].n===n) return M[i];} return null;}
-function gLink(m){return "https://www.google.com/search?q="+encodeURIComponent("تشكيلة "+m.h+" ضد "+m.a+" كأس العالم 2026 والقناة الناقلة");}
+function gLink(m){
+  var h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+  var a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+  return "https://www.google.com/search?q="+encodeURIComponent("تشكيلة "+h+" ضد "+a+" كأس العالم 2026 والقناة الناقلة");
+}
 
 
 /* جدول ترتيب المجموعة داخل بطاقة المباراة */
@@ -3400,6 +3409,8 @@ async function fetchLU(n, box, btn){
           var side = teamIs(hN,tn) ? "h" : (teamIs(aN,tn) ? "a" : null);
           if(!side) return;
           var xi=(rt.roster||[]).filter(function(p){return p && p.starter;});
+          if(xi.length<7){ xi=(rt.roster||[]).filter(function(p){var fp=parseInt(p&&p.formationPlace,10); return fp>=1&&fp<=11;}); }
+          if(xi.length<7 && (rt.roster||[]).length>=11){ xi=(rt.roster||[]).slice(0,11); }
           xi.sort(function(a,b){return (parseInt(a.formationPlace,10)||99)-(parseInt(b.formationPlace,10)||99);});
           var arr=xi.map(function(p){
             var ath=p.athlete||{};
@@ -3442,7 +3453,7 @@ async function fetchLU(n, box, btn){
         if(home.length===0 && away.length===0){
           box.innerHTML='<div class="chips"><span class="chip tv">📺 شبكة beIN Sports</span></div>'
             +'<div class="lu-note">⏳ التشكيلة الرسمية لم تُعلن بعد — تُنشر عادة قبل انطلاق المباراة بساعة تقريبًا</div>'
-            +'<div style="text-align:center"><button class="lu-alt" data-lu="'+n+'">↻ تحديث</button></div>';
+            +'<div style="text-align:center"><button class="lu-alt" data-lu="'+n+'">↻ تحديث</button></div>'+'<button class="lu-retry" onclick="fetchLU('+n+', this.closest(\'.lu-box\')||this.parentNode)">↻ إعادة المحاولة الآن</button>';
           return;
         }
       }
@@ -4556,7 +4567,7 @@ function runHealthCheck(manual){
         }else{
           var _html=newLineupHTML(lnx,{home:[],away:[],subsH:[],subsA:[],fH:"",fA:"",coachH:"",coachA:""});
           var _co=COACHES[_h]||COACHES[_a]||"";
-          var _ok=_html.indexOf("المباراة")<0 && _html.indexOf(_h)>=0 && _html.indexOf(_a)>=0 && (!_co||_html.indexOf(_co)>=0);
+          var _ok=_html.indexOf("المباراة")<0 && _html.indexOf(_h)>=0 && _html.indexOf(_a)>=0 && (!_co||_html.indexOf(_co)>=0) && (typeof isReal!=="function" || isReal(lnx));
           add(_ok,"مسار التشكيلة",_h+" × "+_a);
         }
       }
