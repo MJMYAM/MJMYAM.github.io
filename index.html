@@ -2905,6 +2905,8 @@ function espnAssistName(ev){
   return "";
 }
 function renderGoals(m, g){
+  var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+  var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
   if(!g || (!g.home.length && !g.away.length)){
     return '<div class="gl-empty">لا توجد أهداف مسجّلة بعد في هذه المباراة</div>';
   }
@@ -2915,7 +2917,7 @@ function renderGoals(m, g){
     }).join("");
     return '<div class="gl-col"><h6>'+flagImg(side)+' '+side+'</h6>'+items+'</div>';
   }
-  return '<div class="gl-grid">'+col(m.h,g.home)+col(m.a,g.away)+'</div>';
+  return '<div class="gl-grid">'+col(hN,g.home)+col(aN,g.away)+'</div>';
 }
 async function fetchGoals(n, box, btn){
   var m=getM(n); if(!m || !box) return;
@@ -2990,7 +2992,7 @@ function openBeinMatch(btn){
   if(!card) return;
   var m = getM(+card.dataset.mn);
   if(!m) return;
-  var q = "ملخص "+m.h+" ضد "+m.a+" كأس العالم 2026 beIN SPORTS";
+  var q = "ملخص "+((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" كأس العالم 2026 beIN SPORTS";
   // يحوّل مباشرة على يوتيوب (يفتح تطبيق يوتيوب على الجوال)
   window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(q), "_blank", "noopener");
 }
@@ -3049,7 +3051,7 @@ function extShell(m){
       scorersBox='<div class="goals-box" id="gbox-'+m.n+'"><div class="lu-note">جارٍ جلب الأهداف والهدّافين <span class="spin"></span></div></div><div class="ext-div"></div>';
     }
     if(stxV==="done"){
-      var q=encodeURIComponent(m.h+" ضد "+m.a+" beIN Sports ملخص");
+      var q=encodeURIComponent(((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" beIN Sports ملخص");
       var qMatch=encodeURIComponent(m.h+" ضد "+m.a);
       summaryBox='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button><div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div><div class="ext-div"></div>';
     }
@@ -4591,6 +4593,17 @@ function runHealthCheck(manual){
         }
       }
     }catch(e){ add(false,"مسار التشكيلة","خطأ: "+String(e).slice(0,30)); }
+    // 11ب) عناوين الهدّافين لا تعرض أسماء خام لأي مباراة إقصائية محسومة
+    try{
+      var gbad=[];
+      M.filter(function(m){return m.r&&m.r!=="group";}).forEach(function(m){
+        var fr=FINAL_RESULTS[m.n]; if(!fr) return;
+        var gc=GOAL_CACHE[m.n]||{home:(fr.gh||[]),away:(fr.ga||[])};
+        var _html=renderGoals(m,{home:gc.home||[],away:gc.away||[]});
+        if(/الفائز\s+من\s+المباراة/.test(_html)) gbad.push(m.n);
+      });
+      add(gbad.length===0,"عناوين الهدّافين",gbad.length?("خام في "+gbad.join(",")):"محلولة");
+    }catch(e){ add(false,"عناوين الهدّافين","خطأ"); }
     // 12) فحص وظيفي: بطاقة المباراة القادمة (توليد فعلي)
     try{
       var cnx=M.filter(function(m){return m.d&&statusOf(m)!=="done";}).sort(function(a,b){return dateObj(a)-dateObj(b);})[0];
@@ -5128,7 +5141,7 @@ function renderCompareResult(){
     +'<div class="cmp-row"><div class="cmp-h">'+(wA.captain||"—")+'</div><div class="cmp-k">القائد</div><div class="cmp-l">'+(wB.captain||"—")+'</div></div>'
     +'<div class="cmp-row"><div class="cmp-h">'+(wA.starPlayer||"—")+'</div><div class="cmp-k">النجم</div><div class="cmp-l">'+(wB.starPlayer||"—")+'</div></div>'
     +'<div style="margin-top:14px;font-family:\'Changa\',sans-serif;font-weight:700;font-size:13px">⚔️ المواجهات داخل البطولة</div>'
-    +(between.length ? between.map(function(m){ var date=m.d?fmtD(m.d):(ROUNDS[m.r]?ROUNDS[m.r].l:""); return '<div class="cmp-row"><div class="cmp-h">'+m.h+'</div><div class="cmp-k">'+date+'</div><div class="cmp-l">'+m.a+'</div></div>'; }).join("") : '<div class="empty-state">لا توجد مواجهة مباشرة بينهما في دور المجموعات</div>');
+    +(between.length ? between.map(function(m){ var date=m.d?fmtD(m.d):(ROUNDS[m.r]?ROUNDS[m.r].l:""); var _h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h, _a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a; return '<div class="cmp-row"><div class="cmp-h">'+_h+'</div><div class="cmp-k">'+date+'</div><div class="cmp-l">'+_a+'</div></div>'; }).join("") : '<div class="empty-state">لا توجد مواجهة مباشرة بينهما في دور المجموعات</div>');
 }
 function renderCompareTab(){
   var selA=document.getElementById("cmpA"), selB=document.getElementById("cmpB"), result=document.getElementById("cmpResult");
