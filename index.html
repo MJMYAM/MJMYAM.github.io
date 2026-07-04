@@ -850,6 +850,10 @@ nav#bn button .ic{font-size:18.5px;}
 /* أعلام الثوالث المرشّحين */
 .tc-wrap{display:flex; flex-direction:column; gap:5px;}
 .tc-title{font-size:9.5px; color:var(--mut,#8e94a0); font-weight:700;}
+.tc-chips{flex-wrap:wrap; justify-content:center;}
+.tc-many .tc-chip{padding:2px 6px;}
+.tc-many .tc-nm{font-size:9px;}
+.tc-many .tc-chip img{width:16px;}
 .tc-chips{display:flex; flex-wrap:wrap; gap:4px;}
 .tc-chip{display:inline-flex; align-items:center; gap:3px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:7px; padding:2px 6px; font-size:10px; font-weight:700;}
 .kt-pair{display:inline-flex; flex-wrap:wrap; gap:5px; align-items:center; justify-content:center;}
@@ -1737,6 +1741,22 @@ function koWonSide(m){
   if(TEAMS[ta] && inLater(ta)) return "a";
   return null;
 }
+function koCandidates(mn, depth){
+  depth=depth||0; if(depth>3) return [];
+  var m=getM(mn); if(!m) return [];
+  var w=(typeof koWinnerOf==="function")?koWinnerOf(mn):null;
+  if(w && TEAMS[w]) return [w];
+  function side(nm){
+    var r=(typeof resolveKOName==="function")?resolveKOName(nm):nm;
+    if(TEAMS[r]) return [r];
+    var k=String(r||"").match(/المباراة\s+(\d+)/);
+    if(k) return koCandidates(parseInt(k[1],10), depth+1);
+    return [];
+  }
+  var out=side(m.h).concat(side(m.a)), u=[];
+  out.forEach(function(x){ if(u.indexOf(x)<0) u.push(x); });
+  return u;
+}
 function teamHTML(name, win){
   var f=TEAMS[name];
   if(f) return '<div class="team'+(win?' win':'')+'"><span class="fl">'+flagImg(name)+favStar(name)+(win?'<span class="win-badge">★</span>':'')+'</span><span class="tn">'+name+'</span></div>';
@@ -1747,15 +1767,12 @@ function teamHTML(name, win){
   }
   // "الفائز من المباراة X" → الفريقان المتنافسان على هذا المركز (دور الـ16)
   if(typeof name==="string"){
-    var mw=name.match(/الفائز من المباراة\s+(\d+)/);
+    var mw=name.match(/(الفائز|خاسر)\s+(?:من\s+)?المباراة\s+(\d+)/);
     if(mw){
-      var fm=getM(parseInt(mw[1],10));
-      var fmH=fm?((typeof resolveKOName==="function")?resolveKOName(fm.h):fm.h):null;
-      var fmA=fm?((typeof resolveKOName==="function")?resolveKOName(fm.a):fm.a):null;
-      if(fm && TEAMS[fmH] && TEAMS[fmA]){
-        var kchips='<span class="tc-chip">'+flagImg(fmH)+'<span class="tc-nm">'+fmH+'</span></span>'
-                  +'<span class="tc-chip">'+flagImg(fmA)+'<span class="tc-nm">'+fmA+'</span></span>';
-        return '<div class="team ph tc-team"><div class="tc-wrap"><div class="tc-title">الفائز من مباراة '+mw[1]+':</div><div class="tc-chips">'+kchips+'</div></div></div>';
+      var cands=koCandidates(parseInt(mw[2],10));
+      if(cands.length>=2){
+        var kchips=cands.map(function(t){return '<span class="tc-chip">'+flagImg(t)+'<span class="tc-nm">'+t+'</span></span>';}).join("");
+        return '<div class="team ph tc-team"><div class="tc-wrap"><div class="tc-title">'+mw[1]+' من مباراة '+mw[2]+':</div><div class="tc-chips'+(cands.length>2?" tc-many":"")+'">'+kchips+'</div></div></div>';
       }
     }
   }
