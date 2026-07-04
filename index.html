@@ -1251,7 +1251,26 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 <script>
 if("serviceWorker" in navigator){
   window.addEventListener("load",function(){
-    navigator.serviceWorker.register("sw.js").catch(function(){});
+    var hadController = !!navigator.serviceWorker.controller;
+    var reloaded = false;
+    navigator.serviceWorker.addEventListener("controllerchange", function(){
+      if(reloaded || !hadController) return;   // أول زيارة لا تُعاد؛ التحديث فقط
+      reloaded = true;
+      location.reload();
+    });
+    navigator.serviceWorker.register("sw.js", {updateViaCache:"none"}).then(function(reg){
+      try{ reg.update(); }catch(e){}
+      // افحص وجود تحديث كل 30 دقيقة أثناء فتح الصفحة
+      setInterval(function(){ try{ reg.update(); }catch(e){} }, 30*60000);
+      reg.addEventListener("updatefound", function(){
+        var nw = reg.installing; if(!nw) return;
+        nw.addEventListener("statechange", function(){
+          if(nw.state==="installed" && navigator.serviceWorker.controller){
+            nw.postMessage({type:"SKIP_WAITING"});   // فعّل النسخة الجديدة فورًا
+          }
+        });
+      });
+    }).catch(function(){});
   });
 }
 </script>
