@@ -1144,6 +1144,24 @@ nav#bn button.has-badge .badge{display:block;}
 .pred-toast{position:fixed; left:50%; bottom:calc(var(--nav-h) + 18px); transform:translate(-50%,16px); background:#16223f; border:1px solid rgba(240,194,75,.4); color:var(--txt); font-size:12.5px; font-weight:600; padding:12px 18px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,.55); z-index:1000; opacity:0; transition:.3s; max-width:84%; text-align:center; white-space:pre-line; line-height:1.65;}
 .pred-toast.show{opacity:1; transform:translate(-50%,0);}
 .empty-state{text-align:center; color:var(--mut); padding:30px 12px;}
+/* فاحص ذاتي */
+#hcBadge{position:fixed;bottom:78px;left:12px;z-index:60;display:flex;align-items:center;gap:7px;background:rgba(11,14,23,.94);border:1px solid var(--line);border-radius:99px;padding:7px 13px;font-family:"Changa",sans-serif;font-weight:700;font-size:11px;box-shadow:0 6px 20px rgba(0,0,0,.55);cursor:pointer;backdrop-filter:blur(8px);transition:.25s;max-width:86vw;}
+#hcBadge.ok{color:#2ee6a8;border-color:rgba(46,230,168,.4);}
+#hcBadge.warn{color:#ff5c6b;border-color:rgba(255,92,107,.55);animation:hcPulse 1.6s infinite;}
+#hcBadge .dot{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;flex:none;}
+#hcBadge .msg{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#hcBadge .cx{opacity:.6;font-size:13px;}
+@keyframes hcPulse{50%{opacity:.55;}}
+#hcPanel{position:fixed;inset:0;z-index:98;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;padding:18px;}
+#hcPanel.show{display:flex;}
+.hc-card{background:var(--card2,#10141f);border:1px solid var(--line);border-radius:18px;padding:16px 15px;width:100%;max-width:360px;max-height:80vh;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.7);}
+.hc-card h3{font-family:"Changa";font-size:15px;margin-bottom:4px;}
+.hc-sub{font-size:10.5px;color:var(--mut);margin-bottom:12px;}
+.hc-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06);font-size:12px;}
+.hc-row .st{flex:none;width:20px;text-align:center;}
+.hc-row .lb{flex:1;}
+.hc-row .vl{font-family:"Changa";font-size:11px;color:var(--mut);}
+.hc-x{position:absolute;top:12px;left:14px;width:29px;height:29px;border-radius:50%;background:rgba(255,255,255,.08);color:#cfd6e6;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -4413,6 +4431,68 @@ function renderTickerBar(){
 }
 renderTickerBar();
 setInterval(function(){renderHero(); renderHomeLists(); renderTickerBar();}, 60000);
+
+/* ===== الفاحص الذاتي ===== */
+function runHealthCheck(manual){
+  var checks=[], pass=0;
+  function add(ok,label,val){ checks.push({ok:ok,label:label,val:val||""}); if(ok)pass++; }
+  try{
+    // 1) سلامة البيانات الأساسية
+    add(Array.isArray(M)&&M.length>=104, "قاعدة المباريات", M.length+" مباراة");
+    // 2) حسم دور 32 (كل الفائزين معروفون)
+    var r32=M.filter(function(m){return m.r==="r32";});
+    var r32done=r32.filter(function(m){return typeof koWinnerOf==="function"&&koWinnerOf(m.n);}).length;
+    add(r32done===r32.length && r32.length===16, "نتائج دور 32", r32done+"/"+r32.length+" محسومة");
+    // 3) دور 16 — الأسماء محلولة
+    var r16=M.filter(function(m){return m.r==="r16";});
+    var r16bad=r16.filter(function(m){return String(resolveKOName(m.h)).indexOf("المباراة")>=0 && String(resolveKOName(m.a)).indexOf("المباراة")>=0;}).length;
+    add(r16bad===0, "مواجهات دور 16", (r16.length-r16bad)+"/"+r16.length+" واضحة");
+    // 4) الهيرو لا يعرض نصاً خاماً
+    var duel=document.querySelector(".duel");
+    add(!duel || duel.innerText.indexOf("المباراة")<0, "الواجهة الرئيسية", "أسماء سليمة");
+    // 5) الهدّافون مبنيون ومرتّبون تنازليًا
+    var g=STAT_DATA.g||[];
+    var sorted=g.length>=5; for(var i=1;i<g.length;i++){ if(g[i].v>g[i-1].v){sorted=false;break;} }
+    add(sorted, "قائمة الهدّافين", g.length?("المتصدر "+g[0].n+" "+g[0].v):"—");
+    // 6) لا أسماء لاتينية متبقية في الهدّافين
+    var latin=(g.slice(0,15)).filter(function(x){return /[A-Za-z]/.test(x.n);}).length;
+    add(latin===0, "توحيد الأسماء عربيًا", latin?("متبقٍّ "+latin):"مكتمل");
+    // 7) الشجرة مرسومة
+    var tcells=document.querySelectorAll("#koList .rtf-cell").length;
+    add(tcells>=30 || document.getElementById("tab-ko").classList.contains("active")===false, "شجرة الإقصائيات", tcells+" خلية");
+    // 8) الشريط المتحرك يعمل
+    var tk=document.getElementById("tkBar");
+    add(tk && tk.innerHTML.length>10, "الشريط المتحرك", "يعمل");
+    // 9) بيانات الأعلام
+    add(typeof ISO==="object" && Object.keys(ISO).length>=40, "خريطة الأعلام", Object.keys(ISO).length+" علم");
+    // 10) لا مباريات عالقة على "مباشر" أطول من 4 ساعات (اتساق الحالة)
+    var stuck=M.filter(function(m){ if(!m.d)return false; if(statusOf(m)!=="live")return false; return (Date.now()-dateObj(m).getTime())/60000>240; }).length;
+    add(stuck===0, "اتساق حالة المباريات", stuck?("عالقة "+stuck):"سليم");
+  }catch(e){ add(false, "خطأ أثناء الفحص", String(e).slice(0,40)); }
+
+  var allOk = pass===checks.length;
+  var badge=document.getElementById("hcBadge");
+  if(badge){
+    badge.className = allOk ? "ok" : "warn";
+    badge.querySelector(".msg").textContent = allOk ? ("كل شي تمام ✓ ("+pass+"/"+checks.length+")") : ("⚠ "+ (checks.length-pass) +" ملاحظة — اضغط للتفاصيل");
+  }
+  window._hcLast={checks:checks, pass:pass, total:checks.length, time:new Date()};
+  var panel=document.getElementById("hcPanel");
+  if(panel && panel.classList.contains("show")) hcRender();
+  if(manual && panel){ hcShow(); }
+  return allOk;
+}
+function hcRender(){
+  var d=window._hcLast; if(!d)return;
+  document.getElementById("hcTime").textContent="آخر فحص: "+d.time.toLocaleTimeString("ar")+" · "+d.pass+"/"+d.total+" ناجحة";
+  document.getElementById("hcList").innerHTML=d.checks.map(function(c){
+    return '<div class="hc-row"><span class="st">'+(c.ok?"✅":"⚠️")+'</span><span class="lb">'+c.label+'</span><span class="vl">'+c.val+'</span></div>';
+  }).join("");
+}
+function hcShow(){ hcRender(); document.getElementById("hcPanel").classList.add("show"); }
+function hcHide(){ document.getElementById("hcPanel").classList.remove("show"); }
+setTimeout(function(){ runHealthCheck(false); }, 3500);      // بعد الإقلاع
+setInterval(function(){ runHealthCheck(false); }, 3600000);  // كل ساعة تلقائيًا
 function _pollDelay(){
   var now=Date.now(), nearEnd=false, anyLive=false;
   for(var i=0;i<M.length;i++){
@@ -5073,6 +5153,8 @@ try{ renderTourist(); }catch(e){}
 setTimeout(function(){ var sp=document.getElementById("splash"); if(sp) sp.classList.add("hidden"); }, 1700);
 
 </script>
+<div id="hcBadge" class="ok" onclick="hcShow()"><span class="dot"></span><span class="msg">الفاحص الذاتي: جاري…</span><span class="cx">▾</span></div>
+<div id="hcPanel" onclick="if(event.target.id==='hcPanel')hcHide()"><div class="hc-card" style="position:relative"><div class="hc-x" onclick="hcHide()">✕</div><h3>🩺 فحص صحة التطبيق</h3><div class="hc-sub" id="hcTime"></div><div id="hcList"></div><button class="pred-btn gold" style="margin-top:12px;width:100%" onclick="runHealthCheck(true)">↻ افحص الآن</button></div></div>
 </body>
 </html>
 
