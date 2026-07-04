@@ -4437,8 +4437,10 @@ function buildLeaderboard(){
   Object.keys(FINAL_RESULTS).forEach(function(n){
     var fr=FINAL_RESULTS[n],m=getM(+n);if(!m) return;
     if(dateObj(m).getTime()<STAT_CUT) return;
-    (fr.gh||[]).forEach(function(g){addGoal(g.who,m.h,g.type||"");});
-    (fr.ga||[]).forEach(function(g){addGoal(g.who,m.a,g.type||"");});
+    var _fh=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+    var _fa=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+    (fr.gh||[]).forEach(function(g){addGoal(g.who,_fh,g.type||"");});
+    (fr.ga||[]).forEach(function(g){addGoal(g.who,_fa,g.type||"");});
   });
   /* GOAL_CACHE (تجاوز المكرر مع FINAL_RESULTS) */
   Object.keys(GOAL_CACHE).forEach(function(n){
@@ -4446,13 +4448,15 @@ function buildLeaderboard(){
     if(_fr && ((_fr.gh&&_fr.gh.length)||(_fr.ga&&_fr.ga.length))) return; // المثبّتة بقوائمها لا تُكرّر
     var gc=GOAL_CACHE[+n],m=getM(+n);if(!m||!gc) return;
     if(dateObj(m).getTime()<STAT_CUT) return;
+    var _gh=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+    var _ga=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
     (gc.home||[]).forEach(function(g){
-      addGoal(g.rawName||g.who,m.h,g.type||"");
-      if(g.assist) addAssist(g.assist,m.h);
+      addGoal(g.rawName||g.who,_gh,g.type||"");
+      if(g.assist) addAssist(g.assist,_gh);
     });
     (gc.away||[]).forEach(function(g){
-      addGoal(g.rawName||g.who,m.a,g.type||"");
-      if(g.assist) addAssist(g.assist,m.a);
+      addGoal(g.rawName||g.who,_ga,g.type||"");
+      if(g.assist) addAssist(g.assist,_ga);
     });
   });
   function mergeInto(base, delta){
@@ -4675,6 +4679,8 @@ function runHealthCheck(manual){
     // 6) لا أسماء لاتينية متبقية في الهدّافين
     var latin=(g.slice(0,15)).filter(function(x){return /[A-Za-z]/.test(x.n);}).length;
     add(latin===0, "توحيد الأسماء عربيًا", latin?("متبقٍّ "+latin):"مكتمل");
+      var rawTeam=(STAT_DATA.g||[]).concat(STAT_DATA.a||[]).filter(function(x){return /المباراة/.test(x.t||"");}).length;
+      add(rawTeam===0, "منتخبات الهدّافين", rawTeam?("خام "+rawTeam):"محلولة");
     // 7) الشجرة مرسومة
     var tcells=document.querySelectorAll("#koList .rtf-cell").length;
     add(tcells>=30 || document.getElementById("tab-ko").classList.contains("active")===false, "شجرة الإقصائيات", tcells+" خلية");
