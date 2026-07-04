@@ -2935,14 +2935,18 @@ function renderGoals(m, g){
     // اجمع أهداف نفس اللاعب في سطر واحد بكل دقائقه
     var order=[], byName={};
     list.forEach(function(x){
-      var nm=x.who||"هدف";
+      var raw=String(x.rawName||x.who||"هدف").replace(/<[^>]*>/g,"").replace(/\s+/g," ").trim();
+      var nm=raw.replace(/[\s\u2019'`\d+]+$/,"").trim()||"هدف";
       var og=/own\s*goal/i.test(x.type||"")||/عكسي/i.test(x.type||"");
-      var key=nm+(og?"|og":"");
+      var key=nm.toLowerCase().replace(/[^a-z\u0600-\u06ff]/g,"")+(og?"|og":"");
       if(!byName[key]){ byName[key]={who:nm, type:x.type, og:og, mins:[]}; order.push(key); }
-      if(x.min!=null && x.min!=="") byName[key].mins.push(parseInt(x.min,10));
+      var mv=(x.min!=null&&x.min!=="")?x.min:(raw.match(/(\d{1,3})(?:\+\d+)?\s*['\u2019]?\s*$/)||[])[1];
+      if(mv!=null) byName[key].mins.push(String(mv).replace(/['\u2019]/g,""));
     });
     var items=order.map(function(key){
-      var e=byName[key]; e.mins.sort(function(a,b){return a-b;});
+      var e=byName[key];
+      e.mins.sort(function(a,b){return parseInt(a,10)-parseInt(b,10);});
+      var _s={}; e.mins=e.mins.filter(function(v){var k=String(v);if(_s[k])return false;_s[k]=1;return true;});
       var mn=e.mins.map(function(v){return v+"'";}).join(" ");
       return '<div class="gl-it"><span class="gl-min">'+mn+'</span><span class="gl-ic">'+goalIcon(e.type)+'</span><span class="gl-pl">'+e.who+'</span></div>';
     }).join("");
@@ -3000,7 +3004,7 @@ async function fetchGoals(n, box, btn){
       var side=null;
       if(ev.team && ev.team.displayName) side = teamIs(m.h,ev.team.displayName)?"h":(teamIs(m.a,ev.team.displayName)?"a":null);
       if(side===null && EVTEAM[n]){ if(String(tid)===String(EVTEAM[n].h)) side="h"; else if(String(tid)===String(EVTEAM[n].a)) side="a"; }
-      var rec={who:'<span style="direction:ltr;unicode-bidi:embed">'+who+'</span>', min:mn, type:ty};
+      var rec={who:'<span style="direction:ltr;unicode-bidi:embed">'+who+'</span>', min:mn, type:ty, rawName:who};
       if(side==="a") away.push(rec); else home.push(rec);
     });
     var g={home:home, away:away};
@@ -3770,16 +3774,20 @@ function liveScorersHTML(mn, m){
     // اجمع أهداف نفس اللاعب: الاسم مرة واحدة ودقائقه كلها بعده
     var order=[], byName={};
     (list||[]).forEach(function(g){
-      var nm = g.rawName || (typeof stripGoalHTML==="function"?stripGoalHTML(g.who):g.who) || "";
+      var raw = g.rawName || (typeof stripGoalHTML==="function"?stripGoalHTML(g.who):g.who) || "";
+      raw = String(raw).replace(/<[^>]*>/g,"").replace(/\s+/g," ").trim();
+      var nm = raw.replace(/[\s\u2019'`\d+]+$/,"").trim();   // انزع أي دقيقة ملتصقة بآخر الاسم
       if(!nm || nm==="هدف") nm="هدف";
       var og = /own\s*goal/i.test(g.type||"") || /عكسي/i.test(g.type||"");
-      var key = nm+(og?"|og":"");
+      var key = nm.toLowerCase().replace(/[^a-z\u0600-\u06ff]/g,"")+(og?"|og":"");  // مفتاح موحّد
       if(!byName[key]){ byName[key]={nm:nm, og:og, mins:[]}; order.push(key); }
-      if(g.min) byName[key].mins.push(parseInt(g.min,10));
+      var mv = (g.min!=null&&g.min!=="") ? g.min : (raw.match(/(\d{1,3})(?:\+\d+)?\s*['\u2019]?\s*$/)||[])[1];
+      if(mv!=null) byName[key].mins.push(String(mv).replace(/['\u2019]/g,""));
     });
     var items=order.map(function(key){
       var e=byName[key];
-      e.mins.sort(function(a,b){return a-b;});
+      e.mins.sort(function(a,b){return parseInt(a,10)-parseInt(b,10);});
+      var _seen={}; e.mins=e.mins.filter(function(x){var k=String(x);if(_seen[k])return false;_seen[k]=1;return true;});
       var t=e.mins.map(function(x){return x+"'";}).join(" ");
       return '<span class="hs-g">'
         + '<span style="direction:ltr;unicode-bidi:embed">'+e.nm+'</span>'
