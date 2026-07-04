@@ -528,6 +528,7 @@ nav#bn button .ic{font-size:19px;}
 .lead-ar{color:#2ee6a8;font-size:11px;}
 .live-tag{text-align:center;font-size:11.5px;color:var(--mut);font-weight:700;margin-top:2px;}
 .live-tag b{color:var(--gold2);}
+.hero-scorers .hs-tm{color:var(--gold2);font-weight:800;}
 .cd-c-teams{grid-area:teams; display:flex; align-items:center; gap:8px; font-size:14px; flex-wrap:wrap;}
 .cd-tm{display:flex; align-items:center; gap:5px; font-weight:600;}
 .cd-cands{display:inline-flex;align-items:center;gap:3px;}
@@ -3770,7 +3771,9 @@ function liveScorersHTML(mn, m){
     return '<div class="hs-row"><span class="hs-tm">'+teamName+'</span>'
       + '<span class="hs-list">⚽ '+items.join('، ')+'</span></div>';
   }
-  var h=line(gc.home, m.h), a=line(gc.away, m.a);
+  var _h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+  var _a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+  var h=line(gc.home, _h), a=line(gc.away, _a);
   if(!h && !a) return "";
   return '<div class="hero-scorers">'+h+a+'</div>';
 }
@@ -3782,11 +3785,23 @@ function refreshHeroScore(){
     var sc=SC_CACHE[mn];
     if(sc && sc.found){
       var m=getM(mn);
+      var _h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+      var _a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
       var scorers = (m && (sc.status==="live"||sc.status==="ht")) ? liveScorersHTML(mn, m) : "";
-      el.innerHTML='<div class="live-big"><span style="direction:rtl;display:inline-block;letter-spacing:2px">'+sc.sh+' : '+sc.sa+'</span>'
-        +(sc.status==="live"&&sc.minute?' <small style="font-size:13px;color:#ffb1b8">⏱ '+sc.minute+'</small>':'')
-        +(sc.status==="ht"?' <small style="font-size:13px;color:#ffb1b8">استراحة</small>':'')+'</div>'
-        + scorers;
+      if(sc.status==="live"||sc.status==="ht"){
+        var _lead=(sc.sh>sc.sa)?"h":((sc.sa>sc.sh)?"a":null);
+        var _pen=(sc.pH!=null&&sc.pA!=null)?'<div class="pens plive" style="justify-content:center"><span class="pen-lbl">🥅 ركلات الترجيح</span><span class="pen-sc"><span class="pn">'+sc.pH+'</span><span class="psep">:</span><span class="pn">'+sc.pA+'</span></span></div>':'';
+        el.innerHTML='<div class="hf-line hf-live">'
+          +'<span class="hf-team'+(_lead==="h"?" hf-win":"")+'">'+_h+(_lead==="h"?' <span class="lead-ar">▲</span>':'')+'</span>'
+          +'<span class="hf-score">'+sc.sh+' - '+sc.sa+'</span>'
+          +'<span class="hf-team'+(_lead==="a"?" hf-win":"")+'">'+_a+(_lead==="a"?' <span class="lead-ar">▲</span>':'')+'</span>'
+        +'</div>'
+        +'<div class="live-tag">'+(_pen?'🥅 ركلات الترجيح جارية':('🔴 جارية الآن'+(sc.status==="ht"?' · استراحة':(sc.minute?' · '+sc.minute:''))))
+           +(_lead?' · <b>'+(_lead==="h"?_h:_a)+'</b> متقدّم':' · <b>تعادل</b>')+'</div>'
+        + _pen + scorers;
+      } else {
+        el.innerHTML='<div class="live-big"><span style="direction:rtl;display:inline-block;letter-spacing:2px">'+sc.sh+' : '+sc.sa+'</span></div>'+scorers;
+      }
     }
   });
 }
