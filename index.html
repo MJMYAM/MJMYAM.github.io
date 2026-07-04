@@ -1263,6 +1263,7 @@ if("serviceWorker" in navigator){
     </div>
     <div class="st-head">
       <span class="st-upd" id="stUpd"></span>
+      <button class="st-rf" id="stRefresh">↻ تحديث مباشر</button>
     </div>
     <div id="statList"></div>
     <div class="st-foot" id="stFoot"></div>
@@ -4198,9 +4199,16 @@ async function refreshStats(){
     await fetchAllGoals();
     try{ buildLeaderboard(); }catch(_e){}
   }catch(e){console.log("Stats refresh:",e);}
-  finally{if(btn){btn.disabled=false;btn.innerHTML='↻ تحديث مباشر';}}
+  finally{
+    if(btn){
+      btn.disabled=false;
+      btn.innerHTML='✓ تم التحديث';
+      setTimeout(function(){ if(btn) btn.innerHTML='↻ تحديث مباشر'; }, 2200);
+    }
+  }
 }
 document.addEventListener("click", function(e){
+  if(e.target.closest("#stRefresh")){ refreshStats(); }
   var sm=e.target.closest("[data-stmode]");
   if(sm){
     statMode=sm.dataset.stmode;
