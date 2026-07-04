@@ -3076,6 +3076,7 @@ function npLayout(players, formation, isHome){
     if(c==="GK")G.push(p); else if(c==="DEF")D.push(p); else if(c==="FWD")F.push(p); else Md.push(p);
   });
   [G,D,Md,F].forEach(function(a){a.sort(function(x,y){return key(x)-key(y);});});
+  if(!players||!players.length) return [];
   var gk=G.shift()||D.shift()||Md.shift()||{};
   var rest=D.concat(Md,F,G);
   var L=npLines(formation);
@@ -3086,6 +3087,7 @@ function npLayout(players, formation, isHome){
     L=(mC>0)?[d,mC,f]:[d,f];
     var diff=rest.length-L.reduce(function(a,b){return a+b;},0);
     if(diff!==0) L[Math.max(0,L.length-2)]+=diff;
+    L=L.map(function(c){return Math.max(0,c);});
   }
   // وزّع على الخطوط: دفاع من الخلف، هجوم من الأمام، وسط يكمل
   var slots=L.map(function(c){return new Array(c);});
@@ -4539,6 +4541,63 @@ function runHealthCheck(manual){
     // 10) لا مباريات عالقة على "مباشر" أطول من 4 ساعات (اتساق الحالة)
     var stuck=M.filter(function(m){ if(!m.d)return false; if(statusOf(m)!=="live")return false; return (Date.now()-dateObj(m).getTime())/60000>240; }).length;
     add(stuck===0, "اتساق حالة المباريات", stuck?("عالقة "+stuck):"سليم");
+    // 11) فحص وظيفي: مسار التشكيلة (اختيار محايد + تشغيل فعلي للمولّد)
+    try{
+      var lnx=M.filter(function(m){return m.r&&m.r!=="group"&&statusOf(m)!=="done";})
+        .sort(function(a,b){return dateObj(a)-dateObj(b);})[0];
+      if(!lnx){ add(true,"مسار التشكيلة","لا مباريات متبقية"); }
+      else{
+        function _expect(side){ if(TEAMS[side])return true; var k=String(side||"").match(/المباراة\s+(\d+)/); return k?!!koWinnerOf(parseInt(k[1],10)):false; }
+        var _eh=_expect(lnx.h), _ea=_expect(lnx.a);
+        var _h=resolveKOName(lnx.h), _a=resolveKOName(lnx.a);
+        var _resOK=(!_eh||TEAMS[_h])&&(!_ea||TEAMS[_a]);
+        if(!(TEAMS[_h]&&TEAMS[_a])){
+          add(_resOK,"مسار التشكيلة",_resOK?"بانتظار حسم الدور السابق":"أسماء متأهلين غير محلولة!");
+        }else{
+          var _html=newLineupHTML(lnx,{home:[],away:[],subsH:[],subsA:[],fH:"",fA:"",coachH:"",coachA:""});
+          var _co=COACHES[_h]||COACHES[_a]||"";
+          var _ok=_html.indexOf("المباراة")<0 && _html.indexOf(_h)>=0 && _html.indexOf(_a)>=0 && (!_co||_html.indexOf(_co)>=0);
+          add(_ok,"مسار التشكيلة",_h+" × "+_a);
+        }
+      }
+    }catch(e){ add(false,"مسار التشكيلة","خطأ: "+String(e).slice(0,30)); }
+    // 12) فحص وظيفي: بطاقة المباراة القادمة (توليد فعلي)
+    try{
+      var cnx=M.filter(function(m){return m.d&&statusOf(m)!=="done";}).sort(function(a,b){return dateObj(a)-dateObj(b);})[0];
+      var _card=cnx?matchCard(cnx,{showDate:true}):"";
+      var _resolvable=cnx&&TEAMS[resolveKOName(cnx.h)]&&TEAMS[resolveKOName(cnx.a)];
+      var okc=_card.indexOf("flagcdn")>=0 && _card.indexOf("التشكيلة")>=0 && (!_resolvable || _card.indexOf("الفائز من المباراة")<0);
+      add(okc,"بطاقة المباراة","توليد سليم");
+    }catch(e){ add(false,"بطاقة المباراة","خطأ: "+String(e).slice(0,30)); }
+    // 13) فحص وظيفي: منطق الركلات (سيناريو صناعي بدون لمس الواجهة)
+    try{
+      var _pm={n:99901,r:"r16",h:"مصر",a:"أستراليا",d:"2000-01-01",t:"00:00"};
+      var _kw=new Date(Date.now()-160*60000+3*3600000);
+      function _p2(x){return (x<10?"0":"")+x;}
+      _pm.d=_kw.getUTCFullYear()+"-"+_p2(_kw.getUTCMonth()+1)+"-"+_p2(_kw.getUTCDate());
+      _pm.t=_p2(_kw.getUTCHours())+":"+_p2(_kw.getUTCMinutes());
+      SC_CACHE[99901]={found:true,sh:1,sa:1,status:"live",minute:"",pH:3,pA:2,_ts:Date.now()};
+      var okp=statusOf(_pm)==="live";
+      delete SC_CACHE[99901];
+      add(okp,"منطق الركلات الحيّ","160د + بيانات طازجة = مباشر");
+    }catch(e){ add(false,"منطق الركلات الحيّ","خطأ"); }
+    // 14) فحص وظيفي: الشريط يميّز متأهل الركلات
+    try{
+      var hasPens=Object.keys(FINAL_RESULTS).some(function(k){var f=FINAL_RESULTS[k];return f&&f.pH!=null;});
+      var tkh=document.getElementById("tkBar")?document.getElementById("tkBar").innerHTML:"";
+      add(!hasPens || tkh.indexOf("تأهل")>=0, "شريط الركلات","يعرض المتأهل");
+    }catch(e){ add(false,"شريط الركلات","خطأ"); }
+    // 15) (يدوي) تبديل الوضعين ذهابًا وإيابًا
+    if(manual){
+      try{
+        var _cur=document.documentElement.getAttribute("data-theme")==="light"?"light":"dark";
+        var _b1=getComputedStyle(document.body).backgroundColor;
+        applyMode(_cur==="light"?"dark":"light");
+        var _b2=getComputedStyle(document.body).backgroundColor;
+        applyMode(_cur);
+        add(_b1!==_b2,"تبديل الوضعين","🌙/☀️ يعمل");
+      }catch(e){ add(false,"تبديل الوضعين","خطأ"); }
+    }
   }catch(e){ add(false, "خطأ أثناء الفحص", String(e).slice(0,40)); }
 
   var allOk = pass===checks.length;
