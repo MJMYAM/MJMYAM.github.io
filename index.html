@@ -3989,7 +3989,6 @@ var STAT_DATA={
     {n:"ريان غرافينبيرش", t:"هولندا", v:2}
   ]
 };
-window.STAT_LOCKED=true;
 function statClean(arr){
   if(!arr||!arr.length) return null;
   var out=[];
@@ -4115,10 +4114,20 @@ async function fetchAllGoals(){
   buildLeaderboard();
 }
 function stripGoalHTML(s){return (s||"").replace(/<[^>]*>/g,"").trim();}
+/* القائمة الدقيقة = أساس ثابت حتى نقطة القطع؛ ما بعدها يُحتسب من المباريات ويُدمج فوقها */
+var STAT_BASE={g:STAT_DATA.g.map(function(x){return {n:x.n,t:x.t,v:x.v};}), a:STAT_DATA.a.map(function(x){return {n:x.n,t:x.t,v:x.v};})};
+var STAT_CUT=new Date("2026-07-01T08:00:00+03:00").getTime();
+var AR_NAME={"kylian mbappe":"كيليان مبابي","mbappe":"كيليان مبابي","lionel messi":"ليونيل ميسي","messi":"ليونيل ميسي","erling haaland":"إيرلينغ هالاند","haaland":"إيرلينغ هالاند","harry kane":"هاري كين","vinicius junior":"فينيسيوس جونيور","vinicius jr":"فينيسيوس جونيور","vinicius jr.":"فينيسيوس جونيور","ousmane dembele":"عثمان ديمبيلي","michael olise":"مايكل أوليسي","ismael saibari":"إسماعيل الصيباري","jonathan david":"جوناثان ديفيد","matheus cunha":"ماتيوس كونيا","brian brobbey":"برايان بروبي","ismaila sarr":"إسماعيلا سار","deniz undav":"دينيز أونداف","bruno guimaraes":"برونو غيماريش","alexander isak":"ألكسندر إيساك","martin odegaard":"مارتن أوديغارد","florian wirtz":"فلوريان فيرتز","brahim diaz":"براهيم دياز","julio enciso":"خوليو إنسيسو","joshua kimmich":"يوشوا كيميش","crysencio summerville":"كريسينسيو سامرفيل","mohamed salah":"محمد صلاح","bukayo saka":"بوكايو ساكا","ryan gravenberch":"ريان غرافينبيرش","cody gakpo":"كودي خاكبو","kai havertz":"كاي هافيرتس","casemiro":"كاسيميرو","gabriel martinelli":"غابرييل مارتينيلي","romelu lukaku":"روميلو لوكاكو","youri tielemans":"يوري تيليمانس","habib diarra":"حبيب ديارا","cristiano ronaldo":"كريستيانو رونالدو","goncalo ramos":"غونسالو راموش","ivan perisic":"إيفان بيريشيتش","bradley barcola":"برادلي باركولا","antonio nusa":"أنطونيو نوسا","amad diallo":"أماد ديالو","stephen eustaquio":"ستيفن يوستاكيو","raul jimenez":"راؤول خيمينيس","emam ashour":"إمام عاشور","breel embolo":"بريل إمبولو","dan ndoye":"دان ندوي","achraf hakimi":"أشرف حكيمي","lamine yamal":"لامين يامال","nico williams":"نيكو ويليامز","mikel oyarzabal":"ميكل أويارثابال","folarin balogun":"فولارين بالوغون","malik tillman":"مالك تيلمان","pedri":"بيدري","jamal musiala":"جمال موسيالا","serhou guirassy":"سيرهو غيراسي"};
+function arName(nm){
+  try{
+    var k=String(nm||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
+    return AR_NAME[k]||nm;
+  }catch(e){ return nm; }
+}
 function buildLeaderboard(){
   var scorers={},assisters={};
   function addGoal(rawName,team,ty){
-    var name=stripGoalHTML(rawName);
+    var name=arName(stripGoalHTML(rawName));
     if(!name||name==="هدف"||name.length<2) return;
     if(/own\s*goal/i.test(ty)||/عكسي/i.test(ty)) return;
     var key=name.toLowerCase().replace(/\s+/g," ");
@@ -4126,7 +4135,7 @@ function buildLeaderboard(){
     scorers[key].v++;
   }
   function addAssist(rawName,team){
-    var name=stripGoalHTML(rawName);
+    var name=arName(stripGoalHTML(rawName));
     if(!name||name.length<2) return;
     var key=name.toLowerCase().replace(/\s+/g," ");
     if(!assisters[key]) assisters[key]={n:name,t:team,v:0};
@@ -4135,13 +4144,16 @@ function buildLeaderboard(){
   /* FINAL_RESULTS */
   Object.keys(FINAL_RESULTS).forEach(function(n){
     var fr=FINAL_RESULTS[n],m=getM(+n);if(!m) return;
+    if(dateObj(m).getTime()<STAT_CUT) return;
     (fr.gh||[]).forEach(function(g){addGoal(g.who,m.h,g.type||"");});
     (fr.ga||[]).forEach(function(g){addGoal(g.who,m.a,g.type||"");});
   });
   /* GOAL_CACHE (تجاوز المكرر مع FINAL_RESULTS) */
   Object.keys(GOAL_CACHE).forEach(function(n){
-    if(FINAL_RESULTS[+n]) return;
+    var _fr=FINAL_RESULTS[+n];
+    if(_fr && ((_fr.gh&&_fr.gh.length)||(_fr.ga&&_fr.ga.length))) return; // المثبّتة بقوائمها لا تُكرّر
     var gc=GOAL_CACHE[+n],m=getM(+n);if(!m||!gc) return;
+    if(dateObj(m).getTime()<STAT_CUT) return;
     (gc.home||[]).forEach(function(g){
       addGoal(g.rawName||g.who,m.h,g.type||"");
       if(g.assist) addAssist(g.assist,m.h);
@@ -4151,15 +4163,20 @@ function buildLeaderboard(){
       if(g.assist) addAssist(g.assist,m.a);
     });
   });
-  var gArr=Object.values(scorers).sort(function(a,b){return b.v-a.v;}).slice(0,20);
-  var aArr=Object.values(assisters).sort(function(a,b){return b.v-a.v;}).slice(0,20);
-  if(!window.STAT_LOCKED && gArr.length>=2){
-    STAT_DATA.g=gArr;
-    var now=new Date();
-    STAT_DATA.upd=now.getDate()+" "+MO[now.getMonth()]+" "+now.getFullYear();
-    STAT_DATA.live=true;
+  function mergeInto(base, delta){
+    var map={};
+    base.forEach(function(x){ map[x.n]={n:x.n,t:x.t,v:x.v}; });
+    Object.values(delta).forEach(function(d){
+      if(map[d.n]) map[d.n].v+=d.v;
+      else map[d.n]={n:d.n,t:d.t,v:d.v};
+    });
+    return Object.values(map).sort(function(a,b){return b.v-a.v;}).slice(0,20);
   }
-  if(!window.STAT_LOCKED && aArr.length>=2) STAT_DATA.a=aArr;
+  STAT_DATA.g=mergeInto(STAT_BASE.g, scorers);
+  STAT_DATA.a=mergeInto(STAT_BASE.a, assisters);
+  var now=new Date();
+  STAT_DATA.upd=now.getDate()+" "+MO[now.getMonth()]+" "+now.getFullYear();
+  STAT_DATA.live=true;
   renderStats();
 }
 async function refreshStats(){
