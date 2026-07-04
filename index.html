@@ -522,6 +522,12 @@ nav#bn button .ic{font-size:19px;}
 .cd-c-side{grid-area:side; display:flex; align-items:center; gap:8px;}
 .cd-rnd{font-size:10px; font-weight:700; padding:2px 9px; border-radius:99px;}
 .cd-time2{font-size:10.5px; color:var(--mut);}
+.hf-live{margin:2px 0 4px;}
+.hf-live .hf-team{transition:color .3s;}
+.hf-live .hf-team.hf-win{color:var(--gold2);font-weight:800;}
+.lead-ar{color:#2ee6a8;font-size:11px;}
+.live-tag{text-align:center;font-size:11.5px;color:var(--mut);font-weight:700;margin-top:2px;}
+.live-tag b{color:var(--gold2);}
 .cd-c-teams{grid-area:teams; display:flex; align-items:center; gap:8px; font-size:14px; flex-wrap:wrap;}
 .cd-tm{display:flex; align-items:center; gap:5px; font-weight:600;}
 .cd-cands{display:inline-flex;align-items:center;gap:3px;}
@@ -2155,7 +2161,20 @@ function heroCardHTML(m){
   } else if(isLive){
     var _hsc=SC_CACHE[m.n];
     var _hpen=(_hsc&&_hsc.found&&_hsc.pH!=null&&_hsc.pA!=null)?'<div class="pens plive" style="justify-content:center"><span class="pen-lbl">🥅 ركلات الترجيح</span><span class="pen-sc"><span class="pn">'+_hsc.pH+'</span><span class="psep">:</span><span class="pn">'+_hsc.pA+'</span></span></div>':'';
-    var _hln=(_hsc&&_hsc.found&&_hsc.sh!=null)?('<div class="live-big">'+((_hpen)?'🥅 ركلات الترجيح جارية':'⚽ المباراة جارية الآن')+' — <b style="direction:ltr;display:inline-block">'+_hsc.sh+' : '+_hsc.sa+'</b></div>'):'<div class="live-big">⚽ المباراة جارية الآن</div>';
+    var _hln;
+    if(_hsc && _hsc.found && _hsc.sh!=null){
+      var _lead = (_hsc.sh>_hsc.sa) ? "h" : ((_hsc.sa>_hsc.sh) ? "a" : null);
+      var _mnt = _hsc.minute ? _hsc.minute : "";
+      _hln = '<div class="hf-line hf-live">'
+        +'<span class="hf-team'+(_lead==="h"?" hf-win":"")+'">'+_hN+(_lead==="h"?' <span class="lead-ar">▲</span>':'')+'</span>'
+        +'<span class="hf-score">'+_hsc.sh+' - '+_hsc.sa+'</span>'
+        +'<span class="hf-team'+(_lead==="a"?" hf-win":"")+'">'+_aN+(_lead==="a"?' <span class="lead-ar">▲</span>':'')+'</span>'
+      +'</div>'
+      +'<div class="live-tag">'+(_hpen?'🥅 ركلات الترجيح جارية':('🔴 جارية الآن'+(_mnt?' · '+_mnt:'')))
+         +(_lead ? ' · <b>'+(_lead==="h"?_hN:_aN)+'</b> متقدّم' : ' · <b>تعادل</b>')+'</div>';
+    } else {
+      _hln = '<div class="live-big">⚽ المباراة جارية الآن</div>';
+    }
     cdBlock='<div id="heroScore-'+m.n+'">'+_hln+_hpen+'</div>'
       +'<button class="watch-live hero-watch" onclick="event.stopPropagation();openLiveTVModal('+m.n+')">🔴 شاهد المباراة مباشرة</button>';
   } else {
