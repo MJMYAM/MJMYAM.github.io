@@ -1991,10 +1991,12 @@ function heroCardHTML(m){
     : isJustDone
     ? '<div class="eyebrow is-done"><span class="dot"></span><span>✅ انتهت المباراة</span></div>'
     : '<div class="eyebrow"><span class="dot"></span><span>العد التنازلي للمباراة القادمة</span></div>';
+  var _hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+  var _aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
   var duel = '<div class="duel">'
-    + '<div class="side">'+(TEAMS[m.h]?'<span class="fl">'+flagImg(m.h)+'</span>':'')+'<div class="nm">'+m.h+'</div></div>'
+    + '<div class="side">'+(TEAMS[_hN]?'<span class="fl">'+flagImg(_hN)+'</span>':'')+'<div class="nm">'+_hN+'</div></div>'
     + '<span class="x">VS</span>'
-    + '<div class="side">'+(TEAMS[m.a]?'<span class="fl">'+flagImg(m.a)+'</span>':'')+'<div class="nm">'+m.a+'</div></div>'
+    + '<div class="side">'+(TEAMS[_aN]?'<span class="fl">'+flagImg(_aN)+'</span>':'')+'<div class="nm">'+_aN+'</div></div>'
     + '</div>';
   var meta = '<div class="meta">'+fmtD(m.d)+' · <b>'+tm.t+' '+tm.ap+'</b> بتوقيت الكويت<br>🏟️ '+s.n+' · '+s.c+' '+flagImg(s.co)+' · 📺 beIN Sports</div>';
   var cdBlock;
@@ -3830,7 +3832,7 @@ function renderCdList(){
         ? '<span class="cd-live">🔴 مباشر الآن</span>'
         : '<span class="cd-timer" data-cdkick="'+m.n+'">'+cdTimerHTML(p)+'</span>';
       // حلّ أسماء المتأهلين/الثوالث للإقصائيات
-      var th=m.h, ta=m.a;
+      var th=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h, ta=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
       if(m.r && m.r!=="group" && typeof resolveKOTeam==="function"){ th=resolveKOTeam(m.h); ta=resolveKOTeam(m.a); }
       function cdTeamCell(orig, resolved){
         if(TEAMS[resolved]) return flagImg(resolved)+' <span class="cd-tnm">'+resolved+'</span>';
