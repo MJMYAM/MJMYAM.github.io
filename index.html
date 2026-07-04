@@ -4768,6 +4768,25 @@ function schedulePoll(){
   }, _pollDelay());
 }
 schedulePoll();
+/* حلقة سريعة (كل 5 ثوانٍ) أثناء المباريات الجارية: نتيجة + أهداف فقط — خفيفة على المصدر */
+var _fastBusy=false;
+async function fastLiveTick(){
+  if(document.hidden || _fastBusy) return;
+  var now=Date.now(), liveMs=[];
+  for(var i=0;i<M.length;i++){ var m=M[i]; if(m.d && statusOf(m)==="live") liveMs.push(m); }
+  if(!liveMs.length) return;   // لا تعمل إلا وقت وجود مباراة جارية
+  _fastBusy=true;
+  try{
+    await fetchLiveGoals();     // يحدّث النتيجة والأهداف ويعيد رسم الهيرو
+    for(var j=0;j<liveMs.length;j++){
+      var mm=liveMs[j], mins=(now-dateObj(mm).getTime())/60000;
+      if(mm.r && mm.r!=="group" && mins>=118){ try{ await fetchShootoutLive(mm); }catch(e){} }
+    }
+  }catch(e){}
+  try{ if(typeof renderTickerBar==="function") renderTickerBar(); }catch(e){}
+  _fastBusy=false;
+}
+setInterval(fastLiveTick, 5000);
 applyFinals();
 try{ if(typeof buildLeaderboard==="function") buildLeaderboard(); }catch(_e){}
 loadScoresESPN("20260610", ymd(new Date(Date.now()+24*3600000))).then(function(){
