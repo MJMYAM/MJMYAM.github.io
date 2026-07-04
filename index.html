@@ -3166,7 +3166,8 @@ var COACHES={
   "كولومبيا":"Néstor Lorenzo","غانا":"Carlos Queiroz","أستراليا":"Tony Popovic","مصر":"Hossam Hassan"
 };
 function newLineupHTML(m, j){
-  var kitH=npKit(m.h), kitA=npKit(m.a);
+  var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h, aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+  var kitH=npKit(hN), kitA=npKit(aN);
   var lH=npLum(kitH.bg), lA=npLum(kitA.bg);
   if((lH<0.45&&lA<0.45)||(lH>0.62&&lA>0.62)||npDist(kitH.bg,kitA.bg)<70){
     kitA = (lH<0.5) ? {bg:"#eef0f4",fg:"#0a1024",ring:"rgba(0,0,0,.22)"} : {bg:"#16213f",fg:"#ffffff",ring:"rgba(255,255,255,.5)"};
@@ -3183,23 +3184,24 @@ function newLineupHTML(m, j){
   }
   var plH=npLinks(LH)+LH.map(function(p){return npPlayer(p,kitH);}).join("");
   var plA=npLinks(LA)+LA.map(function(p){return npPlayer(p,kitA);}).join("");
-  var coH=COACHES[m.h]||j.coachH||"", coA=COACHES[m.a]||j.coachA||"";
+  var coH=COACHES[hN]||j.coachH||"", coA=COACHES[aN]||j.coachA||"";
   var hasBenchH=(j.subsH&&j.subsH.length)||coH, hasBenchA=(j.subsA&&j.subsA.length)||coA;
   return '<div class="np">'
     +'<div class="np-hd">'
-      +'<div class="np-tcard"><span class="fg">'+flagImg(m.a)+'</span><div><div class="nm">'+m.a+'</div>'+(j.fA?'<div class="frm">'+j.fA+'</div>':"")+'</div></div>'
+      +'<div class="np-tcard"><span class="fg">'+flagImg(aN)+'</span><div><div class="nm">'+aN+'</div>'+(j.fA?'<div class="frm">'+j.fA+'</div>':"")+'</div></div>'
       +'<div class="mid"><span class="vs">VS</span></div>'
-      +'<div class="np-tcard"><span class="fg">'+flagImg(m.h)+'</span><div><div class="nm">'+m.h+'</div>'+(j.fH?'<div class="frm">'+j.fH+'</div>':"")+'</div></div>'
+      +'<div class="np-tcard"><span class="fg">'+flagImg(hN)+'</span><div><div class="nm">'+hN+'</div>'+(j.fH?'<div class="frm">'+j.fH+'</div>':"")+'</div></div>'
     +'</div>'
     +'<div class="np-pitch"><div class="np-mid"></div><div class="np-circle"></div><div class="np-spot"></div><div class="np-pbox t"></div><div class="np-pbox b"></div><div class="np-gbox t"></div><div class="np-gbox b"></div><div class="np-goal t"></div><div class="np-goal b"></div><div class="np-pspot t"></div><div class="np-pspot b"></div>'+plH+plA+'</div>'
     +'<div class="np-legend"><span><i style="background:var(--gk)"></i>حارس</span><span><i style="background:var(--def)"></i>دفاع</span><span><i style="background:var(--mid)"></i>وسط</span><span><i style="background:var(--fwd)"></i>هجوم</span></div>'
-    +npBench(m.h, j.subsH, coH, kitH)
+    +npBench(hN, j.subsH, coH, kitH)
     +(hasBenchH&&hasBenchA?'<div class="np-div"></div>':"")
-    +npBench(m.a, j.subsA, coA, kitA)
+    +npBench(aN, j.subsA, coA, kitA)
     +'</div>';
 }
 
 function renderLU(m, j){
+  var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h, aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
   var html="", chips="";
   if(j.channel) chips+='<span class="chip tv">📺 '+j.channel+'</span>';
   if(j.commentator) chips+='<span class="chip">🎙️ '+j.commentator+'</span>';
@@ -3215,8 +3217,8 @@ function renderLU(m, j){
   } else if(ok){
     // احتياط: عرض قائمة (نصوص)
     html+='<div class="lu-grid">'
-      +'<div class="lu-col"><h5>'+flagImg(m.h)+' '+m.h+'</h5><ol>'+j.home.map(function(p){return '<li>'+p+'</li>';}).join("")+'</ol></div>'
-      +'<div class="lu-col"><h5>'+flagImg(m.a)+' '+m.a+'</h5><ol>'+j.away.map(function(p){return '<li>'+p+'</li>';}).join("")+'</ol></div>'
+      +'<div class="lu-col"><h5>'+flagImg(hN)+' '+hN+'</h5><ol>'+j.home.map(function(p){return '<li>'+p+'</li>';}).join("")+'</ol></div>'
+      +'<div class="lu-col"><h5>'+flagImg(aN)+' '+aN+'</h5><ol>'+j.away.map(function(p){return '<li>'+p+'</li>';}).join("")+'</ol></div>'
     +'</div>';
     if(j.note) html+='<div class="lu-note">'+j.note+'</div>';
   } else {
@@ -3375,6 +3377,7 @@ function pitchHTML(m, j){
 
 async function fetchLU(n, box, btn){
   var m=getM(n); if(!m || !box) return;
+  var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h, aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
   if(btn){btn.disabled=true; btn.innerHTML='جارٍ البحث عن التشكيلة والقناة <span class="spin"></span>';}
   else{box.innerHTML='<div class="lu-note">جارٍ التحديث <span class="spin"></span></div>';}
   /* 1) المصدر الأساسي: ESPN (يشتغل بأي متصفح) */
@@ -3392,7 +3395,7 @@ async function fetchLU(n, box, btn){
         var rosters=d1.rosters||[], home=[], away=[];
         rosters.forEach(function(rt){
           var tn=((rt.team||{}).displayName)||"";
-          var side = teamIs(m.h,tn) ? "h" : (teamIs(m.a,tn) ? "a" : null);
+          var side = teamIs(hN,tn) ? "h" : (teamIs(aN,tn) ? "a" : null);
           if(!side) return;
           var xi=(rt.roster||[]).filter(function(p){return p && p.starter;});
           xi.sort(function(a,b){return (parseInt(a.formationPlace,10)||99)-(parseInt(b.formationPlace,10)||99);});
