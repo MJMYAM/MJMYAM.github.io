@@ -749,7 +749,12 @@ html{scroll-padding-top:80px;}
 .gt-mt img{width:22px; height:15px; object-fit:cover; border-radius:2px; vertical-align:middle;}
 .gt-sc{color:var(--gold2); font-family:"Changa",sans-serif; font-size:15px; margin:0 4px;}
 .gt-md{font-size:10.5px; color:var(--mut); white-space:nowrap;}
-.gt-goal{display:flex; align-items:center; gap:9px; padding:8px 6px; border-radius:9px; text-decoration:none; color:var(--txt); transition:background .15s;}
+.gt-team{display:flex; align-items:center; justify-content:space-between; gap:8px; margin:8px 0 2px; padding:6px 8px; background:var(--s4,rgba(255,255,255,.04)); border-radius:8px;}
+.gt-team .gt-tn{font-weight:800; font-size:13px; display:flex; align-items:center; gap:7px;}
+.gt-team .gt-tn img{width:24px; height:16px; object-fit:cover; border-radius:2px;}
+.gt-team .gt-tc{font-family:"Changa",sans-serif; font-size:12px; color:var(--gold2);}
+.gt-none{font-size:12px; color:var(--mut); padding:4px 12px 8px;}
+.gt-goal{display:flex; align-items:center; gap:9px; padding:8px 12px; border-radius:9px; text-decoration:none; color:var(--txt); transition:background .15s;}
 .gt-goal:hover{background:var(--s5,rgba(255,255,255,.05));}
 .gt-goal:not(:last-child){border-bottom:1px solid var(--s3,rgba(255,255,255,.03));}
 .gt-yt{font-size:17px; flex-shrink:0;}
@@ -1318,8 +1323,6 @@ if("serviceWorker" in navigator){
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <!-- Leaflet (خريطة الملاعب التفاعلية) -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
 <!-- شاشة البداية -->
@@ -4392,31 +4395,42 @@ function renderGoalsTab(){
     var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
     var gr=goalRows(m);
     if(!gr.homeG.length && !gr.awayG.length) return;
-    // اجمع كل الأهداف مع الجانب
-    var goals=[];
-    gr.homeG.forEach(function(g){ goals.push({nm:cleanName(g),min:g.min,team:hN,og:/عكسي|own/i.test(g.type||g.who||"")}); });
-    gr.awayG.forEach(function(g){ goals.push({nm:cleanName(g),min:g.min,team:aN,og:/عكسي|own/i.test(g.type||g.who||"")}); });
-    totalGoals+=goals.length;
+    // جهّز أهداف كل منتخب على حدة
+    var homeGoals=gr.homeG.map(function(g){ return {nm:cleanName(g),min:g.min,og:/عكسي|own/i.test(g.type||g.who||"")}; });
+    var awayGoals=gr.awayG.map(function(g){ return {nm:cleanName(g),min:g.min,og:/عكسي|own/i.test(g.type||g.who||"")}; });
+    totalGoals+=homeGoals.length+awayGoals.length;
     // فلتر البحث
     if(q){
-      var hit=(hN.toLowerCase().indexOf(q)>=0)||(aN.toLowerCase().indexOf(q)>=0)||goals.some(function(g){return g.nm.toLowerCase().indexOf(q)>=0;});
+      var alln=homeGoals.concat(awayGoals);
+      var hit=(hN.toLowerCase().indexOf(q)>=0)||(aN.toLowerCase().indexOf(q)>=0)||alln.some(function(g){return g.nm.toLowerCase().indexOf(q)>=0;});
       if(!hit) return;
     }
-    // رتّب بالدقيقة
-    goals.sort(function(a,b){ return (parseInt(a.min,10)||0)-(parseInt(b.min,10)||0); });
     shown++;
     var scoreTxt=(gr.sh!=null&&gr.sa!=null)?(gr.sh+" - "+gr.sa):"";
     var head='<div class="gt-mhead">'
       +'<span class="gt-mt">'+flagImg(hN)+' '+hN+' <b class="gt-sc">'+scoreTxt+'</b> '+aN+' '+flagImg(aN)+'</span>'
       +'<span class="gt-md">'+(m.d?fmtD(m.d):"")+'</span></div>';
-    var items=goals.map(function(g){
-      var yq="أهداف "+hN+" ضد "+aN+" "+(g.nm!=="هدف"?g.nm:"")+" هدف كأس العالم 2026 beIN";
-      return '<a class="gt-goal" href="'+ytLink(yq)+'" target="_blank" rel="noopener">'
-        +'<span class="gt-yt">🎬</span>'
-        +'<span class="gt-min">'+(g.min?(g.min+"'"):"")+'</span>'
-        +'<span class="gt-pl">'+flagImg(g.team)+' '+g.nm+(g.og?' <i>(عكسي)</i>':'')+'</span>'
-        +'<span class="gt-go">⚽</span></a>';
-    }).join("");
+    // كتلة أهداف منتخب واحد: ترويسة المنتخب ثم أهدافه (تجميع نفس اللاعب)
+    function teamBlock(team, list){
+      if(!list.length) return '<div class="gt-team"><span class="gt-tn">'+flagImg(team)+' '+team+'</span></div><div class="gt-none">— لم يسجّل</div>';
+      var order=[], byN={};
+      list.forEach(function(g){
+        var key=g.nm.toLowerCase().replace(/[^a-z\u0600-\u06ff]/g,"")+(g.og?"|og":"");
+        if(!byN[key]){ byN[key]={nm:g.nm,og:g.og,mins:[]}; order.push(key); }
+        if(g.min!=null&&g.min!=="") byN[key].mins.push(g.min);
+      });
+      var rows=order.map(function(k){
+        var e=byN[k]; e.mins.sort(function(a,b){return (parseInt(a,10)||0)-(parseInt(b,10)||0);});
+        var mins=e.mins.map(function(x){return x+"'";}).join(" ");
+        var yq="أهداف "+team+" "+(e.nm!=="هدف"?e.nm:"")+" هدف كأس العالم 2026 beIN";
+        return '<a class="gt-goal" href="'+ytLink(yq)+'" target="_blank" rel="noopener">'
+          +'<span class="gt-yt">🎬</span>'
+          +'<span class="gt-pl">'+e.nm+(e.og?' <i>(عكسي)</i>':'')+'</span>'
+          +'<span class="gt-min">'+mins+'</span></a>';
+      }).join("");
+      return '<div class="gt-team"><span class="gt-tn">'+flagImg(team)+' '+team+'</span><span class="gt-tc">'+list.length+' ⚽</span></div>'+rows;
+    }
+    var items=teamBlock(hN, homeGoals)+teamBlock(aN, awayGoals);
     html+='<div class="gt-block">'+head+items+'</div>';
   });
   var cnt=document.getElementById("goalsCnt");
@@ -5551,6 +5565,26 @@ function renderCompareTab(){
 
 /* ===== الخريطة (Leaflet) ===== */
 var mapInstance=null, mapMarkers=[];
+var _leafletP=null;
+function loadLeaflet(){
+  if(typeof L!=="undefined") return Promise.resolve();
+  if(_leafletP) return _leafletP;
+  _leafletP=new Promise(function(res){
+    // CSS
+    var lk=document.createElement("link"); lk.rel="stylesheet";
+    lk.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+    lk.integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="; lk.crossOrigin="";
+    document.head.appendChild(lk);
+    // JS
+    var sc=document.createElement("script");
+    sc.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    sc.integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="; sc.crossOrigin="";
+    sc.onload=function(){ res(); };
+    sc.onerror=function(){ res(); };
+    document.head.appendChild(sc);
+  });
+  return _leafletP;
+}
 function initMap(){
   var el=document.getElementById("mapContainer");
   if(!el || mapInstance || typeof L==="undefined") return;
@@ -5687,7 +5721,13 @@ function renderTourist(){
     goTab=function(id){
       _baseGoTab(id);
       try{
-        if(id==="map") initMap();
+        if(id==="map"){
+          var _mc=document.getElementById("mapContainer");
+          if(typeof L==="undefined"){
+            if(_mc && !mapInstance) _mc.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--mut);font-weight:700">⏳ جارٍ تحميل الخريطة…</div>';
+            loadLeaflet().then(function(){ if(_mc) _mc.innerHTML=""; initMap(); });
+          } else initMap();
+        }
         else if(id==="compare") renderCompareTab();
         else if(id==="champions") renderChampions();
         else if(id==="quiz"){ switchQMode(window._qmode||"trivia"); }
