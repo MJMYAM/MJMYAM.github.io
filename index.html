@@ -657,6 +657,51 @@ nav#bn button .ic{font-size:19px;}
 .ko-col[data-round="third"] .ko-m{border-color:rgba(201,150,46,.45); background:rgba(201,150,46,.07);}
 /* ===== شجرة الطريق إلى النهائي (braket متناظر بإحداثيات محسوبة) ===== */
 .rtf-hint{font-size:10.5px; color:var(--dim); text-align:center; margin-bottom:8px;}
+/* ====== شجرة رادار المطوّر ====== */
+#koList .radar{--rgold:#e8b93f;--rgold2:#ffd873;--rcell:rgba(255,255,255,.055);--rfbox:rgba(240,194,75,.14);--rslot:rgba(255,255,255,.04);--rline:rgba(232,185,63,.4);--rglow:rgba(240,194,75,.3);--rsheen:rgba(255,255,255,.08);--rtx:#eef2ff;--rmut:#96a2c8;}
+html[data-theme="light"] #koList .radar{--rgold:#c8940e;--rgold2:#a9770a;--rcell:#ffffff;--rfbox:rgba(200,148,14,.1);--rslot:rgba(22,33,60,.04);--rline:rgba(200,148,14,.35);--rglow:rgba(200,148,14,.2);--rsheen:rgba(255,255,255,.7);--rtx:#16213c;--rmut:#5a6a8c;}
+#koList .radar{direction:rtl;padding:4px 0 10px;}
+#koList .scrollnote{text-align:center;color:var(--rgold);font-size:11.5px;font-weight:800;margin:2px 0 10px;opacity:.85;animation:rdpulse 2s infinite;}
+@keyframes rdpulse{50%{opacity:.45;}}
+#koList .rd-scroller{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 4px 12px;}
+#koList .rd-scroller::-webkit-scrollbar{height:6px;} #koList .rd-scroller::-webkit-scrollbar-thumb{background:var(--rgold);border-radius:3px;opacity:.6;}
+#koList .rd-wrap{width:1120px;}
+#koList .rd-grid{display:grid;grid-template-columns:168px 158px 96px 96px 1fr 96px 96px 158px 168px;gap:0 8px;align-items:stretch;}
+#koList .radar .col{display:flex;flex-direction:column;justify-content:space-around;gap:14px;position:relative;}
+#koList .radar .col.rr::after{content:"";position:absolute;top:8%;bottom:8%;left:-8px;width:1.5px;background:linear-gradient(180deg,transparent,var(--rline),transparent);opacity:.35;}
+#koList .radar .cell{position:relative;background:var(--rcell);border:1.5px solid var(--rgold);border-radius:13px;padding:8px 10px;box-shadow:0 5px 16px rgba(0,0,0,.28),inset 0 1px 0 var(--rsheen);backdrop-filter:blur(4px);}
+#koList .radar .cell::before{content:"";position:absolute;inset:0;border-radius:13px;padding:1.5px;background:linear-gradient(135deg,var(--rgold2),transparent 40%,transparent 60%,var(--rgold));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.5;pointer-events:none;}
+#koList .radar .tr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 0;}
+#koList .radar .tr .nm{font-weight:800;font-size:13.5px;color:var(--rtx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#koList .radar .fl{position:relative;flex-shrink:0;width:38px;height:25px;}
+#koList .radar .fl img{width:38px;height:25px;object-fit:cover;border-radius:4px;box-shadow:0 2px 6px rgba(0,0,0,.5);border:1px solid var(--rsheen);}
+#koList .radar .fl.tbd{display:inline-block;background:var(--rslot);border:1px dashed var(--rline);border-radius:4px;}
+#koList .radar .tr.win .nm{color:var(--rgold2);}
+#koList .radar .tr.win .fl::after{content:"★";position:absolute;top:-7px;right:-6px;font-size:11px;color:var(--rgold2);filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));}
+#koList .radar .tr.lose{opacity:.5;} #koList .radar .tr.lose .fl img{filter:grayscale(.7);}
+#koList .radar .sc{text-align:center;font-family:"Changa",sans-serif;font-weight:800;font-size:16px;color:var(--rgold2);letter-spacing:1px;padding:3px 0;text-shadow:0 1px 8px var(--rglow);}
+#koList .radar .sc .pens{font-size:11px;color:var(--rmut);}
+#koList .radar .dt{text-align:center;padding:5px 0;margin:3px 0;border-top:1px dashed var(--rline);border-bottom:1px dashed var(--rline);}
+#koList .radar .dt .d{display:block;font-size:11.5px;color:var(--rgold2);font-weight:800;}
+#koList .radar .dt .t{display:block;font-size:11px;color:var(--rmut);font-weight:700;font-family:"Changa",sans-serif;margin-top:1px;}
+#koList .radar .cell.empty .slot{height:26px;display:flex;align-items:center;justify-content:center;background:var(--rslot);border:1px dashed var(--rline);border-radius:7px;margin:4px 0;}
+#koList .radar .qmark{font-family:"Changa",sans-serif;font-weight:800;color:var(--rmut);opacity:.5;font-size:14px;}
+#koList .radar .center{display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:2px;}
+#koList .radar .ftrophy{font-size:52px;filter:drop-shadow(0 6px 20px var(--rglow));animation:rdfloat 3s ease-in-out infinite;}
+@keyframes rdfloat{50%{transform:translateY(-6px);}}
+#koList .radar .fbox{text-align:center;background:linear-gradient(180deg,var(--rfbox),transparent);border:2px solid var(--rgold);border-radius:18px;padding:14px 18px;box-shadow:0 8px 28px var(--rglow),inset 0 1px 0 var(--rsheen);min-width:180px;}
+#koList .radar .fbox .fd{font-family:"Changa",sans-serif;font-weight:800;font-size:18px;color:var(--rgold2);}
+#koList .radar .fbox .fdate{font-size:12px;color:var(--rmut);font-weight:700;margin:3px 0 8px;}
+#koList .radar .fslots{display:flex;gap:8px;justify-content:center;align-items:center;}
+#koList .radar .fslots .fs{width:58px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--rslot);border:1.5px solid var(--rgold);border-radius:10px;}
+#koList .radar .fslots .vs{font-family:"Changa",sans-serif;font-weight:800;font-size:13px;color:var(--rgold);}
+#koList .radar .fbox .ft{margin-top:10px;font-size:13.5px;color:var(--rgold2);font-weight:800;}
+#koList .radar .fbox .fresult .cell,#koList .radar .third .fresult .cell{border:none;box-shadow:none;background:transparent;padding:2px;}
+#koList .radar .fbox .fresult .cell::before{display:none;}
+#koList .radar .third{text-align:center;background:var(--rcell);border:1px solid var(--rline);border-radius:14px;padding:10px 16px;min-width:170px;}
+#koList .radar .third .tt{font-family:"Changa",sans-serif;font-weight:800;font-size:14px;color:var(--rgold2);margin-bottom:7px;}
+#koList .radar .third .ts{width:56px;height:42px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;background:var(--rslot);border:1px dashed var(--rline);border-radius:9px;}
+#koList .radar .third .td{font-size:11.5px;color:var(--rmut);font-weight:700;}
 .rtf-wrap{overflow:hidden; padding:6px 0 14px; direction:ltr;}
 .rtf{position:relative; transform-origin:top left; direction:ltr;}
 .rtf-svg{position:absolute; left:0; top:0; z-index:0; pointer-events:none; overflow:visible;}
@@ -2723,7 +2768,80 @@ function rtfFlag(name, big){
   if(name && (typeof ISO!=="undefined") && ISO[name]) return '<span class="rtf-f">'+flagImg(name)+'</span>';
   return '<span class="rtf-f tbd"></span>';
 }
+/* ============ شجرة "الطريق إلى النهائي" — تصميم رادار المطوّر ============ */
+function radarTime(t){
+  var p=String(t||"").split(":"), h=+p[0], mn=p[1]||"00";
+  var ap = h<12 ? "ص" : "م";
+  var hh=h%12; if(hh===0) hh=12;
+  return hh+":"+mn+" "+ap;
+}
+function radarScore(m){
+  // يرجع {sh,sa,win,played} — من النتائج النهائية أو الكاش الحي
+  var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null;
+  var sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
+  var sh=null,sa=null,pens=null,played=false;
+  if(fr && fr.sh!=null){ sh=fr.sh; sa=fr.sa; if(fr.pH!=null) pens=fr.pH+":"+fr.pA; played=true; }
+  else if(sc && sc.found && sc.sh!=null){ sh=sc.sh; sa=sc.sa; if(sc.pH!=null) pens=sc.pH+":"+sc.pA; played=(sc.status==="finished"); }
+  var win=(typeof koWonSide==="function")?koWonSide(m):null;
+  return {sh:sh,sa:sa,pens:pens,win:win,played:(sh!=null)};
+}
+function radarCell(n, kind){
+  var m=getM(n); if(!m) return '<div class="cell '+kind+' empty"><div class="slot"><span class="qmark">؟</span></div><div class="slot"><span class="qmark">؟</span></div></div>';
+  var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+  var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+  var hasH=(typeof TEAMS!=="undefined")&&TEAMS[hN], hasA=(typeof TEAMS!=="undefined")&&TEAMS[aN];
+  var r=radarScore(m);
+  function frow(name, has, isWin, isLose){
+    var fl = has ? '<span class="fl">'+flagImg(name)+'</span>' : '<span class="fl tbd"></span>';
+    var cls = isWin?"win":(isLose?"lose":"");
+    return '<div class="tr '+cls+'"><span class="nm">'+(has?name:"يُحدَّد")+'</span>'+fl+'</div>';
+  }
+  var mid;
+  if(r.played){
+    var scTxt = r.sh+" : "+r.sa + (r.pens?' <span class="pens">('+r.pens+')</span>':'');
+    mid = '<div class="sc">'+scTxt+'</div>';
+  } else {
+    mid = '<div class="dt"><span class="d">'+(m.d?fmtD(m.d):"")+'</span><span class="t">🕐 '+radarTime(m.t)+'</span></div>';
+  }
+  var wH=(r.win==="h"), wA=(r.win==="a");
+  return '<div class="cell '+kind+'">'
+    + frow(hN, hasH, wH, r.played&&wA)
+    + mid
+    + frow(aN, hasA, wA, r.played&&wH)
+    + '</div>';
+}
+function renderRadarTree(el){
+  // ترتيب البطولة الثابت (يسار / يمين، من الأعلى للأسفل)
+  var L32=[74,77,73,75,83,84,81,82], R32=[76,78,79,80,86,88,85,87];
+  var L16=[89,90,93,94], R16=[91,92,95,96];
+  var LQF=[97,98], RQF=[99,100], LSF=[101], RSF=[102];
+  var FIN=104, THD=103;
+  function col(list, kind){ return '<div class="col rr">'+list.map(function(n){return radarCell(n,kind);}).join("")+'</div>'; }
+  var fm=getM(FIN), tm=getM(THD);
+  var fr=fm?radarScore(fm):{played:false}, tr=tm?radarScore(tm):{played:false};
+  var finBox='<div class="center">'
+    +'<div class="ftrophy">🏆</div>'
+    +'<div class="fbox"><div class="fd">النهائي</div><div class="fdate">'+(fm?fmtD(fm.d):"")+'</div>'
+    + (fr.played
+        ? '<div class="fresult">'+radarCell(FIN,"finbig")+'</div>'
+        : '<div class="fslots"><div class="fs"><span class="qmark">؟</span></div><span class="vs">VS</span><div class="fs"><span class="qmark">؟</span></div></div>')
+    +'<div class="ft">🏟️ '+(fm?radarTime(fm.t):"")+'</div></div>'
+    +'<div class="third"><div class="tt">🥉 المركز الثالث</div>'
+    + (tr.played ? '<div class="fresult sm">'+radarCell(THD,"finsm")+'</div>' : '<div class="ts"><span class="qmark">؟</span></div>')
+    +'<div class="td">'+(tm?fmtD(tm.d):"")+' · '+(tm?radarTime(tm.t):"")+'</div></div>'
+    +'</div>';
+  el.innerHTML =
+    '<div class="radar">'
+    +'<div class="scrollnote">← اسحب لرؤية الشجرة كاملة →</div>'
+    +'<div class="rd-scroller"><div class="rd-wrap"><div class="rd-grid">'
+    + col(L32,"r32") + col(L16,"r16") + col(LQF,"qf") + col(LSF,"sf")
+    + finBox
+    + col(RSF,"sf") + col(RQF,"qf") + col(R16,"r16") + col(R32,"r32")
+    +'</div></div></div></div>';
+}
+
 function renderKOTree(el){
+  if(typeof renderRadarTree==="function"){ return renderRadarTree(el); }
   var bo=koBracketOrder();
   function arrOf(rk){ var ids=bo[rk]||M.filter(function(m){return m.r===rk;}).map(function(m){return m.n;}); return ids.map(getM).filter(Boolean); }
   var RR={r32:arrOf("r32"), r16:arrOf("r16"), qf:arrOf("qf"), sf:arrOf("sf"), final:arrOf("final")};
