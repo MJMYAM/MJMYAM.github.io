@@ -657,6 +657,64 @@ nav#bn button .ic{font-size:19px;}
 .ko-col[data-round="third"] .ko-m{border-color:rgba(201,150,46,.45); background:rgba(201,150,46,.07);}
 /* ===== شجرة الطريق إلى النهائي (braket متناظر بإحداثيات محسوبة) ===== */
 .rtf-hint{font-size:10.5px; color:var(--dim); text-align:center; margin-bottom:8px;}
+/* زر التبديل مضغوط/تفصيلي */
+#koList .rd-toggle{text-align:center;margin:0 0 10px;}
+#koList .rd-toggle button{background:var(--card,rgba(255,255,255,.06));border:1px solid var(--gold,#c9a24b);color:var(--gold2,#ffd873);font-family:inherit;font-weight:800;font-size:12px;padding:7px 16px;border-radius:99px;cursor:pointer;}
+/* أيقونة الساعة للمباريات القادمة (تظهر بالمضغوط فقط) */
+#koList .radar .clock-ic{display:none;}
+#koList .radar.compact .clock-ic{display:flex;align-items:center;justify-content:center;font-size:12px;padding:1px 0;opacity:.8;}
+#koList .radar.compact .cell.up{cursor:pointer;position:relative;}
+#koList .radar.compact .cell.up::after{content:"";position:absolute;inset:0;border-radius:7px;box-shadow:0 0 0 1px var(--rgold) inset;opacity:0;transition:opacity .15s;}
+#koList .radar.compact .cell.up:active::after{opacity:.6;}
+/* بوب أب تفاصيل المباراة القادمة */
+.rmp-overlay{position:fixed;inset:0;z-index:99999;background:rgba(4,8,20,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;animation:rmpIn .2s ease;}
+@keyframes rmpIn{from{opacity:0;}}
+.rmp-box{position:relative;width:100%;max-width:340px;background:linear-gradient(180deg,var(--card2,#12203c),var(--card,#0c1730));border:1.5px solid var(--gold,#c9a24b);border-radius:20px;padding:22px 18px 18px;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:rmpUp .25s ease;}
+@keyframes rmpUp{from{transform:translateY(14px);opacity:0;}}
+.rmp-x{position:absolute;top:12px;left:14px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:var(--txt,#eef2ff);font-size:14px;font-weight:800;cursor:pointer;}
+.rmp-round{text-align:center;font-family:"Changa",sans-serif;font-weight:800;font-size:13px;color:var(--gold2,#ffd873);margin-bottom:16px;}
+.rmp-teams{display:flex;align-items:center;justify-content:space-around;gap:8px;margin-bottom:14px;}
+.rmp-team{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;}
+.rmp-team img{width:56px;height:38px;object-fit:cover;border-radius:6px;box-shadow:0 3px 10px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);}
+.rmp-tbd{font-size:40px;opacity:.5;}
+.rmp-nm{font-weight:800;font-size:14px;color:var(--txt,#eef2ff);text-align:center;line-height:1.2;}
+.rmp-vs{font-family:"Changa",sans-serif;font-weight:800;font-size:15px;color:var(--gold,#c9a24b);flex-shrink:0;}
+.rmp-cd{text-align:center;background:rgba(240,194,75,.14);border:1px solid var(--gold,#c9a24b);border-radius:99px;padding:6px 14px;font-size:12.5px;font-weight:800;color:var(--gold2,#ffd873);margin-bottom:14px;}
+.rmp-info{display:flex;flex-direction:column;gap:2px;}
+.rmp-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;font-size:13px;font-weight:700;color:var(--txt,#eef2ff);}
+.rmp-row:nth-child(odd){background:rgba(255,255,255,.03);}
+.rmp-ic{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+/* ====== الوضع المضغوط: الشجرة كاملة بصفحة واحدة (أعلام + نتائج فقط) ====== */
+#koList .radar.compact .rd-scroller{overflow-x:hidden;padding:0 2px 8px;}
+#koList .radar.compact .rd-wrap{width:100%;}
+#koList .radar.compact .rd-grid{grid-template-columns:repeat(4,1fr) 30px repeat(4,1fr);gap:0 2px;}
+#koList .radar.compact .col{gap:5px;}
+#koList .radar.compact .col.rr::after{display:none;}
+#koList .radar.compact .cell{padding:3px 2px;border-radius:7px;border-width:1px;backdrop-filter:none;}
+#koList .radar.compact .cell::before{display:none;}
+#koList .radar.compact .tr{flex-direction:column;gap:1px;padding:1px 0;justify-content:center;}
+#koList .radar.compact .tr .nm{display:none;}
+#koList .radar.compact .fl{width:100%;height:auto;display:flex;justify-content:center;}
+#koList .radar.compact .fl img{width:26px;height:17px;}
+#koList .radar.compact .fl.tbd{width:26px;height:17px;}
+#koList .radar.compact .tr.win .fl::after{top:-4px;right:2px;font-size:8px;}
+#koList .radar.compact .dt{display:none;}
+#koList .radar.compact .sc{font-size:10px;padding:1px 0;letter-spacing:0;line-height:1.1;}
+#koList .radar.compact .sc .pens{font-size:7px;display:block;}
+#koList .radar.compact .center{gap:6px;padding-top:0;}
+#koList .radar.compact .ftrophy{font-size:26px;}
+#koList .radar.compact .fbox{padding:6px 5px;border-radius:10px;min-width:0;border-width:1px;}
+#koList .radar.compact .fbox .fd{font-size:10px;}
+#koList .radar.compact .fbox .fdate,#koList .radar.compact .fbox .ft{display:none;}
+#koList .radar.compact .fslots{gap:2px;}
+#koList .radar.compact .fslots .fs{width:22px;height:20px;border-width:1px;border-radius:5px;}
+#koList .radar.compact .fslots .vs{font-size:8px;}
+#koList .radar.compact .fslots .fs .qmark{font-size:9px;}
+#koList .radar.compact .third{padding:5px 4px;min-width:0;border-radius:9px;}
+#koList .radar.compact .third .tt{font-size:9px;margin-bottom:3px;}
+#koList .radar.compact .third .ts{width:22px;height:18px;margin-bottom:3px;}
+#koList .radar.compact .third .td{display:none;}
+#koList .radar.compact .cell.empty .slot{height:17px;margin:1px 0;}
 /* ====== شجرة رادار المطوّر ====== */
 #koList .radar{--rgold:#e8b93f;--rgold2:#ffd873;--rcell:rgba(255,255,255,.055);--rfbox:rgba(240,194,75,.14);--rslot:rgba(255,255,255,.04);--rline:rgba(232,185,63,.4);--rglow:rgba(240,194,75,.3);--rsheen:rgba(255,255,255,.08);--rtx:#eef2ff;--rmut:#96a2c8;}
 html[data-theme="light"] #koList .radar{--rgold:#c8940e;--rgold2:#a9770a;--rcell:#ffffff;--rfbox:rgba(200,148,14,.1);--rslot:rgba(22,33,60,.04);--rline:rgba(200,148,14,.35);--rglow:rgba(200,148,14,.2);--rsheen:rgba(255,255,255,.7);--rtx:#16213c;--rmut:#5a6a8c;}
@@ -2801,14 +2859,58 @@ function radarCell(n, kind){
     var scTxt = r.sh+" : "+r.sa + (r.pens?' <span class="pens">('+r.pens+')</span>':'');
     mid = '<div class="sc">'+scTxt+'</div>';
   } else {
-    mid = '<div class="dt"><span class="d">'+(m.d?fmtD(m.d):"")+'</span><span class="t">🕐 '+radarTime(m.t)+'</span></div>';
+    // مباراة قادمة: تاريخ/وقت (يظهر في التفصيلي) + أيقونة ساعة (تظهر في المضغوط)
+    mid = '<div class="dt"><span class="d">'+(m.d?fmtD(m.d):"")+'</span><span class="t">🕐 '+radarTime(m.t)+'</span></div>'
+        + '<div class="clock-ic">🕐</div>';
   }
   var wH=(r.win==="h"), wA=(r.win==="a");
-  return '<div class="cell '+kind+'">'
+  var cls = "cell "+kind+(r.played?"":" up");
+  var attrs = r.played ? "" : (' data-mn="'+m.n+'" onclick="radarMatchPopup('+m.n+')" role="button"');
+  return '<div class="'+cls+'"'+attrs+'>'
     + frow(hN, hasH, wH, r.played&&wA)
     + mid
     + frow(aN, hasA, wA, r.played&&wH)
     + '</div>';
+}
+function radarMatchPopup(mnum){
+  var m=getM(mnum); if(!m) return;
+  var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+  var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+  var hasH=(typeof TEAMS!=="undefined")&&TEAMS[hN], hasA=(typeof TEAMS!=="undefined")&&TEAMS[aN];
+  var roundL=(typeof ROUNDS!=="undefined"&&ROUNDS[m.r])?ROUNDS[m.r].l:"";
+  var st=(typeof STADIUMS!=="undefined")?STADIUMS[m.s]:null;
+  var tf=(typeof fmtT==="function")?fmtT(m.t):{t:m.t,ap:""};
+  var dObj=new Date(m.d+"T12:00:00");
+  var fullDate=(typeof WD!=="undefined"?WD[dObj.getDay()]:"")+" "+dObj.getDate()+" "+(typeof MO!=="undefined"?MO[dObj.getMonth()]:"")+" "+dObj.getFullYear();
+  // العد التنازلي
+  var kickoff=(typeof dateObj==="function")?dateObj(m):new Date(m.d+"T"+m.t+":00");
+  var diff=kickoff.getTime()-Date.now(), cd="";
+  if(diff>0){ var dd=Math.floor(diff/86400000), hh=Math.floor((diff%86400000)/3600000), mm=Math.floor((diff%3600000)/60000);
+    cd = (dd>0?dd+" يوم ":"")+(hh>0?hh+" ساعة ":"")+(dd===0?mm+" دقيقة":""); }
+  function tcell(name,has){
+    return '<div class="rmp-team">'+(has?flagImg(name):'<span class="rmp-tbd">🏳️</span>')+'<span class="rmp-nm">'+(has?name:"يُحدَّد لاحقًا")+'</span></div>';
+  }
+  var ov=document.createElement("div");
+  ov.className="rmp-overlay"; ov.onclick=function(e){ if(e.target===ov) ov.remove(); };
+  ov.innerHTML='<div class="rmp-box">'
+    +'<button class="rmp-x" onclick="this.closest(\'.rmp-overlay\').remove()">✕</button>'
+    +'<div class="rmp-round">🏆 '+roundL+' · مباراة '+m.n+'</div>'
+    +'<div class="rmp-teams">'+tcell(hN,hasH)+'<span class="rmp-vs">VS</span>'+tcell(aN,hasA)+'</div>'
+    +(cd?'<div class="rmp-cd">⏳ باقٍ '+cd+'</div>':'')
+    +'<div class="rmp-info">'
+      +'<div class="rmp-row"><span class="rmp-ic">📅</span><span>'+fullDate+'</span></div>'
+      +'<div class="rmp-row"><span class="rmp-ic">🕐</span><span>'+tf.t+' '+tf.ap+' · بتوقيت الكويت</span></div>'
+      +(st?'<div class="rmp-row"><span class="rmp-ic">🏟️</span><span>'+(st.n||"")+(st.c?' · '+st.c:"")+'</span></div>':'')
+      +'<div class="rmp-row"><span class="rmp-ic">📺</span><span>شبكة beIN Sports</span></div>'
+    +'</div>'
+    +'</div>';
+  document.body.appendChild(ov);
+}
+var radarCompact = (localStorage.getItem("wcRadarCompact")!=="0"); // مضغوط افتراضيًا
+function toggleRadarCompact(){
+  radarCompact=!radarCompact;
+  try{ localStorage.setItem("wcRadarCompact", radarCompact?"1":"0"); }catch(e){}
+  var el=document.getElementById("koList"); if(el) renderRadarTree(el);
 }
 function renderRadarTree(el){
   // ترتيب البطولة الثابت (يسار / يمين، من الأعلى للأسفل)
@@ -2831,8 +2933,9 @@ function renderRadarTree(el){
     +'<div class="td">'+(tm?fmtD(tm.d):"")+' · '+(tm?radarTime(tm.t):"")+'</div></div>'
     +'</div>';
   el.innerHTML =
-    '<div class="radar">'
-    +'<div class="scrollnote">← اسحب لرؤية الشجرة كاملة →</div>'
+    '<div class="radar'+(radarCompact?" compact":"")+'">'
+    +'<div class="rd-toggle"><button onclick="toggleRadarCompact()">'+(radarCompact?"🔍 عرض تفصيلي (أسماء وتواريخ)":"📱 صفحة واحدة (مضغوط)")+'</button></div>'
+    +(radarCompact?"":'<div class="scrollnote">← اسحب لرؤية الشجرة كاملة →</div>')
     +'<div class="rd-scroller"><div class="rd-wrap"><div class="rd-grid">'
     + col(L32,"r32") + col(L16,"r16") + col(LQF,"qf") + col(LSF,"sf")
     + finBox
@@ -5063,7 +5166,7 @@ function runHealthCheck(manual){
       var rawTeam=(STAT_DATA.g||[]).concat(STAT_DATA.a||[]).filter(function(x){return /المباراة/.test(x.t||"");}).length;
       add(rawTeam===0, "منتخبات الهدّافين", rawTeam?("خام "+rawTeam):"محلولة");
     // 7) الشجرة مرسومة
-    var tcells=document.querySelectorAll("#koList .rtf-cell").length;
+    var tcells=document.querySelectorAll("#koList .rtf-cell, #koList .radar .cell").length;
     add(tcells>=30 || document.getElementById("tab-ko").classList.contains("active")===false, "شجرة الإقصائيات", tcells+" خلية");
     // 8) الشريط المتحرك يعمل
     var tk=document.getElementById("tkBar");
