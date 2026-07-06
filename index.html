@@ -657,6 +657,43 @@ nav#bn button .ic{font-size:19px;}
 .ko-col[data-round="third"] .ko-m{border-color:rgba(201,150,46,.45); background:rgba(201,150,46,.07);}
 /* ===== شجرة الطريق إلى النهائي (braket متناظر بإحداثيات محسوبة) ===== */
 .rtf-hint{font-size:10.5px; color:var(--dim); text-align:center; margin-bottom:8px;}
+/* زر تبديل وضع العرض */
+#koList .rd-toggle{text-align:center;margin:0 0 10px;}
+#koList .rd-toggle button{background:var(--card,rgba(255,255,255,.06));border:1px solid var(--gold,#c9a24b);color:var(--gold2,#ffd873);font-family:inherit;font-weight:800;font-size:12px;padding:7px 16px;border-radius:99px;cursor:pointer;}
+body.kofit main>footer, body.kofit footer{display:none !important;}
+body.kofit main{padding-bottom:64px !important;}
+/* ====== الوضع الكامل: كل الشجرة بلا تمرير (تُقلَّص تلقائيًا) ====== */
+#koList .radar.fit .rd-scroller{overflow:hidden;padding:0;}
+#koList .radar.fit .rd-wrap{width:100%;margin:0;}
+#koList .radar.fit .rd-grid{width:100%;margin:0 auto;grid-template-columns:repeat(4,1fr) 72px repeat(4,1fr);gap:0 3px;}
+#koList .radar.fit .col{gap:5px;}
+#koList .radar.fit .col.rr::after{display:none;}
+#koList .radar.fit .cell{padding:3px 2px;border-radius:7px;border-width:1px;backdrop-filter:none;height:60px;display:flex;flex-direction:column;justify-content:center;}
+#koList .radar.fit .cell::before{display:none;}
+#koList .radar.fit .tr{flex-direction:column;gap:1px;padding:0;justify-content:center;}
+#koList .radar.fit .tr .nm{display:none;}
+#koList .radar.fit .fl{width:100%;height:auto;display:flex;justify-content:center;}
+#koList .radar.fit .fl img{width:30px;height:20px;}
+#koList .radar.fit .fl.tbd{width:30px;height:20px;background:var(--rslot);border:1px dashed var(--rline);border-radius:3px;}
+#koList .radar.fit .tr.win .fl::after{top:-4px;right:4px;font-size:9px;}
+#koList .radar.fit .dt{display:none;}
+#koList .radar.fit .sc{font-size:12px;padding:2px 0;letter-spacing:0;line-height:1.05;}
+#koList .radar.fit .sc .pens{font-size:8px;display:block;}
+#koList .radar.fit .center{gap:5px;padding-top:0;justify-content:center;position:relative;}
+#koList .radar.fit .center .third{position:absolute;bottom:0;left:50%;transform:translateX(-50%);}
+#koList .radar.fit .ftrophy{font-size:26px;}
+#koList .radar.fit .fbox{padding:5px 3px;border-radius:9px;width:70px;min-width:0;box-sizing:border-box;border-width:1px;}
+#koList .radar.fit .fbox .fd{font-size:10px;margin-bottom:2px;}
+#koList .radar.fit .fbox .fdate,#koList .radar.fit .fbox .ft{display:none;}
+#koList .radar.fit .fslots{gap:2px;}
+#koList .radar.fit .fslots .fs{width:22px;height:20px;border-width:1px;border-radius:5px;}
+#koList .radar.fit .fslots .vs{font-size:9px;}
+#koList .radar.fit .fslots .fs .qmark{font-size:10px;}
+#koList .radar.fit .third{padding:4px 3px;width:70px;min-width:0;box-sizing:border-box;border-radius:8px;}
+#koList .radar.fit .third .tt{font-size:9px;margin-bottom:2px;}
+#koList .radar.fit .third .ts{width:22px;height:18px;margin-bottom:2px;}
+#koList .radar.fit .third .td{display:none;}
+#koList .radar.fit .cell.empty .slot{height:18px;margin:1px 0;}
 /* ====== شجرة رادار المطوّر ====== */
 #koList .radar{--rgold:#e8b93f;--rgold2:#ffd873;--rcell:rgba(255,255,255,.055);--rfbox:rgba(240,194,75,.14);--rslot:rgba(255,255,255,.04);--rline:rgba(232,185,63,.4);--rglow:rgba(240,194,75,.3);--rsheen:rgba(255,255,255,.08);--rtx:#eef2ff;--rmut:#96a2c8;}
 html[data-theme="light"] #koList .radar{--rgold:#c8940e;--rgold2:#a9770a;--rcell:#ffffff;--rfbox:rgba(200,148,14,.1);--rslot:rgba(22,33,60,.04);--rline:rgba(200,148,14,.35);--rglow:rgba(200,148,14,.2);--rsheen:rgba(255,255,255,.7);--rtx:#16213c;--rmut:#5a6a8c;}
@@ -2814,6 +2851,31 @@ function radarCell(n, kind){
     + '</div>';
 }
 
+var radarFit = (localStorage.getItem("wcRadarFit")!=="0"); // وضع الشجرة الكاملة افتراضيًا (بدون تمرير)
+function toggleRadarFit(){
+  radarFit=!radarFit;
+  try{ localStorage.setItem("wcRadarFit", radarFit?"1":"0"); }catch(e){}
+  document.body.classList.toggle("kofit", radarFit);
+  var el=document.getElementById("koList"); if(el) renderRadarTree(el);
+}
+function scaleRadarToFit(){
+  var radar=document.querySelector("#koList .radar.fit");
+  if(!radar){ return; }
+  var grid=radar.querySelector(".rd-grid");
+  if(!grid) return;
+  grid.style.zoom="1";                     // صفّر ثم قِس الحجم الطبيعي
+  var natH=grid.offsetHeight, natW=grid.offsetWidth;
+  if(!natH||!natW) return;
+  var ko=document.getElementById("koList");
+  var availW=ko.clientWidth;
+  var nav=document.getElementById("bn");
+  var navTop=nav?nav.getBoundingClientRect().top:window.innerHeight;
+  var gridTop=grid.getBoundingClientRect().top;
+  var availH=navTop - gridTop - 10;
+  var z=Math.min(availH/natH, availW/natW, 1.5);
+  if(z>0 && isFinite(z)){ grid.style.zoom=z; }
+}
+window.addEventListener("resize", function(){ if(document.querySelector("#koList .radar.fit")) scaleRadarToFit(); });
 function renderRadarTree(el){
   // ترتيب البطولة الثابت (يسار / يمين، من الأعلى للأسفل)
   var L32=[74,77,73,75,83,84,81,82], R32=[76,78,79,80,86,88,85,87];
@@ -2835,13 +2897,17 @@ function renderRadarTree(el){
     +'<div class="td">'+(tm?fmtD(tm.d):"")+' · '+(tm?radarTime(tm.t):"")+'</div></div>'
     +'</div>';
   el.innerHTML =
-    '<div class="radar">'
-    +'<div class="scrollnote">← اسحب أفقيًا لرؤية الشجرة كاملة →</div>'
+    '<div class="radar'+(radarFit?" fit":"")+'">'
+    +'<div class="rd-toggle"><button onclick="toggleRadarFit()">'+(radarFit?"🔍 عرض تفصيلي (بالسحب)":"📱 الشجرة كاملة (بدون تمرير)")+'</button></div>'
+    +(radarFit?"":'<div class="scrollnote">← اسحب أفقيًا لرؤية الشجرة كاملة →</div>')
     +'<div class="rd-scroller"><div class="rd-wrap"><div class="rd-grid">'
     + col(L32,"r32") + col(L16,"r16") + col(LQF,"qf") + col(LSF,"sf")
     + finBox
     + col(RSF,"sf") + col(RQF,"qf") + col(R16,"r16") + col(R32,"r32")
     +'</div></div></div></div>';
+  if(radarFit && typeof scaleRadarToFit==="function"){
+    requestAnimationFrame(function(){ scaleRadarToFit(); setTimeout(scaleRadarToFit,120); });
+  }
 }
 
 function renderKOTree(el){
@@ -4371,6 +4437,8 @@ function goTab(id){
   if(id==="info" && !window._infoDone){ renderInfo(); window._infoDone=true; }
   document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active", t.id==="tab-"+id);});
   document.querySelectorAll("#bn button").forEach(function(b){b.classList.toggle("on", b.dataset.tab===id);});
+  document.body.classList.toggle("kofit", id==="ko" && (typeof radarFit!=="undefined") && radarFit);
+  if(id==="ko" && (typeof radarFit!=="undefined") && radarFit && typeof scaleRadarToFit==="function"){ requestAnimationFrame(scaleRadarToFit); }
   if(id==="groups" && !window._stAt){ loadStandingsESPN().catch(function(){}); }
   window.scrollTo({top:0, behavior:"instant" in window ? "auto" : "auto"});
 }
