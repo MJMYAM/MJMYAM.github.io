@@ -877,6 +877,9 @@ html{scroll-padding-top:80px;}
 .gt-none{font-size:12px; color:var(--mut); padding:4px 12px 8px;}
 .gt-goal{display:flex; align-items:center; gap:9px; padding:7px 12px; border-radius:9px; color:var(--txt);}
 .gt-bullet{font-size:13px; flex-shrink:0; opacity:.85;}
+.gt-bein{display:flex; align-items:center; justify-content:center; gap:7px; margin:10px 8px 4px; padding:10px 14px; border-radius:11px; background:linear-gradient(180deg,rgba(240,194,75,.16),rgba(240,194,75,.06)); border:1px solid var(--gold,#c9a24b); color:var(--gold2,#ffd873); font-weight:800; font-size:13px; text-decoration:none; transition:filter .15s;}
+.gt-bein:active{filter:brightness(1.2);}
+.gt-bein-ic{font-size:15px;}
 .gt-goal:hover{background:var(--s5,rgba(255,255,255,.05));}
 .gt-goal:not(:last-child){border-bottom:1px solid var(--s3,rgba(255,255,255,.03));}
 .gt-yt{font-size:17px; flex-shrink:0;}
@@ -4723,7 +4726,9 @@ function renderGoalsTab(){
       return '<div class="gt-team"><span class="gt-tn">'+flagImg(team)+' '+team+'</span><span class="gt-tc">'+list.length+' ⚽</span></div>'+rows;
     }
     var items=teamBlock(hN, homeGoals)+teamBlock(aN, awayGoals);
-    html+='<div class="gt-block">'+head+items+'</div>';
+    var yqSum="ملخص "+hN+" ضد "+aN+" كأس العالم 2026 بي ان سبورت";
+    var beinBtn='<a class="gt-bein" href="'+ytLink(yqSum)+'" target="_blank" rel="noopener"><span class="gt-bein-ic">🎬</span> شاهد ملخص المباراة على beIN</a>';
+    html+='<div class="gt-block">'+head+items+beinBtn+'</div>';
   });
   var cnt=document.getElementById("goalsCnt");
   if(cnt) cnt.textContent = shown+" مباراة · "+totalGoals+" هدف";
