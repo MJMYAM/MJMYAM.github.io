@@ -877,6 +877,7 @@ html{scroll-padding-top:80px;}
 .gt-none{font-size:12px; color:var(--mut); padding:4px 12px 8px;}
 .gt-goal{display:flex; align-items:center; gap:9px; padding:7px 12px; border-radius:9px; color:var(--txt);}
 .gt-bullet{font-size:13px; flex-shrink:0; opacity:.85;}
+.gt-pens{font-size:11px; color:var(--gold2,#ffd873); font-weight:800; white-space:nowrap;}
 .gt-bein{display:flex; align-items:center; justify-content:center; gap:7px; margin:10px 8px 4px; padding:10px 14px; border-radius:11px; background:linear-gradient(180deg,rgba(240,194,75,.16),rgba(240,194,75,.06)); border:1px solid var(--gold,#c9a24b); color:var(--gold2,#ffd873); font-weight:800; font-size:13px; text-decoration:none; transition:filter .15s;}
 .gt-bein:active{filter:brightness(1.2);}
 .gt-bein-ic{font-size:15px;}
@@ -4672,7 +4673,10 @@ function goalRows(m){
   var homeG=[], awayG=[];
   if(fr && ((fr.gh&&fr.gh.length)||(fr.ga&&fr.ga.length))){ homeG=fr.gh||[]; awayG=fr.ga||[]; }
   else if(gc){ homeG=gc.home||[]; awayG=gc.away||[]; }
-  return {homeG:homeG, awayG:awayG, sh:(fr?fr.sh:(gc&&SC_CACHE[m.n]?SC_CACHE[m.n].sh:null)), sa:(fr?fr.sa:(gc&&SC_CACHE[m.n]?SC_CACHE[m.n].sa:null))};
+  var scp=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
+  var pH=(fr&&fr.pH!=null)?fr.pH:((scp&&scp.pH!=null)?scp.pH:null);
+  var pA=(fr&&fr.pA!=null)?fr.pA:((scp&&scp.pA!=null)?scp.pA:null);
+  return {homeG:homeG, awayG:awayG, sh:(fr?fr.sh:(gc&&SC_CACHE[m.n]?SC_CACHE[m.n].sh:null)), sa:(fr?fr.sa:(gc&&SC_CACHE[m.n]?SC_CACHE[m.n].sa:null)), pH:pH, pA:pA};
 }
 function cleanName(x){
   var raw=String(x.rawName||x.who||"").replace(/<[^>]*>/g,"").replace(/[\s\u2019'`\d+]+$/,"").trim();
@@ -4703,8 +4707,9 @@ function renderGoalsTab(){
     }
     shown++;
     var scoreTxt=(gr.sh!=null&&gr.sa!=null)?(gr.sh+" - "+gr.sa):"";
+    var pensTxt=(gr.pH!=null&&gr.pA!=null)?('<span class="gt-pens"> ('+gr.pH+" - "+gr.pA+' ركلات ترجيح)</span>'):"";
     var head='<div class="gt-mhead">'
-      +'<span class="gt-mt">'+flagImg(hN)+' '+hN+' <b class="gt-sc">'+scoreTxt+'</b> '+aN+' '+flagImg(aN)+'</span>'
+      +'<span class="gt-mt">'+flagImg(hN)+' '+hN+' <b class="gt-sc">'+scoreTxt+'</b>'+pensTxt+' '+aN+' '+flagImg(aN)+'</span>'
       +'<span class="gt-md">'+(m.d?fmtD(m.d):"")+'</span></div>';
     // كتلة أهداف منتخب واحد: ترويسة المنتخب ثم أهدافه (تجميع نفس اللاعب)
     function teamBlock(team, list){
