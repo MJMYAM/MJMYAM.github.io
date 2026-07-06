@@ -2929,7 +2929,7 @@ var RADAR_LINKS=[
   [76,91],[78,91],[79,92],[80,92],[86,95],[88,95],[85,96],[87,96],
   [91,99],[92,99],[95,100],[96,100],[99,102],[100,102],[102,104]
 ];
-var RADAR_LINK_STYLE = (localStorage.getItem("wcRadarLinks")||"gold"); // gold | win | gray
+var RADAR_LINK_STYLE = (localStorage.getItem("wcRadarLinks")||"off"); // gold | win | gray | off (الافتراضي: بدون خطوط)
 function cycleRadarLinks(){
   var order=["gold","win","gray","off"];
   var i=order.indexOf(RADAR_LINK_STYLE); RADAR_LINK_STYLE=order[(i+1)%order.length];
