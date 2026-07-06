@@ -3002,15 +3002,13 @@ function renderRadarTree(el){
     +'<div class="td">'+(tm?fmtD(tm.d):"")+' · '+(tm?radarTime(tm.t):"")+'</div></div>'
     +'</div>';
   el.innerHTML =
-    '<div class="radar'+(radarFit?" fit":"")+'">'
-    +'<div class="rd-toggle"><button onclick="toggleRadarFit()">'+(radarFit?"🔍 عرض تفصيلي (بالسحب)":"📱 الشجرة كاملة (بدون تمرير)")+'</button></div>'
-    +(radarFit?"":'<div class="scrollnote">← اسحب أفقيًا لرؤية الشجرة كاملة →</div>')
+    '<div class="radar fit">'
     +'<div class="rd-scroller"><div class="rd-wrap"><div class="rd-grid">'
     + col(L32,"r32") + col(L16,"r16") + col(LQF,"qf") + col(LSF,"sf")
     + finBox
     + col(RSF,"sf") + col(RQF,"qf") + col(R16,"r16") + col(R32,"r32")
     +'</div></div></div></div>';
-  if(radarFit && typeof scaleRadarToFit==="function"){
+  if(typeof scaleRadarToFit==="function"){
     requestAnimationFrame(function(){ scaleRadarToFit(); setTimeout(scaleRadarToFit,120); });
   }
 }
@@ -4542,8 +4540,8 @@ function goTab(id){
   if(id==="info" && !window._infoDone){ renderInfo(); window._infoDone=true; }
   document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active", t.id==="tab-"+id);});
   document.querySelectorAll("#bn button").forEach(function(b){b.classList.toggle("on", b.dataset.tab===id);});
-  document.body.classList.toggle("kofit", id==="ko" && (typeof radarFit!=="undefined") && radarFit);
-  if(id==="ko" && (typeof radarFit!=="undefined") && radarFit && typeof scaleRadarToFit==="function"){ requestAnimationFrame(scaleRadarToFit); }
+  document.body.classList.toggle("kofit", id==="ko");
+  if(id==="ko" && typeof scaleRadarToFit==="function"){ requestAnimationFrame(scaleRadarToFit); }
   if(id==="groups" && !window._stAt){ loadStandingsESPN().catch(function(){}); }
   window.scrollTo({top:0, behavior:"instant" in window ? "auto" : "auto"});
 }
