@@ -4681,7 +4681,7 @@ function renderGoalsTab(){
   var q=(document.getElementById("goalSearch")||{}).value||"";
   q=q.trim().toLowerCase();
   var done=M.filter(function(m){ return (statusOf(m)==="done"||FINAL_RESULTS[m.n]); })
-            .sort(function(a,b){ return dateObj(b).getTime()-dateObj(a).getTime(); });
+            .sort(function(a,b){ var d=dateObj(b).getTime()-dateObj(a).getTime(); return d!==0 ? d : (b.n-a.n); });
   var html="", totalGoals=0, shown=0;
   done.forEach(function(m){
     var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
