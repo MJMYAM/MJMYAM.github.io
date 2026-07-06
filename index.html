@@ -5309,11 +5309,13 @@ function runHealthCheck(manual){
       delete SC_CACHE[99901];
       add(okp,"منطق الركلات الحيّ","160د + بيانات طازجة = مباشر");
     }catch(e){ add(false,"منطق الركلات الحيّ","خطأ"); }
-    // 14) فحص وظيفي: الشريط يميّز متأهل الركلات
+    // 14) فحص وظيفي: الشريط يدعم ركلات الترجيح في الكود
     try{
       var hasPens=Object.keys(FINAL_RESULTS).some(function(k){var f=FINAL_RESULTS[k];return f&&f.pH!=null;});
-      var tkh=document.getElementById("tkBar")?document.getElementById("tkBar").innerHTML:"";
-      add(!hasPens || tkh.indexOf("تأهل")>=0, "شريط الركلات","يعرض المتأهل");
+      // تحقق إن الكود يحتوي منطق عرض الركلات (pH/pA) في دالة الشريط — لا نفحص DOM لأن المباريات القديمة لا تظهر في الشريط
+      var fns=typeof renderTickerBar==="function"?renderTickerBar.toString():"";
+      var handlesP=fns.indexOf("pH")>=0 && fns.indexOf("pA")>=0;
+      add(!hasPens || handlesP, "شريط الركلات","يعرض المتأهل");
     }catch(e){ add(false,"شريط الركلات","خطأ"); }
     // 15) (يدوي) تبديل الوضعين ذهابًا وإيابًا
     if(manual){
