@@ -733,30 +733,44 @@ body.kofit main{padding-bottom:64px !important;}
 /* الفوتر: ملعب + وقت + قناة (أفقي) */
 .rmp-foot{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 14px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:11.5px;font-weight:700;color:var(--mut,#96a2c8);}
 .rmp-foot span{display:inline-flex;align-items:center;gap:4px;}
-/* ====== سكين: زجاجي ملكي مطوّر (A+) ====== */
+/* ====== سكين: DStv كأس العالم (أعلام + خطوط بيضاء) ====== */
 body.kofit #tab-ko .sec-t{display:none;}
-body.kofit .ko-modebar .ko-mode, body.kofit .ko-mode{padding:6px; font-size:11.5px;}
-#koList .radar.fit{position:relative;border-radius:18px;background:radial-gradient(62% 40% at 50% 46%, var(--rglow) 0%, transparent 70%);}
-#koList .radar.fit .cell{position:relative;background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.028));box-shadow:0 7px 18px rgba(0,0,0,.42),inset 0 1px 0 var(--rsheen);}
-#koList .radar.fit .cell::before{content:"";position:absolute;inset:0;border-radius:14px;padding:1.2px;background:linear-gradient(155deg,var(--rgold2),var(--rgold) 45%,var(--rgold2));opacity:.85;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;}
-#koList .radar.fit .cell:not(:has(.sc))::before{opacity:.32;}
-#koList .radar.fit .cell:not(:has(.sc)){background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.012));}
-#koList .radar.fit .tr.win .fl img{filter:drop-shadow(0 0 7px var(--rglow));}
-#koList .radar.fit .tr.win .fl::after{top:-5px;right:2px;font-size:9px;text-shadow:0 0 6px var(--rglow);}
-#koList .radar.fit .tr.lose{opacity:.33;} #koList .radar.fit .tr.lose .fl img{filter:grayscale(.9);}
-#koList .radar.fit .sc{color:var(--rgold2);text-shadow:0 0 12px var(--rglow);}
-#koList .radar.fit .sc .pens{font-size:7.5px;color:var(--rmut);background:rgba(255,255,255,.07);border-radius:99px;padding:0 6px;display:inline-block;margin-top:1px;}
-#koList .radar.fit .fl.tbd{background:rgba(255,255,255,.05);border:1px dashed var(--rline);}
-#koList .radar.fit .ftrophy{font-size:30px;filter:drop-shadow(0 4px 16px var(--rglow));animation:rtfFloat 3s ease-in-out infinite;}
-@keyframes rtfFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
-#koList .radar.fit .fbox{position:relative;border:none;background:linear-gradient(160deg,rgba(240,194,75,.20),rgba(240,194,75,.05));box-shadow:0 0 26px var(--rglow),inset 0 1px 0 var(--rsheen);}
-#koList .radar.fit .fbox::before{content:"";position:absolute;inset:0;border-radius:10px;padding:1.5px;background:linear-gradient(155deg,var(--rgold2),var(--rgold) 40%,var(--rgold2));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;}
-#koList .radar.fit .fbox::after{content:"★ ★ ★";display:block;font-size:5.5px;color:var(--rgold2);opacity:.75;letter-spacing:3px;margin-top:3px;}
-#koList .radar.fit .third{border:none;background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02));box-shadow:inset 0 0 0 1px var(--rgold);border-radius:11px;}
-html[data-theme="light"] #koList .radar.fit .cell{background:linear-gradient(160deg,rgba(255,255,255,.92),rgba(255,255,255,.75));box-shadow:0 7px 18px rgba(20,30,60,.14),inset 0 1px 0 rgba(255,255,255,.9);}
-html[data-theme="light"] #koList .radar.fit .cell:not(:has(.sc)){background:linear-gradient(160deg,rgba(255,255,255,.7),rgba(255,255,255,.5));}
-html[data-theme="light"] #koList .radar.fit .sc{text-shadow:none;}
-html[data-theme="light"] #koList .radar.fit .fbox{background:linear-gradient(160deg,rgba(240,194,75,.25),rgba(240,194,75,.08));}
+body.kofit .ko-mode{padding:6px;font-size:11.5px;}
+#koList .radar.fit{position:relative;border-radius:14px;overflow:hidden;padding:4px 2px 8px;
+  background:
+    radial-gradient(95% 60% at 50% 112%, rgba(255,255,255,.10), transparent 62%),
+    repeating-linear-gradient(180deg, rgba(255,255,255,.05) 0 2px, transparent 2px 30px),
+    linear-gradient(180deg,#2f6fb4 0%,#1d4e8f 45%,#123a6f 100%);}
+#koList .radar.fit::after{content:"";position:absolute;inset:0;border-radius:14px;background:radial-gradient(130% 95% at 50% 0%, transparent 55%, rgba(5,16,38,.5));pointer-events:none;z-index:0;}
+#koList .radar.fit .rd-links{position:absolute;inset:0;z-index:1;pointer-events:none;}
+#koList .radar.fit .rd-links path{stroke:rgba(255,255,255,.92);stroke-width:2;stroke-linecap:square;}
+#koList .radar.fit .rd-scroller{position:relative;z-index:2;background:none;}
+/* الأعلى العائم: كأس + النهائي + خانتان */
+#koList .radar.fit .dstv-top{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:3px;width:150px;}
+#koList .radar.fit .dstv-cup{width:46px;height:auto;filter:drop-shadow(0 5px 12px rgba(0,0,0,.55));}
+#koList .radar.fit .dstv-cup-e{font-size:38px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5));}
+#koList .radar.fit .dstv-ft{font-family:"Changa",sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:1px;text-shadow:0 2px 8px rgba(0,0,0,.55);}
+#koList .radar.fit .dstv-fs{display:flex;gap:7px;cursor:pointer;}
+#koList .radar.fit .dstv-fs .dfs{width:36px;height:24px;border-radius:4px;border:2px solid rgba(255,255,255,.95);background:rgba(255,255,255,.06);}
+#koList .radar.fit .dstv-fs .dfl img{width:36px;height:24px;border-radius:4px;border:1.5px solid rgba(255,255,255,.95);object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.45);}
+/* الخلايا: أعلام فقط بلا صناديق ولا نتائج */
+#koList .radar.fit .cell{background:none !important;border:none;box-shadow:none;height:56px;padding:0;display:flex;flex-direction:column;justify-content:center;gap:6px;}
+#koList .radar.fit .cell::before{display:none;}
+#koList .radar.fit .sc{display:none;}
+#koList .radar.fit .fl img{width:33px;height:22px;border-radius:4px;border:1.5px solid rgba(255,255,255,.95);box-shadow:0 2px 7px rgba(0,0,0,.45);}
+#koList .radar.fit .fl.tbd{width:33px;height:22px;border-radius:4px;border:2px solid rgba(255,255,255,.95);background:rgba(255,255,255,.05);}
+#koList .radar.fit .tr.win .fl::after{display:none;}
+#koList .radar.fit .tr.win .fl img{filter:none;}
+#koList .radar.fit .tr.lose{opacity:.42;}
+#koList .radar.fit .tr.lose .fl img{filter:grayscale(.75) brightness(.85);}
+#koList .radar.fit .col{gap:14px;}
+#koList .radar.fit .cell.empty .slot{width:33px;height:22px;border-radius:4px;border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.04);margin:0 auto;}
+/* المركز الثالث */
+#koList .radar.fit .center .third{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;background:none;border:none;box-shadow:none;padding:0;cursor:pointer;}
+#koList .radar.fit .third .tt{font-family:"Changa",sans-serif;font-weight:800;font-size:8.5px;color:#fff;letter-spacing:.4px;margin-bottom:4px;text-shadow:0 1px 5px rgba(0,0,0,.55);white-space:nowrap;text-align:center;}
+#koList .radar.fit .tslots{display:flex;gap:7px;justify-content:center;}
+#koList .radar.fit .tslots .dfs{width:32px;height:21px;border-radius:4px;border:2px solid rgba(255,255,255,.92);background:rgba(255,255,255,.05);}
+#koList .radar.fit .tslots .dfl img{width:32px;height:21px;border-radius:4px;border:1.5px solid rgba(255,255,255,.92);object-fit:cover;}
 /* ====== شجرة رادار المطوّر ====== */
 #koList .radar{--rgold:#e8b93f;--rgold2:#ffd873;--rcell:rgba(255,255,255,.055);--rfbox:rgba(240,194,75,.14);--rslot:rgba(255,255,255,.04);--rline:rgba(232,185,63,.4);--rglow:rgba(240,194,75,.3);--rsheen:rgba(255,255,255,.08);--rtx:#eef2ff;--rmut:#96a2c8;}
 html[data-theme="light"] #koList .radar{--rgold:#c8940e;--rgold2:#a9770a;--rcell:#ffffff;--rfbox:rgba(200,148,14,.1);--rslot:rgba(22,33,60,.04);--rline:rgba(200,148,14,.35);--rglow:rgba(200,148,14,.2);--rsheen:rgba(255,255,255,.7);--rtx:#16213c;--rmut:#5a6a8c;}
@@ -2991,6 +3005,31 @@ function toggleRadarFit(){
   document.body.classList.toggle("kofit", radarFit);
   var el=document.getElementById("koList"); if(el) renderRadarTree(el);
 }
+var RADAR_LINKS=[[74,89],[77,89],[73,90],[75,90],[83,93],[84,93],[81,94],[82,94],[89,97],[90,97],[93,98],[94,98],[97,101],[98,101],[76,91],[78,91],[79,92],[80,92],[86,95],[88,95],[85,96],[87,96],[91,99],[92,99],[95,100],[96,100],[99,102],[100,102],[101,104],[102,104]];
+function drawDstvLinks(){
+  var root=document.querySelector("#koList .radar.fit");
+  if(!root) return;
+  var old=root.querySelector(".rd-links"); if(old) old.remove();
+  var rr=root.getBoundingClientRect();
+  var svgns="http://www.w3.org/2000/svg";
+  var svg=document.createElementNS(svgns,"svg");
+  svg.setAttribute("class","rd-links");
+  svg.setAttribute("width",rr.width); svg.setAttribute("height",rr.height);
+  function el(n){ return n===104 ? root.querySelector(".dstv-fs") : root.querySelector('.cell[data-mn="'+n+'"]'); }
+  RADAR_LINKS.forEach(function(pr){
+    var c=el(pr[0]), pEl=el(pr[1]); if(!c||!pEl) return;
+    var cb=c.getBoundingClientRect(), pb=pEl.getBoundingClientRect();
+    var cy=cb.top-rr.top+cb.height/2, py=pb.top-rr.top+pb.height/2, cx, px;
+    if(cb.left+cb.width/2 > pb.left+pb.width/2){ cx=cb.left-rr.left+1; px=pb.right-rr.left-1; }
+    else { cx=cb.right-rr.left-1; px=pb.left-rr.left+1; }
+    var mx=(cx+px)/2;
+    var path=document.createElementNS(svgns,"path");
+    path.setAttribute("d","M"+cx.toFixed(1)+","+cy.toFixed(1)+" L"+mx.toFixed(1)+","+cy.toFixed(1)+" L"+mx.toFixed(1)+","+py.toFixed(1)+" L"+px.toFixed(1)+","+py.toFixed(1));
+    path.setAttribute("fill","none");
+    svg.appendChild(path);
+  });
+  root.insertBefore(svg, root.firstChild);
+}
 function scaleRadarToFit(){
   var radar=document.querySelector("#koList .radar.fit");
   if(!radar){ return; }
@@ -3007,6 +3046,7 @@ function scaleRadarToFit(){
   var availH=navTop - gridTop - 10;
   var z=Math.min(availH/natH, availW/natW, 1.5);
   if(z>0 && isFinite(z)){ grid.style.zoom=z; }
+  if(typeof drawDstvLinks==="function"){ requestAnimationFrame(drawDstvLinks); }
 }
 window.addEventListener("resize", function(){ if(document.querySelector("#koList .radar.fit")) scaleRadarToFit(); });
 function renderRadarTree(el){
@@ -3018,19 +3058,26 @@ function renderRadarTree(el){
   function col(list, kind){ return '<div class="col rr">'+list.map(function(n){return radarCell(n,kind);}).join("")+'</div>'; }
   var fm=getM(FIN), tm=getM(THD);
   var fr=fm?radarScore(fm):{played:false}, tr=tm?radarScore(tm):{played:false};
+  function dstvSlot(name){
+    var has=(typeof TEAMS!=="undefined")&&TEAMS[name];
+    return has ? '<span class="dfl">'+flagImg(name)+'</span>' : '<span class="dfs"></span>';
+  }
+  var fhN=(typeof resolveKOName==="function"&&fm)?resolveKOName(fm.h):"";
+  var faN=(typeof resolveKOName==="function"&&fm)?resolveKOName(fm.a):"";
+  var thN=(typeof resolveKOName==="function"&&tm)?resolveKOName(tm.h):"";
+  var taN=(typeof resolveKOName==="function"&&tm)?resolveKOName(tm.a):"";
+  var dstvTop='<div class="dstv-top">'
+    +'<img class="dstv-cup" src="wc-trophy.png" alt="" onerror="this.outerHTML=\'<div class=&quot;dstv-cup-e&quot;>🏆</div>\'">'
+    +'<div class="dstv-ft">النهائي</div>'
+    +'<div class="dstv-fs" data-mn="'+FIN+'" onclick="radarMatchPopup('+FIN+')">'+dstvSlot(fhN)+dstvSlot(faN)+'</div>'
+    +'</div>';
   var finBox='<div class="center">'
-    +'<div class="ftrophy">🏆</div>'
-    +'<div class="fbox"><div class="fd">النهائي</div><div class="fdate">'+(fm?fmtD(fm.d):"")+'</div>'
-    + (fr.played
-        ? '<div class="fresult">'+radarCell(FIN,"finbig")+'</div>'
-        : '<div class="fslots"><div class="fs"><span class="qmark">؟</span></div><span class="vs">VS</span><div class="fs"><span class="qmark">؟</span></div></div>')
-    +'<div class="ft">🏟️ '+(fm?radarTime(fm.t):"")+'</div></div>'
-    +'<div class="third"><div class="tt">🥉 المركز الثالث</div>'
-    + (tr.played ? '<div class="fresult sm">'+radarCell(THD,"finsm")+'</div>' : '<div class="ts"><span class="qmark">؟</span></div>')
-    +'<div class="td">'+(tm?fmtD(tm.d):"")+' · '+(tm?radarTime(tm.t):"")+'</div></div>'
+    +'<div class="third" data-mn="'+THD+'" onclick="radarMatchPopup('+THD+')"><div class="tt">المركز الثالث</div>'
+    +'<div class="tslots">'+dstvSlot(thN)+dstvSlot(taN)+'</div></div>'
     +'</div>';
   el.innerHTML =
     '<div class="radar fit">'
+    + dstvTop
     +'<div class="rd-scroller"><div class="rd-wrap"><div class="rd-grid">'
     + col(L32,"r32") + col(L16,"r16") + col(LQF,"qf") + col(LSF,"sf")
     + finBox
