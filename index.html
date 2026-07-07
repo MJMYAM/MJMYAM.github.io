@@ -742,14 +742,14 @@ body.kofit .ko-mode{padding:6px;font-size:11.5px;}
     url("stadium-bg.jpg") center top/cover no-repeat,
     linear-gradient(180deg,#2f6fb4 0%,#1d4e8f 45%,#123a6f 100%);}
 #koList .radar.fit::after{content:"";position:absolute;inset:0;border-radius:14px;background:radial-gradient(130% 95% at 50% 0%, transparent 55%, rgba(5,16,38,.5));pointer-events:none;z-index:0;}
-#koList .radar.fit .rd-links{position:absolute;inset:0;z-index:1;pointer-events:none;}
+#koList .radar.fit .rd-links{position:absolute;inset:0;z-index:1;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));}
 #koList .radar.fit .rd-links path{stroke:#fff;stroke-width:2;stroke-linecap:square;}
 #koList .radar.fit .rd-scroller{position:relative;z-index:2;background:none;}
 /* الأعلى العائم: كأس + النهائي + خانتان */
 #koList .radar.fit .dstv-top{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:2px;width:170px;}
-#koList .radar.fit .dstv-cup{width:auto;height:118px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,.6));}
+#koList .radar.fit .dstv-cup{width:auto;height:128px;object-fit:contain;filter:drop-shadow(0 10px 22px rgba(0,0,0,.65)) drop-shadow(0 0 24px rgba(255,214,120,.55));}
 #koList .radar.fit .dstv-cup-e{font-size:38px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5));}
-#koList .radar.fit .dstv-ft{font-family:"Changa",sans-serif;font-weight:800;font-size:17px;line-height:22px;color:#fff;letter-spacing:1.5px;text-shadow:0 2px 10px rgba(0,0,0,.6);}
+#koList .radar.fit .dstv-ft{font-family:"Changa",sans-serif;font-weight:800;font-size:19px;line-height:24px;color:#fff;letter-spacing:2px;text-shadow:0 2px 12px rgba(0,0,0,.7),0 0 18px rgba(120,180,255,.4);}
 #koList .radar.fit .dstv-fs{display:flex;gap:7px;cursor:pointer;}
 #koList .radar.fit .dstv-fs .dfs{width:38px;height:26px;border-radius:5px;border:2.5px solid #fff;background:rgba(255,255,255,.08);box-shadow:0 3px 10px rgba(0,0,0,.4);}
 #koList .radar.fit .dstv-fs .dfl img{width:38px;height:26px;border-radius:5px;border:2px solid #fff;object-fit:cover;box-shadow:0 3px 10px rgba(0,0,0,.5);}
@@ -3049,7 +3049,7 @@ function renderRadarTree(el){
   for(ii=0;ii<8;ii++) y2.push((yLeaf[2*ii]+yLeaf[2*ii+1])/2);
   for(ii=0;ii<4;ii++) y3.push((y2[2*ii]+y2[2*ii+1])/2);
   var Hc=H/2, y4=[Hc-d1/2, Hc+d1/2];
-  var pitch=(W-44)/8, FSB=176;
+  var pitch=(W-44)/8, FSB=190;
   function xCol(side,c){ var off=22+pitch*(c+0.5); return side==="R" ? W/2+off : W/2-off; }
   function slotHTML(m,side,x,y){
     var nm=(typeof resolveKOName==="function")?resolveKOName(side==="h"?m.h:m.a):(side==="h"?m.h:m.a);
