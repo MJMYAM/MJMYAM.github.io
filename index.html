@@ -2258,6 +2258,8 @@ function scheduleNotifs(){
 
 
 document.addEventListener("DOMContentLoaded", function(){
+  setTimeout(function(){ if(typeof backfillKO==="function") backfillKO(); }, 1500);
+  setInterval(function(){ if(typeof backfillKO==="function") backfillKO(); }, 10*60000);
   // زر الإشعارات في تبويب البطولة
   setTimeout(function(){
     var info=document.getElementById("tab-info");
@@ -3291,8 +3293,54 @@ var FINAL_RESULTS={
   94:{sh:1, sa:4, status:"finished", winSide:"a",
      gh:[{who:"مالك تيلمان", min:"31"}], ga:[{who:"تشارلز دي كيتيلاري", min:"9"},{who:"تشارلز دي كيتيلاري", min:"33"},{who:"هانس فانأكن", min:"57"},{who:"روميلو لوكاكو", min:"90+3"}]},
   95:{sh:3, sa:2, status:"finished", winSide:"h",
-     gh:[{who:"كريستيان روميرو", min:"79"},{who:"ليونيل ميسي", min:"83"},{who:"إنزو فرنانديز", min:"90+3"}], ga:[{who:"ياسر إبراهيم", min:"15"},{who:"مصطفى زيكو", min:"67"}]}
+     gh:[{who:"كريستيان روميرو", min:"79"},{who:"ليونيل ميسي", min:"83"},{who:"إنزو فرنانديز", min:"90+3"}], ga:[{who:"ياسر إبراهيم", min:"15"},{who:"مصطفى زيكو", min:"67"}]},
+  96:{sh:0, sa:0, status:"finished", winSide:"h", pH:4, pA:3,
+     gh:[], ga:[]}
 };
+/* ===== تحديث تلقائي: أي مباراة إقصائية انتهت تُرقّى لنتيجة دائمة (بدون تدخل يدوي) ===== */
+try{
+  var _afr=JSON.parse(localStorage.getItem("wcAutoFR")||"{}");
+  Object.keys(_afr).forEach(function(k){ if(!FINAL_RESULTS[k]) FINAL_RESULTS[k]=_afr[k]; });
+}catch(e){}
+async function backfillKO(){
+  try{
+    if(window._bfBusy) return; window._bfBusy=true;
+    var now=Date.now(), need=[];
+    M.forEach(function(m){
+      if(m.r && !/^r[123]$/.test(m.r) && !FINAL_RESULTS[m.n] && m.d && isReal(m)){
+        if(now - dateObj(m).getTime() > 115*60000) need.push(m);
+      }
+    });
+    if(!need.length){ window._bfBusy=false; return; }
+    var ts=need.map(function(m){return dateObj(m).getTime();});
+    try{ await loadScoresESPN(ymd(new Date(Math.min.apply(null,ts)-30*3600000)), ymd(new Date(Math.max.apply(null,ts)+30*3600000))); }catch(e){}
+    var store={}; try{store=JSON.parse(localStorage.getItem("wcAutoFR")||"{}");}catch(e){}
+    var changed=false;
+    for(var i=0;i<need.length;i++){
+      var m=need[i], sc=SC_CACHE[m.n];
+      if(!(sc && sc.found && sc.status==="finished")) continue;
+      if(sc.eid && !(GOAL_CACHE[m.n]&&GOAL_CACHE[m.n]._fetched)){ try{ await fetchGoalsSilent(m.n, sc.eid); }catch(e){} }
+      var gc=GOAL_CACHE[m.n]||{home:[],away:[]};
+      var cv=function(list){ return (list||[]).map(function(g){
+        var ty=(g.type||"");
+        return {who:(g.rawName||"هدف")+(/pen/i.test(ty)?" (ج)":"")+(/own/i.test(ty)?" (عكسي)":""), min:g.min||""};
+      }); };
+      var ws=sc.winSide || (sc.sh>sc.sa?"h":(sc.sa>sc.sh?"a":((sc.pH!=null&&sc.pA!=null)?(sc.pH>sc.pA?"h":"a"):null)));
+      var ent={sh:sc.sh, sa:sc.sa, status:"finished", winSide:ws, gh:cv(gc.home), ga:cv(gc.away)};
+      if(sc.pH!=null && sc.pA!=null){ ent.pH=sc.pH; ent.pA=sc.pA; }
+      FINAL_RESULTS[m.n]=ent; store[m.n]=ent; changed=true;
+    }
+    if(changed){
+      try{ localStorage.setItem("wcAutoFR", JSON.stringify(store)); }catch(e){}
+      if(typeof renderKO==="function") try{renderKO();}catch(e){}
+      if(typeof applyFilters==="function") try{applyFilters();}catch(e){}
+      if(typeof renderGoalsTab==="function") try{renderGoalsTab();}catch(e){}
+      if(typeof refreshHeroScore==="function") try{refreshHeroScore();}catch(e){}
+      if(typeof renderStats==="function") try{renderStats();}catch(e){}
+    }
+    window._bfBusy=false;
+  }catch(e){ window._bfBusy=false; }
+}
 /* ملاحظة: المباراة 2 في جدولنا = كوريا الجنوبية (h) ضد التشيك (a) => كوريا 2-1 التشيك */
 function applyFinals(){
   setTimeout(function(){ if(document.getElementById('groupGrid')) Object.keys(GROUPS).forEach(renderStanding); if(document.getElementById('dayStrip')) buildDays(); },50);
@@ -4774,7 +4822,7 @@ function renderGoalsTab(){
     var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
     var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
     var gr=goalRows(m);
-    if(!gr.homeG.length && !gr.awayG.length) return;
+    if(!gr.homeG.length && !gr.awayG.length && !(m.r && !/^r[123]$/.test(m.r))) return; /* الإقصائيات المنتهية تظهر حتى بلا أهداف (مثل حسم الركلات 0-0) */
     // جهّز أهداف كل منتخب على حدة
     var homeGoals=gr.homeG.map(function(g){ return {nm:cleanName(g),min:g.min,og:/عكسي|own/i.test(g.type||g.who||"")}; });
     var awayGoals=gr.awayG.map(function(g){ return {nm:cleanName(g),min:g.min,og:/عكسي|own/i.test(g.type||g.who||"")}; });
@@ -4792,8 +4840,8 @@ function renderGoalsTab(){
       +'<span class="gt-mt">'+flagImg(hN)+' '+hN+' <b class="gt-sc">'+scoreTxt+'</b>'+pensTxt+' '+aN+' '+flagImg(aN)+'</span>'
       +'<span class="gt-md">'+(m.d?fmtD(m.d):"")+'</span></div>';
     // كتلة أهداف منتخب واحد: ترويسة المنتخب ثم أهدافه (تجميع نفس اللاعب)
-    function teamBlock(team, list){
-      if(!list.length) return '<div class="gt-team"><span class="gt-tn">'+flagImg(team)+' '+team+'</span></div><div class="gt-none">— لم يسجّل</div>';
+    function teamBlock(team, list, cnt){
+      if(!list.length) return '<div class="gt-team"><span class="gt-tn">'+flagImg(team)+' '+team+'</span></div><div class="gt-none">'+(cnt>0?'— الأهداف بدون تفاصيل':'— لم يسجّل')+'</div>';
       var order=[], byN={};
       list.forEach(function(g){
         var key=g.nm.toLowerCase().replace(/[^a-z\u0600-\u06ff]/g,"")+(g.og?"|og":"");
@@ -4810,7 +4858,7 @@ function renderGoalsTab(){
       }).join("");
       return '<div class="gt-team"><span class="gt-tn">'+flagImg(team)+' '+team+'</span><span class="gt-tc">'+list.length+' ⚽</span></div>'+rows;
     }
-    var items=teamBlock(hN, homeGoals)+teamBlock(aN, awayGoals);
+    var items=teamBlock(hN, homeGoals, gr.sh)+teamBlock(aN, awayGoals, gr.sa);
     var yqSum="ملخص "+hN+" ضد "+aN+" كأس العالم 2026 بي ان سبورت";
     var beinBtn='<a class="gt-bein" href="'+ytLink(yqSum)+'" target="_blank" rel="noopener"><span class="gt-bein-ic">🎬</span> شاهد ملخص المباراة على beIN</a>';
     html+='<div class="gt-block">'+head+items+beinBtn+'</div>';
