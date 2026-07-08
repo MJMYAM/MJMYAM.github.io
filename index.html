@@ -5342,6 +5342,13 @@ function renderTickerBar(){
     });
     var html=parts.join("")||"<span>🏆 كأس العالم 2026 — بتوقيت الكويت</span>";
     if(el.innerHTML!==html) el.innerHTML=html;
+    /* سرعة ثابتة مريحة مهما طال المحتوى (~45px/ث) */
+    requestAnimationFrame(function(){
+      var w=el.scrollWidth||0;
+      var dur=Math.max(30, Math.round(w/45));
+      var cur=parseInt(el.style.animationDuration,10)||0;
+      if(Math.abs(cur-dur)>2) el.style.animationDuration=dur+"s";
+    });
   }catch(e){}
 }
 renderTickerBar();
