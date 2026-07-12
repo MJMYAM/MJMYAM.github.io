@@ -757,6 +757,9 @@ html[data-theme="light"] #koList .radar.fit .cell{background:linear-gradient(160
 html[data-theme="light"] #koList .radar.fit .cell:not(:has(.sc)){background:linear-gradient(160deg,rgba(255,255,255,.7),rgba(255,255,255,.5));}
 html[data-theme="light"] #koList .radar.fit .sc{text-shadow:none;}
 html[data-theme="light"] #koList .radar.fit .fbox{background:linear-gradient(160deg,rgba(240,194,75,.25),rgba(240,194,75,.08));}
+/* النهائي والثالث قابلان للنقر */
+#koList .radar.fit .fbox, #koList .radar.fit .third{cursor:pointer;}
+#koList .radar.fit .fbox:active, #koList .radar.fit .third:active{filter:brightness(1.18);}
 /* خطوط الانتقال بين الأدوار (بيضاء) */
 #koList .radar.fit .rd-links{position:absolute;inset:0;z-index:3;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));}
 #koList .radar.fit .rd-links path{stroke:#fff;stroke-width:2;opacity:.95;stroke-linecap:square;}
@@ -2924,6 +2927,7 @@ function radarCell(n, kind){
 /* ====== بطاقة تفاصيل المباراة (عريضة مدمجة) ====== */
 function radarMatchPopup(mnum){
   var m=getM(mnum); if(!m) return;
+  var _old=document.querySelector(".rmp-overlay"); if(_old) _old.remove();
   var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
   var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
   var hasH=(typeof TEAMS!=="undefined")&&TEAMS[hN], hasA=(typeof TEAMS!=="undefined")&&TEAMS[aN];
@@ -3066,12 +3070,12 @@ function renderRadarTree(el){
   var fr=fm?radarScore(fm):{played:false}, tr=tm?radarScore(tm):{played:false};
   var finBox='<div class="center">'
     +'<div class="ftrophy">🏆</div>'
-    +'<div class="fbox"><div class="fd">النهائي</div><div class="fdate">'+(fm?fmtD(fm.d):"")+'</div>'
+    +'<div class="fbox" data-mn="'+FIN+'" onclick="radarMatchPopup('+FIN+')" role="button"><div class="fd">النهائي</div><div class="fdate">'+(fm?fmtD(fm.d):"")+'</div>'
     + (fr.played
         ? '<div class="fresult">'+radarCell(FIN,"finbig")+'</div>'
         : '<div class="fslots"><div class="fs"><span class="qmark">؟</span></div><span class="vs">VS</span><div class="fs"><span class="qmark">؟</span></div></div>')
     +'<div class="ft">🏟️ '+(fm?radarTime(fm.t):"")+'</div></div>'
-    +'<div class="third"><div class="tt">🥉 المركز الثالث</div>'
+    +'<div class="third" data-mn="'+THD+'" onclick="radarMatchPopup('+THD+')" role="button"><div class="tt">🥉 المركز الثالث</div>'
     + (tr.played ? '<div class="fresult sm">'+radarCell(THD,"finsm")+'</div>' : '<div class="ts"><span class="qmark">؟</span></div>')
     +'<div class="td">'+(tm?fmtD(tm.d):"")+' · '+(tm?radarTime(tm.t):"")+'</div></div>'
     +'</div>';
@@ -3295,7 +3299,13 @@ var FINAL_RESULTS={
   95:{sh:3, sa:2, status:"finished", winSide:"h",
      gh:[{who:"كريستيان روميرو", min:"79"},{who:"ليونيل ميسي", min:"83"},{who:"إنزو فرنانديز", min:"90+3"}], ga:[{who:"ياسر إبراهيم", min:"15"},{who:"مصطفى زيكو", min:"67"}]},
   96:{sh:0, sa:0, status:"finished", winSide:"h", pH:4, pA:3,
-     gh:[], ga:[]}
+     gh:[], ga:[]},
+  97:{sh:2, sa:0, status:"finished", winSide:"h",
+     gh:[{who:"كيليان مبابي", min:"60"},{who:"عثمان ديمبيلي", min:"66"}], ga:[]},
+  98:{sh:2, sa:1, status:"finished", winSide:"h",
+     gh:[{who:"فابيان رويز", min:"30"},{who:"ميكيل مرينو", min:"88"}], ga:[{who:"تشارلز دي كيتيلاري", min:"41"}]},
+  99:{sh:1, sa:2, status:"finished", winSide:"a",
+     gh:[{who:"أندرياس شيلدروب", min:"36"}], ga:[{who:"جود بيلينغهام", min:"45+2"},{who:"جود بيلينغهام", min:"93"}]}
 };
 /* ===== تحديث تلقائي: أي مباراة إقصائية انتهت تُرقّى لنتيجة دائمة (بدون تدخل يدوي) ===== */
 try{
@@ -4826,7 +4836,7 @@ function renderGoalsTab(){
     var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
     var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
     var gr=goalRows(m);
-    if(!gr.homeG.length && !gr.awayG.length && !(m.r && !/^r[123]$/.test(m.r))) return; /* الإقصائيات المنتهية تظهر حتى بلا أهداف (مثل حسم الركلات 0-0) */
+    if(!gr.homeG.length && !gr.awayG.length && !(FINAL_RESULTS[m.n] && m.r && !/^r[123]$/.test(m.r))) return; /* الإقصائيات المحسومة تظهر حتى بلا أهداف (مثل حسم الركلات 0-0) — الجارية بلا نتيجة لا تظهر */
     // جهّز أهداف كل منتخب على حدة
     var homeGoals=gr.homeG.map(function(g){ return {nm:cleanName(g),min:g.min,og:/عكسي|own/i.test(g.type||g.who||"")}; });
     var awayGoals=gr.awayG.map(function(g){ return {nm:cleanName(g),min:g.min,og:/عكسي|own/i.test(g.type||g.who||"")}; });
