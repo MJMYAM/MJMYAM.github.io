@@ -1838,9 +1838,17 @@ var ISO={
  "العراق":"iq","الأرجنتين":"ar","الجزائر":"dz","النمسا":"at","الأردن":"jo","البرتغال":"pt","أوزبكستان":"uz",
  "كولومبيا":"co","الكونغو الديمقراطية":"cd","إنجلترا":"gb-eng","كرواتيا":"hr","غانا":"gh","بنما":"pa","الكويت":"kw"
 };
+function flagUrl(c){
+  if(!c) return "";
+  return c.indexOf("-")>0 ? "https://flagcdn.com/w40/"+c+".png" : "https://flagcdn.com/h40/"+c+".png";
+}
 function flagImg(name){
   var c=ISO[name]; if(!c) return "";
   var em=TEAMS[name]||"";
+  /* الأعلام الفرعية (إنجلترا/اسكتلندا/ويلز) غير مدعومة بمقاسات الارتفاع في flagcdn — نستخدم مقاس العرض */
+  if(c.indexOf("-")>0){
+    return '<img class="flg" loading="lazy" src="https://flagcdn.com/w40/'+c+'.png" srcset="https://flagcdn.com/w80/'+c+'.png 2x" alt="'+em+'" onerror="this.replaceWith(this.alt)">';
+  }
   return '<img class="flg" loading="lazy" src="https://flagcdn.com/h40/'+c+'.png" srcset="https://flagcdn.com/h80/'+c+'.png 2x" alt="'+em+'" onerror="this.replaceWith(this.alt)">';
 }
 
@@ -5890,7 +5898,7 @@ function renderChampions(){
     var iso=CH_ISO[c.winner]||ISO[c.winner]||"";
     if(!iso) return '<div class="champ-card"><div class="champ-year">'+c.year+'</div><div class="champ-info"><div class="champ-winner"><span style="font-size:18px">'+c.emoji+'</span><span>'+c.winner+'</span></div><div class="champ-host">📍 '+c.host+'</div><div><span class="champ-score">'+c.score+'</span> <span style="font-size:11px;color:var(--mut)">ضد '+c.runner+'</span></div></div></div>';
     return '<div class="champ-card"><div class="champ-year">'+c.year+'</div><div class="champ-info">'
-      +'<div class="champ-winner"><img class="flg" src="https://flagcdn.com/h40/'+iso+'.png" alt="'+c.emoji+'" onerror="this.replaceWith(this.alt)"><span>'+c.winner+' '+c.emoji+'</span></div>'
+      +'<div class="champ-winner"><img class="flg" src="'+flagUrl(iso)+'" alt="'+c.emoji+'" onerror="this.replaceWith(this.alt)"><span>'+c.winner+' '+c.emoji+'</span></div>'
       +'<div class="champ-host">📍 '+c.host+'</div>'
       +'<div><span class="champ-score">'+c.score+'</span> <span style="font-size:11px;color:var(--mut)">ضد '+c.runner+'</span></div>'
       +'</div></div>';
@@ -6167,7 +6175,7 @@ function renderPredictTie(t1,t2,slot,winner){
   var locked=!isReal(t1)||!isReal(t2);
   function side(t){
     return '<div class="pteam '+(winner===t?"on":"")+' '+(locked?"locked":"")+'" onclick="'+(locked?"":"pickPred('"+slot+"','"+String(t).replace(/'/g,"\\'")+"')")+'">'
-      +(TEAMS[t]?'<img class="flg" src="https://flagcdn.com/h40/'+(ISO[t]||"un")+'.png" alt="" onerror="this.replaceWith(this.alt)">':'')
+      +(TEAMS[t]?'<img class="flg" src="'+flagUrl(ISO[t]||"un")+'" alt="" onerror="this.replaceWith(this.alt)">':'')
       +'<span class="pn">'+t+'</span><span class="pchk">✓</span></div>';
   }
   return '<div class="ptie '+(winner?"done":"")+'">'+side(t1)+'<div class="pvs">×</div>'+side(t2)+'</div>';
