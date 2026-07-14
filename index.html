@@ -4757,15 +4757,15 @@ document.getElementById("bn").addEventListener("click", function(e){
 /* ================= STATS TAB (الهدّافون / صنّاع الأهداف) ================= */
 var statMode="g";
 var STAT_DATA={
-  upd:"8 يوليو 2026 · بعد دور الـ16",
+  upd:"12 يوليو 2026 · بعد ربع النهائي",
   live:false,
   g:[
     {n:"ليونيل ميسي", t:"الأرجنتين", v:8},
-    {n:"كيليان مبابي", t:"فرنسا", v:7},
+    {n:"كيليان مبابي", t:"فرنسا", v:8},
     {n:"إيرلينغ هالاند", t:"النرويج", v:7},
     {n:"هاري كين", t:"إنجلترا", v:6},
-    {n:"عثمان ديمبيلي", t:"فرنسا", v:4},
-    {n:"جود بيلينغهام", t:"إنجلترا", v:4},
+    {n:"جود بيلينغهام", t:"إنجلترا", v:6},
+    {n:"عثمان ديمبيلي", t:"فرنسا", v:5},
     {n:"فينيسيوس جونيور", t:"البرازيل", v:4},
     {n:"يوهان مانزامبي", t:"سويسرا", v:3},
     {n:"إسماعيل الصيباري", t:"المغرب", v:3},
@@ -4776,17 +4776,17 @@ var STAT_DATA={
   ],
   a:[
     {n:"مايكل أوليسي", t:"فرنسا", v:5},
+    {n:"مارتن أوديغارد", t:"النرويج", v:4},
     {n:"برونو غيماريش", t:"البرازيل", v:4},
     {n:"براهيم دياز", t:"المغرب", v:4},
     {n:"روبرتو ألفارادو", t:"المكسيك", v:3},
     {n:"ألكسندر إيساك", t:"السويد", v:3},
-    {n:"مارتن أوديغارد", t:"النرويج", v:3},
     {n:"بوكايو ساكا", t:"إنجلترا", v:3},
     {n:"أندرياس شيلدروب", t:"النرويج", v:3},
     {n:"فلوريان فيرتز", t:"ألمانيا", v:3},
-    {n:"كيليان مبابي", t:"فرنسا", v:2},
-    {n:"أشرف حكيمي", t:"المغرب", v:2},
-    {n:"يوهان مانزامبي", t:"سويسرا", v:2}
+    {n:"كيليان مبابي", t:"فرنسا", v:3},
+    {n:"ليونيل ميسي", t:"الأرجنتين", v:2},
+    {n:"أشرف حكيمي", t:"المغرب", v:2}
   ]
 };
 function statClean(arr){
@@ -5131,7 +5131,7 @@ async function fetchAllGoals(){
 function stripGoalHTML(s){return (s||"").replace(/<[^>]*>/g,"").trim();}
 /* القائمة الدقيقة = أساس ثابت حتى نقطة القطع؛ ما بعدها يُحتسب من المباريات ويُدمج فوقها */
 var STAT_BASE={g:STAT_DATA.g.map(function(x){return {n:x.n,t:x.t,v:x.v};}), a:STAT_DATA.a.map(function(x){return {n:x.n,t:x.t,v:x.v};})};
-var STAT_CUT=new Date("2026-07-08T08:00:00+03:00").getTime();
+var STAT_CUT=new Date("2026-07-13T08:00:00+03:00").getTime();
 var AR_NAME={"kylian mbappe":"كيليان مبابي","mbappe":"كيليان مبابي","lionel messi":"ليونيل ميسي","messi":"ليونيل ميسي","erling haaland":"إيرلينغ هالاند","haaland":"إيرلينغ هالاند","harry kane":"هاري كين","vinicius junior":"فينيسيوس جونيور","vinicius jr":"فينيسيوس جونيور","vinicius jr.":"فينيسيوس جونيور","ousmane dembele":"عثمان ديمبيلي","michael olise":"مايكل أوليسي","ismael saibari":"إسماعيل الصيباري","jonathan david":"جوناثان ديفيد","matheus cunha":"ماتيوس كونيا","brian brobbey":"برايان بروبي","ismaila sarr":"إسماعيلا سار","deniz undav":"دينيز أونداف","bruno guimaraes":"برونو غيماريش","alexander isak":"ألكسندر إيساك","martin odegaard":"مارتن أوديغارد","florian wirtz":"فلوريان فيرتز","brahim diaz":"براهيم دياز","julio enciso":"خوليو إنسيسو","joshua kimmich":"يوشوا كيميش","crysencio summerville":"كريسينسيو سامرفيل","mohamed salah":"محمد صلاح","bukayo saka":"بوكايو ساكا","ryan gravenberch":"ريان غرافينبيرش","cody gakpo":"كودي خاكبو","kai havertz":"كاي هافيرتس","casemiro":"كاسيميرو","gabriel martinelli":"غابرييل مارتينيلي","romelu lukaku":"روميلو لوكاكو","youri tielemans":"يوري تيليمانس","habib diarra":"حبيب ديارا","cristiano ronaldo":"كريستيانو رونالدو","goncalo ramos":"غونسالو راموش","ivan perisic":"إيفان بيريشيتش","bradley barcola":"برادلي باركولا","antonio nusa":"أنطونيو نوسا","amad diallo":"أماد ديالو","stephen eustaquio":"ستيفن يوستاكيو","raul jimenez":"راؤول خيمينيس","emam ashour":"إمام عاشور","breel embolo":"بريل إمبولو","dan ndoye":"دان ندوي","achraf hakimi":"أشرف حكيمي","lamine yamal":"لامين يامال","nico williams":"نيكو ويليامز","mikel oyarzabal":"ميكل أويارثابال","folarin balogun":"فولارين بالوغون","malik tillman":"مالك تيلمان","pedri":"بيدري","jamal musiala":"جمال موسيالا","serhou guirassy":"سيرهو غيراسي","azzedine ounahi":"عز الدين أوناحي","ounahi":"عز الدين أوناحي","youssef en-nesyri":"يوسف النصيري","en-nesyri":"يوسف النصيري","youssef en nesyri":"يوسف النصيري","brahim diaz":"إبراهيم دياز","hakim ziyech":"حكيم زياش","sofiane boufal":"سفيان بوفال","noussair mazraoui":"نصير مزراوي","youssef nesyri":"يوسف النصيري","abde ezzalzouli":"عبد الصمد الزلزولي","ezzalzouli":"عبد الصمد الزلزولي","eljif elmaselli":"إليف المسالي","bilal el khannouss":"بلال الخنوس","el khannouss":"بلال الخنوس","jonathan david":"جوناثان ديفيد","alphonso davies":"ألفونسو ديفيز","davies":"ألفونسو ديفيز","cyle larin":"كايل لارين","larin":"كايل لارين","tajon buchanan":"تاجون بوكانان","jonathan osorio":"جوناثان أوسوريو","jacob shaffelburg":"جيكوب شافلبرغ","ismael kone":"إسماعيل كوني","phil foden":"فيل فودين","jude bellingham":"جود بيلينغهام","bellingham":"جود بيلينغهام","cole palmer":"كول بالمر","marcus rashford":"ماركوس راشفورد","declan rice":"ديكلان رايس","bukayo saka":"بوكايو ساكا","raphinha":"رافينيا","rodrygo":"رودريغو","neymar":"نيمار","richarlison":"ريتشارليسون","vinicius":"فينيسيوس جونيور","lautaro martinez":"لاوتارو مارتينيز","julian alvarez":"خوليان ألفاريز","angel di maria":"أنخيل دي ماريا","di maria":"أنخيل دي ماريا","nicolas gonzalez":"نيكولاس غونزاليس","enzo fernandez":"إنزو فيرنانديز","alexis mac allister":"أليكسيس ماك أليستر","kevin de bruyne":"كيفن دي بروين","de bruyne":"كيفن دي بروين","jeremy doku":"جيريمي دوكو","leandro trossard":"لياندرو تروسارد","jimenez":"راؤول خيمينيس","hirving lozano":"إيرفينغ لوزانو","lozano":"إيرفينغ لوزانو","santiago gimenez":"سانتياغو خيمينيز","edson alvarez":"إدسون ألفاريز","antoine griezmann":"أنطوان غريزمان","griezmann":"أنطوان غريزمان","kingsley coman":"كينغسلي كومان","randal kolo muani":"راندال كولو مواني","kolo muani":"راندال كولو مواني","martin odegaard":"مارتن أوديغارد","erling braut haaland":"إيرلينغ هالاند","oscar bobb":"أوسكار بوب","xavi simons":"تشافي سيمونز","memphis depay":"ممفيس ديباي","depay":"ممفيس ديباي","donyell malen":"دونيال مالين","rafael leao":"رافائيل لياو","leao":"رافائيل لياو","bruno fernandes":"برونو فيرنانديز","bernardo silva":"برناردو سيلفا","joao felix":"جواو فيليكس","pedro neto":"بيدرو نيتو","omar marmoush":"عمر مرموش","marmoush":"عمر مرموش","mostafa mohamed":"مصطفى محمد","trezeguet":"تريزيغيه","mahmoud trezeguet":"تريزيغيه"};
 /* تعريب تلقائي حرف-بحرف لأي اسم لاتيني بلا ترجمة يدوية — احتياط يضمن عدم ظهور اسم إنجليزي */
 function translitAr(name){
