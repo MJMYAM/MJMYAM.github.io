@@ -760,7 +760,64 @@ html[data-theme="light"] #koList .radar.fit .fbox{background:linear-gradient(160
 /* النهائي والثالث قابلان للنقر */
 #koList .radar.fit .fbox, #koList .radar.fit .third{cursor:pointer;}
 #koList .radar.fit .fbox:active, #koList .radar.fit .third:active{filter:brightness(1.18);}
-/* خطوط الانتقال بين الأدوار (بيضاء) */
+.credit-mail{display:block;font-size:11px;color:var(--gold);opacity:.85;text-decoration:none;margin-top:2px;direction:ltr;}
+.prize-pop .pskip{width:100%;margin-top:8px;background:none;border:1px solid rgba(255,255,255,.22);color:var(--mut);border-radius:11px;padding:9px;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;}
+/* ═══ بوب أب الجائزة ═══ *//* ═══ بوب أب الجائزة ═══ */
+.prize-ov{position:fixed;inset:0;z-index:100000;background:rgba(4,8,20,.78);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:22px;animation:rmpIn .22s ease;}
+.prize-pop{width:100%;max-width:330px;background:linear-gradient(165deg,#14263f,#0d1a2b);border:2px solid rgba(240,194,75,.65);border-radius:22px;padding:22px 18px;text-align:center;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(240,194,75,.25);}
+.prize-pop .px{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.08);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;}
+.prize-pop .pico{font-size:52px;line-height:1;filter:drop-shadow(0 6px 16px rgba(240,194,75,.5));animation:prizeBob 2.2s ease-in-out infinite;}
+@keyframes prizeBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.prize-pop .pt1{font-family:"Changa",sans-serif;font-weight:900;font-size:22px;color:#fff;margin-top:8px;}
+.prize-pop .pt1 b{color:var(--gold);}
+.prize-pop .pt2{font-size:12.5px;color:var(--mut);line-height:1.9;margin-top:6px;}
+.prize-pop .pgo{width:100%;margin-top:14px;background:linear-gradient(135deg,#f0c24b,#d9a92f);color:#1a1205;border:none;border-radius:13px;padding:13px;font-family:inherit;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 8px 20px rgba(240,194,75,.35);}
+.prize-pop .pgo:active{transform:scale(.97);}
+.pc-prize{font-family:"Changa",sans-serif;font-weight:900;font-size:16px;color:#1a1205;background:linear-gradient(135deg,#f0c24b,#e0b13a);border-radius:11px;padding:9px 12px;text-align:center;margin-bottom:8px;box-shadow:0 5px 14px rgba(240,194,75,.3);}
+body.light .prize-pop{background:linear-gradient(165deg,#ffffff,#f2ecdc);}
+body.light .prize-pop .pt1{color:#15243c;}
+/* ═══ توقعات المنصة ═══ *//* ═══ توقعات المنصة ═══ */
+.podium-card{background:linear-gradient(160deg,rgba(240,194,75,.08),rgba(13,26,43,.5));border:1.5px solid rgba(240,194,75,.4);border-radius:16px;padding:12px;margin:0 0 6px;}
+.pc-rules{font-size:12px;color:var(--mut);line-height:1.9;background:rgba(240,194,75,.07);border:1px dashed rgba(240,194,75,.35);border-radius:10px;padding:8px 10px;margin-bottom:10px;}
+.pc-rules b{color:var(--gold);}
+.pod-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pod-field{display:flex;flex-direction:column;gap:4px;}
+.pod-field label{font-size:11.5px;font-weight:800;color:var(--gold);}
+.pod-field select,.pod-field input{background:rgba(10,20,38,.85);border:1.2px solid rgba(240,194,75,.35);border-radius:10px;color:#fff;padding:9px 8px;font-family:inherit;font-size:13px;width:100%;}
+.pod-field.full{grid-column:1/-1;}
+.pod-score{display:flex;align-items:center;gap:6px;}
+.pod-score input{width:52px;text-align:center;font-weight:800;font-size:15px;}
+.pod-score .sep{color:var(--gold);font-weight:900;}
+.pod-score .lbl{font-size:11px;color:var(--mut);flex:1;}
+.pod-save{width:100%;margin-top:10px;background:linear-gradient(135deg,#f0c24b,#d9a92f);color:#1a1205;border:none;border-radius:12px;padding:12px;font-family:inherit;font-weight:900;font-size:14.5px;cursor:pointer;box-shadow:0 6px 16px rgba(240,194,75,.3);}
+.pod-save:active{transform:scale(.97);}
+.pc-msg{margin-top:8px;font-size:12.5px;font-weight:800;border-radius:10px;padding:8px 10px;}
+.pc-msg.err{background:rgba(230,80,80,.15);color:#ff9b9b;border:1px solid rgba(230,80,80,.4);}
+.pc-msg.ok{background:rgba(80,200,120,.14);color:#7fe0a5;border:1px solid rgba(80,200,120,.4);}
+.pod-entry{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(240,194,75,.22);border-radius:12px;padding:9px 10px;margin-top:8px;}
+.pod-entry .pe-rank{font-size:17px;width:26px;text-align:center;}
+.pod-entry .pe-info{flex:1;min-width:0;}
+.pod-entry .pe-name{font-weight:900;font-size:13.5px;color:#fff;}
+.pod-entry .pe-picks{font-size:11px;color:var(--mut);line-height:1.8;}
+.pod-entry .pe-pts{font-weight:900;font-size:13px;color:var(--gold);background:rgba(240,194,75,.12);border:1px solid rgba(240,194,75,.4);border-radius:9px;padding:4px 8px;white-space:nowrap;}
+.pod-entry .pe-pts.wait{color:var(--mut);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.05);}
+.pod-entry .pe-del{background:none;border:none;color:rgba(255,120,120,.8);font-size:15px;cursor:pointer;padding:4px;}
+.pod-lk{font-size:10px;color:#ff9b9b;font-weight:800;}
+.pod-score input:disabled{opacity:.4;}
+.pe-mine{font-size:9.5px;font-weight:900;color:#7fe0a5;background:rgba(80,200,120,.14);border:1px solid rgba(80,200,120,.4);border-radius:7px;padding:1px 6px;vertical-align:2px;}
+.pmode-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.pmode-pick .pmp{display:flex;flex-direction:column;align-items:center;gap:2px;background:rgba(10,20,38,.7);border:1.5px solid rgba(240,194,75,.3);border-radius:12px;padding:10px 6px;font-family:"Changa",sans-serif;font-weight:800;font-size:13px;color:var(--mut);cursor:pointer;transition:.15s;}
+.pmode-pick .pmp .pmp-sub{font-size:10px;font-weight:700;opacity:.75;}
+.pmode-pick .pmp.on{background:linear-gradient(135deg,rgba(240,194,75,.22),rgba(240,194,75,.1));border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(240,194,75,.2);}
+.pmode-pick .pmp:active{transform:scale(.97);}
+body.light .pmode-pick .pmp{background:rgba(255,255,255,.7);}
+.pe-winner{font-size:10px;font-weight:900;color:#1a1205;background:linear-gradient(135deg,#f0c24b,#e0b13a);border-radius:7px;padding:2px 6px;vertical-align:2px;}
+.pod-locked{font-size:12.5px;font-weight:800;color:var(--mut);background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.25);border-radius:10px;padding:9px 10px;text-align:center;}
+body.light .podium-card{background:linear-gradient(160deg,rgba(217,169,47,.1),rgba(255,255,255,.7));}
+body.light .pod-field select,body.light .pod-field input{background:#fff;color:#15243c;border-color:rgba(180,140,40,.45);}
+body.light .pod-entry{background:rgba(255,255,255,.7);}
+body.light .pod-entry .pe-name{color:#15243c;}
+/* خطوط الانتقال بين الأدوار (بيضاء) *//* خطوط الانتقال بين الأدوار (بيضاء) */
 #koList .radar.fit .rd-links{position:absolute;inset:0;z-index:3;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));}
 #koList .radar.fit .rd-links path{stroke:#fff;stroke-width:2;opacity:.95;stroke-linecap:square;}
 #koList .radar.fit .rd-scroller{position:relative;z-index:2;}
@@ -1686,31 +1743,26 @@ if("serviceWorker" in navigator){
   </section>
 
   <!-- ============ QUIZ (اختبر معلوماتك) ============ -->
-  <section id="tab-quiz" class="tab">
-    <div class="sec-t"><i></i><span data-i18n="quiz_title">المسابقات</span> <span class="cnt">اختبر نفسك</span></div>
-    <div class="qmode-tabs">
-      <button class="qmode on" data-qmode="trivia">🧠 معلومات عامة</button>
-      <button class="qmode" data-qmode="guess">🕵️ خمّن اللاعب</button>
-    </div>
-    <div id="quizBox"></div>
-    <div id="guessBox" style="display:none"></div>
-  </section>
-
   <!-- ============ PREDICT (توقّع البطل) ============ -->
   <section id="tab-predict" class="tab">
-    <div class="sec-t"><i></i><span data-i18n="pr_title">توقّع البطل</span> <span class="cnt">من دور الـ16 للنهائي</span></div>
-    <div class="pred-intro">
-      <span data-i18n="pr_intro_1">اختر الفائز في كل مباراة وكوّن مشوارك حتى التتويج. القائمة تضمّ</span>
-      <b>16 منتخبًا</b>
-      <span data-i18n="pr_intro_2">مرشحًا للّقب، موزّعة على نصفَي البطولة — توقّعك يُحفظ تلقائيًا في جهازك.</span>
+    <div class="sec-t"><i></i><span>🏅 توقعات المنصة</span> <span class="cnt">بطل · وصيف · ثالث · رابع</span></div>
+    <div class="podium-card">
+      <div class="pc-prize">💰 الجائزة: <b>50 دينار كويتي</b></div>
+      <div class="pc-rules">
+        <b>🎯 اختر طريقتك:</b><br>
+        🏅 <b style="color:var(--gold)">الترتيب فقط:</b> توقّع المراكز الأربعة — كل مركز صح = <b>2</b> (المجموع <b>8</b>)<br>
+        🎯 <b style="color:var(--gold)">الترتيب + النتيجة:</b> نفس الترتيب + نتائج آخر 4 مباريات — كل نتيجة صح = <b>4</b> (المجموع حتى <b>24</b>)<br>
+        ⏱ <b>كل مباراة يُقفل توقع نتيجتها قبل انطلاقها بـ10 دقائق</b><br>
+        التطبيق يصحح ويحسب <b>بروحه</b> بعد نهاية البطولة ويرتب المتصدرين 🥇<br>
+        💰 <b>الفائز بالجائزة: صاحب أعلى النقاط</b> — وعند التعادل: <b>الأسبق تسجيلًا</b><br>
+        📢 التوقعات <b>تظهر للجميع</b> · <b>لا يحق التعديل أو الحذف</b> بعد الإرسال · السجل الرسمي: إيميلات المشاركة<br>
+        يُشترط <b>الاسم والهاتف أو الإيميل</b> · الأهم المشاركة 😄
+      </div>
+      <div id="podiumForm"></div>
+      <div id="podiumMsg" class="pc-msg" style="display:none"></div>
+      <div id="podiumList"></div>
     </div>
-    <div class="pred-bar"><div class="pred-bar-fill" id="predFill"></div><span id="predPct">0 من 15</span></div>
-    <div class="pred-actions">
-      <button id="predReset" class="pred-btn ghost">↻ <span data-i18n="reset">إعادة التعيين</span></button>
-      <button id="predShare" class="pred-btn gold">📤 <span data-i18n="share">شارك توقّعك</span></button>
-    </div>
-    <div id="predChampWrap"></div>
-    <div id="predBracket"></div>
+
   </section>
 
   <!-- ============ STADIUMS ============ -->
@@ -1720,6 +1772,7 @@ if("serviceWorker" in navigator){
     <div class="visit-box" id="visitBox">👁️ زوّار الموقع: <b id="visitCount">…</b></div><br>
     جميع الأوقات بتوقيت الكويت <img class="flg" src="https://flagcdn.com/h24/kw.png" alt="🇰🇼" onerror="this.replaceWith(this.alt)"><br>
     <span class="credit">إعداد وتنفيذ: مبارك المعتوق ⚽</span>
+    <a class="credit-mail" href="mailto:almatouq@mail.com">almatouq@mail.com</a>
   </footer>
 </main>
 
@@ -1734,7 +1787,6 @@ if("serviceWorker" in navigator){
   <button data-tab="map"><span class="ic">🗺️</span><span data-i18n="tab_map">الخريطة</span></button>
   <button data-tab="compare"><span class="ic">⚖️</span><span data-i18n="cmp_title">المقارنة</span></button>
   <button data-tab="champions"><span class="ic">👑</span><span data-i18n="tab_champs">الأبطال</span></button>
-  <button data-tab="quiz"><span class="ic">🧠</span><span data-i18n="quiz_title">الكويز</span></button>
   <button data-tab="predict"><span class="ic">🔮</span><span data-i18n="tab_predict">توقّعاتي</span></button>
   <button data-tab="info"><span class="ic">ℹ️</span><span data-i18n="info_title">البطولة</span></button>
 </nav>
@@ -2261,6 +2313,7 @@ function scheduleNotifs(){
 
 
 document.addEventListener("DOMContentLoaded", function(){
+  setTimeout(function(){ if(typeof showPrizePopup==="function") showPrizePopup(); }, 1400);
   setTimeout(function(){ if(typeof backfillKO==="function") backfillKO(); }, 1500);
   setInterval(function(){ if(typeof backfillKO==="function") backfillKO(); }, 10*60000);
   // زر الإشعارات في تبويب البطولة
@@ -3305,7 +3358,9 @@ var FINAL_RESULTS={
   98:{sh:2, sa:1, status:"finished", winSide:"h",
      gh:[{who:"فابيان رويز", min:"30"},{who:"ميكيل مرينو", min:"88"}], ga:[{who:"تشارلز دي كيتيلاري", min:"41"}]},
   99:{sh:1, sa:2, status:"finished", winSide:"a",
-     gh:[{who:"أندرياس شيلدروب", min:"36"}], ga:[{who:"جود بيلينغهام", min:"45+2"},{who:"جود بيلينغهام", min:"93"}]}
+     gh:[{who:"أندرياس شيلدروب", min:"36"}], ga:[{who:"جود بيلينغهام", min:"45+2"},{who:"جود بيلينغهام", min:"93"}]},
+  100:{sh:3, sa:1, status:"finished", winSide:"h",
+     gh:[{who:"أليكسيس ماك أليستر", min:"10"},{who:"خوليان ألفاريز", min:"112"},{who:"لاوتارو مارتينيز", min:"120+1"}], ga:[{who:"دان ندوي", min:"67"}]}
 };
 /* ===== تحديث تلقائي: أي مباراة إقصائية انتهت تُرقّى لنتيجة دائمة (بدون تدخل يدوي) ===== */
 try{
@@ -6125,7 +6180,289 @@ function renderChampBox(champ){
   var wiki=TEAM_WIKI[champ]||{};
   wrap.innerHTML='<div class="champ on"><div class="crays"></div><div class="ctrophy">🏆</div><div class="cflag">'+(TEAMS[champ]?'<img class="flg" src="https://flagcdn.com/w160/'+(ISO[champ]||"un")+'.png" alt="" onerror="this.replaceWith(this.alt)">':'')+'</div><div class="cname">'+champ+'</div><div class="ctag">بطلك في كأس العالم 2026</div><div class="crunner">'+(wiki.conf||"")+' · تصنيف '+(wiki.rank||"—")+'</div></div>';
 }
+/* ═══ توقعات المنصة: بطل/وصيف/ثالث/رابع + الأهداف — تصحيح تلقائي 8/16 ═══ */
+function showPrizePopup(){
+  try{
+    if(sessionStorage.getItem("wcPrizeSeen")) return;
+    if(typeof podiumLocked==="function" && podiumLocked()) return;
+    sessionStorage.setItem("wcPrizeSeen","1");
+    var ov=document.createElement("div");
+    ov.className="prize-ov";
+    ov.onclick=function(e){ if(e.target===ov) ov.remove(); };
+    ov.innerHTML='<div class="prize-pop">'
+      +'<button class="px" onclick="this.closest(\'.prize-ov\').remove()">✕</button>'
+      +'<div class="pico">💰</div>'
+      +'<div class="pt1">توقّع واربح <b>50 دينار</b>!</div>'
+      +'<div class="pt2">توقّع المراكز الأربعة + نتائج آخر 4 مباريات (نصفا النهائي والثالث والنهائي).<br>كل مركز = <b style="color:var(--gold)">درجتان</b> · كل نتيجة = <b style="color:var(--gold)">4</b> · المجموع <b style="color:var(--gold)">24</b><br>⏱ كل مباراة تُقفل قبلها بـ10 دقائق</div>'
+      +'<button class="pgo" onclick="this.closest(\'.prize-ov\').remove(); goTab(\'predict\'); window.scrollTo(0,0);">🎯 توقّع الحين</button>'
+      +'<button class="pskip" onclick="this.closest(\'.prize-ov\').remove()">تجاهل</button>'
+      +'</div>';
+    document.body.appendChild(ov);
+  }catch(e){}
+}
+var PODIUM_KEY="wcPodiumPreds";
+var PRIZE_WA="";  /* رقم واتساب اختياري بصيغة 965XXXXXXXX */
+var PRIZE_EMAIL="almatouq@mail.com";  /* تصل كل مشاركة لهذا الإيميل تلقائيًا */
+var PODIUM_MATCHES=[
+  {id:101, lbl:"نصف النهائي 1", sh:"ن1"},
+  {id:102, lbl:"نصف النهائي 2", sh:"ن2"},
+  {id:103, lbl:"مباراة الثالث", sh:"الثالث"},
+  {id:104, lbl:"النهائي", sh:"النهائي"}
+];
+function podiumTeams(){
+  var out=[], seen={};
+  [101,102].forEach(function(nn){
+    var m=getM(nn); if(!m) return;
+    ["h","a"].forEach(function(sd){
+      var t=(typeof resolveKOName==="function")?resolveKOName(m[sd]):m[sd];
+      if(!seen[t]){ seen[t]=1; out.push(t); }
+    });
+  });
+  return out;
+}
+function podiumShort(nm){
+  return String(nm)
+    .replace("الفائز من المباراة 101","فائز ن1").replace("الفائز من المباراة 102","فائز ن2")
+    .replace("خاسر المباراة 101","خاسر ن1").replace("خاسر المباراة 102","خاسر ن2")
+    .replace("الفائز من المباراة 99","فائز م99").replace("الفائز من المباراة 100","فائز م100");
+}
+function podiumPair(mid){
+  var m=getM(mid); if(!m) return ["؟","؟"];
+  return [podiumShort(resolveKOName(m.h)), podiumShort(resolveKOName(m.a))];
+}
+function podiumGetAll(){ try{ return JSON.parse(localStorage.getItem(PODIUM_KEY)||"[]"); }catch(e){ return []; } }
+function podiumSaveAll(a){ try{ localStorage.setItem(PODIUM_KEY, JSON.stringify(a)); }catch(e){} }
+function matchLock10(mid){
+  var m=getM(mid);
+  return m && m.d ? (Date.now() >= dateObj(m).getTime() - 10*60000) : false;
+}
+function podiumLocked(){ return matchLock10(104); }
+function podiumActual(){
+  var f=FINAL_RESULTS[104], t=FINAL_RESULTS[103];
+  var s1=FINAL_RESULTS[101], s2=FINAL_RESULTS[102];
+  if(!f||!t||!s1||!s2) return null;
+  if(f.status!=="finished"||t.status!=="finished"||s1.status!=="finished"||s2.status!=="finished") return null;
+  var m1=getM(101), m2=getM(102);
+  var w1=resolveKOName(s1.winSide==="h"?m1.h:m1.a), l1=resolveKOName(s1.winSide==="h"?m1.a:m1.h);
+  var w2=resolveKOName(s2.winSide==="h"?m2.h:m2.a), l2=resolveKOName(s2.winSide==="h"?m2.a:m2.h);
+  var champ = f.winSide==="h"?w1:w2,  runner = f.winSide==="h"?w2:w1;
+  var third = t.winSide==="h"?l1:l2,  fourth = t.winSide==="h"?l2:l1;
+  var scores={};
+  PODIUM_MATCHES.forEach(function(mm){
+    var r=FINAL_RESULTS[mm.id];
+    if(r && r.status==="finished") scores[mm.id]=[r.sh, r.sa];
+  });
+  return {champ:champ, runner:runner, third:third, fourth:fourth, scores:scores};
+}
+function podiumScore(p, ac){
+  var pts=0;
+  if(p.c1===ac.champ)  pts+=2;
+  if(p.c2===ac.runner) pts+=2;
+  if(p.c3===ac.third)  pts+=2;
+  if(p.c4===ac.fourth) pts+=2;
+  PODIUM_MATCHES.forEach(function(mm){
+    var pr=p["s"+mm.id], acS=ac.scores[mm.id];
+    if(pr && acS && +pr[0]===acS[0] && +pr[1]===acS[1]) pts+=4;
+  });
+  return pts;
+}
+function podiumMsg(txt, ok){
+  var el=document.getElementById("podiumMsg"); if(!el) return;
+  el.textContent=txt; el.className="pc-msg "+(ok?"ok":"err"); el.style.display="block";
+  setTimeout(function(){ el.style.display="none"; }, 3800);
+}
+var PODIUM_SENDING={};
+function podiumMarkSent(id,val){
+  var all=podiumGetAll();
+  all.forEach(function(x){ if(x.id===id) x.sent=val; });
+  podiumSaveAll(all);
+}
+function podiumScoreTxt(p){
+  if(p.mode==="order") return "🏅 توقّع ترتيب فقط";
+  return PODIUM_MATCHES.map(function(mm){
+    var pr=p["s"+mm.id];
+    return mm.sh+": "+(pr? pr[0]+"-"+pr[1] : "🔒");
+  }).join(" · ");
+}
+function podiumSendEmail(p){
+  if(!PRIZE_EMAIL) return;
+  if(PODIUM_SENDING[p.id]) return;
+  PODIUM_SENDING[p.id]=1;
+  podiumMarkSent(p.id,true);
+  var body={
+    _subject:"🏅 توقع جديد — مسابقة 50 د.ك",
+    _template:"table", _captcha:"false",
+    "الاسم": p.name,
+    "التواصل": p.contact,
+    "البطل": p.c1, "الوصيف": p.c2, "الثالث": p.c3, "الرابع": p.c4,
+    "وقت التوقع": new Date(p.id).toLocaleString("ar-KW")
+  };
+  PODIUM_MATCHES.forEach(function(mm){
+    var pr=p["s"+mm.id], pair=podiumPair(mm.id);
+    body["نتيجة "+mm.lbl+" ("+pair[0]+"×"+pair[1]+")"] = pr ? (pr[0]+"-"+pr[1]) : "🔒 كانت مقفلة عند التسجيل";
+  });
+  try{
+    fetch("https://formsubmit.co/ajax/"+PRIZE_EMAIL, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json", "Accept":"application/json" },
+      body: JSON.stringify(body)
+    }).then(function(r){
+      if(!r.ok) podiumMarkSent(p.id,false);
+      delete PODIUM_SENDING[p.id];
+    }).catch(function(){
+      podiumMarkSent(p.id,false);
+      delete PODIUM_SENDING[p.id];
+    });
+  }catch(e){ podiumMarkSent(p.id,false); delete PODIUM_SENDING[p.id]; }
+}
+var PODIUM_REMOTE=[]; var PODIUM_FEED_TS=0;
+function podiumFetchFeed(){
+  if(Date.now()-PODIUM_FEED_TS < 60000) return;
+  PODIUM_FEED_TS=Date.now();
+  try{
+    fetch("preds.json?v="+Date.now(), {cache:"no-store"})
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .then(function(arr){
+        if(!Array.isArray(arr)) return;
+        var sig=JSON.stringify(arr);
+        if(sig!==window._predFeedSig){
+          window._predFeedSig=sig;
+          PODIUM_REMOTE=arr;
+          renderPodium();
+        }
+      }).catch(function(){});
+  }catch(e){}
+}
+function podiumMerged(){
+  var local=podiumGetAll(), seen={}, out=[];
+  PODIUM_REMOTE.forEach(function(p){ if(p&&p.id&&!seen[p.id]){ seen[p.id]=1; out.push(p); } });
+  local.forEach(function(p){ if(p&&p.id&&!seen[p.id]){ seen[p.id]=1; p._mine=true; out.push(p); } else if(p&&seen[p.id]){ out.forEach(function(x){ if(x.id===p.id) x._mine=true; }); } });
+  return out;
+}
+function podiumRetryUnsent(){
+  if(!PRIZE_EMAIL) return;
+  podiumGetAll().forEach(function(p){ if(!p.sent) podiumSendEmail(p); });
+}
+function podiumSendWA(p){
+  if(!PRIZE_WA) return;
+  var txt="🏅 مسابقة توقع واربح 50 د.ك\n👤 "+p.name+"\n📱 "+p.contact
+    +"\n🏆 "+p.c1+" · 🥈 "+p.c2+" · 🥉 "+p.c3+" · 4️⃣ "+p.c4
+    +"\n"+podiumScoreTxt(p);
+  try{ window.open("https://wa.me/"+PRIZE_WA+"?text="+encodeURIComponent(txt), "_blank"); }catch(e){}
+}
+function podiumMask(c){
+  if(!c) return "";
+  if(c.indexOf("@")>0){ var a=c.split("@"); return a[0].slice(0,2)+"***@"+a[1]; }
+  return c.slice(0,2)+"****"+c.slice(-2);
+}
+function setPodMode(m){
+  window._podMode = m;
+  var keep={};
+  ["pod-name","pod-contact","pod-c1","pod-c2","pod-c3","pod-c4"].forEach(function(id){
+    var e=document.getElementById(id); if(e) keep[id]=e.value;
+  });
+  PODIUM_MATCHES.forEach(function(mm){
+    ["pod-sA-"+mm.id,"pod-sB-"+mm.id].forEach(function(id){ var e=document.getElementById(id); if(e) keep[id]=e.value; });
+  });
+  if(typeof renderPodiumForm==="function") renderPodiumForm();
+  Object.keys(keep).forEach(function(id){ var e=document.getElementById(id); if(e && keep[id]!=null) e.value=keep[id]; });
+}
+function savePodiumPred(){
+  var g=function(id){ var e=document.getElementById(id); return e?e.value:""; };
+  var name=(g("pod-name")||"").trim();
+  var contact=(g("pod-contact")||"").trim();
+  var c1=g("pod-c1"), c2=g("pod-c2"), c3=g("pod-c3"), c4=g("pod-c4");
+  if(!name) return podiumMsg("اكتب اسمك أول 🙂", false);
+  var okPhone=/^[569]\d{7}$/.test(contact), okMail=/^\S+@\S+\.\S+$/.test(contact);
+  if(!okPhone && !okMail) return podiumMsg("اكتب رقم هاتف كويتي (8 أرقام) أو إيميل صحيح — شرط الجائزة 💰", false);
+  if(!c1||!c2||!c3||!c4) return podiumMsg("اختر المراكز الأربعة كاملة", false);
+  var set={}; [c1,c2,c3,c4].forEach(function(x){set[x]=(set[x]||0)+1;});
+  if(Object.keys(set).length<4) return podiumMsg("ما يصير تكرر نفس المنتخب بمركزين!", false);
+  if(podiumLocked()) return podiumMsg("🔒 قفلت المسابقة (قبل النهائي بـ10 دقائق)", false);
+  function okN(v){ return v!=="" && /^\d{1,2}$/.test(v) && +v<=15; }
+  var pmode = window._podMode || "order";
+  var entry={id:Date.now(), name:name.slice(0,24), contact:contact, c1:c1,c2:c2,c3:c3,c4:c4, mode:pmode};
+  if(pmode==="full"){
+    for(var i=0;i<PODIUM_MATCHES.length;i++){
+      var mm=PODIUM_MATCHES[i];
+      if(matchLock10(mm.id)){ entry["s"+mm.id]=null; continue; }
+      var a=g("pod-sA-"+mm.id), b=g("pod-sB-"+mm.id);
+      if(!okN(a)||!okN(b)) return podiumMsg("اكتب نتيجة "+mm.lbl+" (أرقام 0-15)", false);
+      entry["s"+mm.id]=[+a,+b];
+    }
+  }
+  var all=podiumGetAll();
+  all.push(entry);
+  podiumSaveAll(all);
+  podiumMsg("✅ انحفظ توقعك يا "+name+" ووصل لصاحب المسابقة 📧", true);
+  podiumSendEmail(entry);
+  if(PRIZE_WA) podiumSendWA(entry);
+  var ne=document.getElementById("pod-name"); if(ne) ne.value="";
+  renderPodium();
+}
+function delPodiumPred(id){
+  var all=podiumGetAll().filter(function(p){return p.id!==id;});
+  podiumSaveAll(all); renderPodium();
+}
+function renderPodiumForm(){
+  var form=document.getElementById("podiumForm");
+  if(!form) return;
+  var teams=podiumTeams();
+  var opts='<option value="">— اختر —</option>'+teams.map(function(t){return '<option value="'+t.replace(/"/g,"&quot;")+'">'+t+'</option>';}).join("");
+  if(podiumLocked()){
+    form.innerHTML='<div class="pod-locked">🔒 قفلت المسابقة (قبل النهائي بـ10 دقائق) — التصحيح تلقائي بعد صافرة النهاية</div>';
+    return;
+  }
+  var pmode = window._podMode || "order";  /* order = الترتيب فقط · full = مع النتيجة */
+  var scoreRows = pmode==="full" ? PODIUM_MATCHES.map(function(mm){
+    var pair=podiumPair(mm.id), lk=matchLock10(mm.id);
+    var dis=lk?' disabled placeholder="🔒"':' placeholder="0"';
+    return '<div class="pod-field full"><label>⚽ '+mm.lbl+': '+pair[0]+' × '+pair[1]+(lk?' <span class="pod-lk">🔒 قُفلت</span>':'')+'</label>'
+      +'<div class="pod-score"><input id="pod-sA-'+mm.id+'" inputmode="numeric" maxlength="2"'+dis+'><span class="sep">-</span><input id="pod-sB-'+mm.id+'" inputmode="numeric" maxlength="2"'+dis+'><span class="lbl">'+(mm.id===104?'النتيجة الأصلية بدون ركلات':'')+'</span></div></div>';
+  }).join("") : "";
+  var modeTabs=
+    '<div class="pmode-pick">'
+    +'<button class="pmp'+(pmode==="order"?" on":"")+'" onclick="setPodMode(\'order\')">🏅 الترتيب فقط<span class="pmp-sub">8 درجات</span></button>'
+    +'<button class="pmp'+(pmode==="full"?" on":"")+'" onclick="setPodMode(\'full\')">🎯 الترتيب + النتيجة<span class="pmp-sub">حتى 24</span></button>'
+    +'</div>';
+  form.innerHTML=
+    modeTabs
+    +'<div class="pod-grid">'
+    +'<div class="pod-field full"><label>👤 الاسم</label><input id="pod-name" maxlength="24" placeholder="اسم المتوقّع"></div>'
+    +'<div class="pod-field full"><label>📱 رقم الهاتف أو الإيميل (شرط للجائزة)</label><input id="pod-contact" maxlength="40" placeholder="مثال: 5XXXXXXX أو name@mail.com"></div>'
+    +'<div class="pod-field"><label>🏆 البطل</label><select id="pod-c1">'+opts+'</select></div>'
+    +'<div class="pod-field"><label>🥈 الوصيف</label><select id="pod-c2">'+opts+'</select></div>'
+    +'<div class="pod-field"><label>🥉 الثالث</label><select id="pod-c3">'+opts+'</select></div>'
+    +'<div class="pod-field"><label>4️⃣ الرابع</label><select id="pod-c4">'+opts+'</select></div>'
+    + scoreRows
+    +'</div>'
+    +'<button class="pod-save" onclick="savePodiumPred()">💾 احفظ توقعي</button>';
+}
+function renderPodium(){
+  var form=document.getElementById("podiumForm"), list=document.getElementById("podiumList");
+  if(!form||!list) return;
+  if(typeof podiumRetryUnsent==="function") podiumRetryUnsent();
+  if(typeof podiumFetchFeed==="function") podiumFetchFeed();
+  renderPodiumForm();
+  var all=podiumMerged(), ac=podiumActual();
+  if(!all.length){ list.innerHTML='<div class="pc-rules" style="margin-top:10px;text-align:center">لا توجد توقعات بعد — كن أول المشاركين 😄</div>'; return; }
+  var rows=all.map(function(p){ return {p:p, pts: ac?podiumScore(p,ac):null}; });
+  rows.sort(function(a,b){ return ac ? ((b.pts-a.pts) || (a.p.id-b.p.id)) : (a.p.id-b.p.id); });
+  list.innerHTML=rows.map(function(r,i){
+    var p=r.p;
+    var medal = ac ? (i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1)) : "🔮";
+    var picks = "🏆 "+p.c1+" · 🥈 "+p.c2+" · 🥉 "+p.c3+" · 4️⃣ "+p.c4
+      +"<br>"+podiumScoreTxt(p)
+      +(p.contact?"<br>📱 "+podiumMask(p.contact):"");
+    var pts = ac ? '<span class="pe-pts">'+r.pts+' / 24</span>' : '<span class="pe-pts wait">⏳ بانتظار الحسم</span>';
+    return '<div class="pod-entry"><div class="pe-rank">'+medal+'</div>'
+      +'<div class="pe-info"><div class="pe-name">'+p.name+(p._mine?' <span class="pe-mine">أنت</span>':'')+(ac&&i===0?' <span class="pe-winner">💰 الفائز</span>':'')+'</div><div class="pe-picks">'+picks+'</div></div>'
+      + pts
+      +'</div>';
+  }).join("");
+}
 function renderPredict(){
+  if(typeof renderPodium==="function") renderPodium();
   var wrap=document.getElementById("predBracket"); if(!wrap) return;
   var half1=PREDICT_TEAMS.slice(0,8), half2=PREDICT_TEAMS.slice(8);
   var halves=[{name:"النصف الأول",qf:pairUp(half1)},{name:"النصف الثاني",qf:pairUp(half2)}];
@@ -6184,7 +6521,6 @@ function renderTourist(){
         }
         else if(id==="compare") renderCompareTab();
         else if(id==="champions") renderChampions();
-        else if(id==="quiz"){ switchQMode(window._qmode||"trivia"); }
         else if(id==="predict") renderPredict();
         else if(id==="info") renderTourist();
       }catch(e){}
