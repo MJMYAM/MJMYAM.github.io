@@ -811,6 +811,8 @@ body.light .prize-pop .pt1{color:#15243c;}
 .pmode-pick .pmp.on{background:linear-gradient(135deg,rgba(240,194,75,.22),rgba(240,194,75,.1));border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(240,194,75,.2);}
 .pmode-pick .pmp:active{transform:scale(.97);}
 body.light .pmode-pick .pmp{background:rgba(255,255,255,.7);}
+.pod-clear-mine{width:100%;margin-top:10px;background:rgba(230,80,80,.12);border:1px solid rgba(230,80,80,.4);color:#ff9b9b;border-radius:11px;padding:9px;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer;}
+.pod-clear-mine:active{transform:scale(.98);}
 .pe-winner{font-size:10px;font-weight:900;color:#1a1205;background:linear-gradient(135deg,#f0c24b,#e0b13a);border-radius:7px;padding:2px 6px;vertical-align:2px;}
 .pod-locked{font-size:12.5px;font-weight:800;color:var(--mut);background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.25);border-radius:10px;padding:9px 10px;text-align:center;}
 body.light .podium-card{background:linear-gradient(160deg,rgba(217,169,47,.1),rgba(255,255,255,.7));}
@@ -6458,6 +6460,14 @@ function renderPodium(){
       + pts
       +'</div>';
   }).join("");
+  if(podiumGetAll().length){
+    list.innerHTML += '<button class="pod-clear-mine" onclick="clearMyPreds()">🗑 امسح توقعاتي من هذا الجهاز ('+podiumGetAll().length+')</button>';
+  }
+}
+function clearMyPreds(){
+  if(!confirm("مسح توقعاتك المحفوظة بهذا الجهاز؟ (لن يؤثر على غيرك)")) return;
+  try{ localStorage.removeItem("wcPodiumPreds"); }catch(e){}
+  renderPodium();
 }
 function renderPredict(){
   if(typeof renderPodium==="function") renderPodium();
