@@ -6202,7 +6202,7 @@ function showPrizePopup(){
 }
 var PODIUM_KEY="wcPodiumPreds";
 var PRIZE_WA="";  /* رقم واتساب اختياري بصيغة 965XXXXXXXX */
-var PRIZE_EMAIL="almatouq@mail.com";  /* تصل كل مشاركة لهذا الإيميل تلقائيًا */
+var PRIZE_EMAIL="almatouq@mail.com";  /* (قديم — لم يعد مستخدمًا بعد التحويل لـ Google Sheets) */
 var PODIUM_MATCHES=[
   {id:101, lbl:"نصف النهائي 1", sh:"ن1"},
   {id:102, lbl:"نصف النهائي 2", sh:"ن2"},
@@ -6284,27 +6284,25 @@ function podiumScoreTxt(p){
     return mm.sh+": "+(pr? pr[0]+"-"+pr[1] : "🔒");
   }).join(" · ");
 }
+var SHEETS_URL="https://script.google.com/macros/s/AKfycbx0inbSuFw9hlAdiCbGtRppH8v9E3brbGfGDNwQlbydzmq-0KSFTB1Avke5m0G3yGuIWQ/exec";  /* رابط Google Apps Script Web App */
 function podiumSendEmail(p){
-  if(!PRIZE_EMAIL) return;
+  if(!SHEETS_URL) return;
   if(PODIUM_SENDING[p.id]) return;
   PODIUM_SENDING[p.id]=1;
   podiumMarkSent(p.id,true);
   var body={
-    _subject:"🏅 توقع جديد — مسابقة 50 د.ك",
-    _template:"table", _captcha:"false",
-    "الاسم": p.name,
-    "التواصل": p.contact,
-    "البطل": p.c1, "الوصيف": p.c2, "الثالث": p.c3, "الرابع": p.c4,
-    "وقت التوقع": new Date(p.id).toLocaleString("ar-KW")
+    name: p.name, contact: p.contact, mode: p.mode||"order",
+    c1: p.c1, c2: p.c2, c3: p.c3, c4: p.c4,
+    s101: p.s101 ? p.s101.join("-") : "",
+    s102: p.s102 ? p.s102.join("-") : "",
+    s103: p.s103 ? p.s103.join("-") : "",
+    s104: p.s104 ? p.s104.join("-") : ""
   };
-  PODIUM_MATCHES.forEach(function(mm){
-    var pr=p["s"+mm.id], pair=podiumPair(mm.id);
-    body["نتيجة "+mm.lbl+" ("+pair[0]+"×"+pair[1]+")"] = pr ? (pr[0]+"-"+pr[1]) : "🔒 كانت مقفلة عند التسجيل";
-  });
   try{
-    fetch("https://formsubmit.co/ajax/"+PRIZE_EMAIL, {
+    fetch(SHEETS_URL, {
       method:"POST",
-      headers:{ "Content-Type":"application/json", "Accept":"application/json" },
+      /* text/plain يتجنّب طلب preflight فيمرّ CORS مباشرة لـ Apps Script */
+      headers:{ "Content-Type":"text/plain;charset=utf-8" },
       body: JSON.stringify(body)
     }).then(function(r){
       if(!r.ok) podiumMarkSent(p.id,false);
@@ -6340,7 +6338,7 @@ function podiumMerged(){
   return out;
 }
 function podiumRetryUnsent(){
-  if(!PRIZE_EMAIL) return;
+  if(!SHEETS_URL) return;
   podiumGetAll().forEach(function(p){ if(!p.sent) podiumSendEmail(p); });
 }
 function podiumSendWA(p){
@@ -6394,7 +6392,7 @@ function savePodiumPred(){
   var all=podiumGetAll();
   all.push(entry);
   podiumSaveAll(all);
-  podiumMsg("✅ انحفظ توقعك يا "+name+" ووصل لصاحب المسابقة 📧", true);
+  podiumMsg("✅ انحفظ توقعك يا "+name+(SHEETS_URL?" وسُجّل لدى صاحب المسابقة 📊":""), true);
   podiumSendEmail(entry);
   if(PRIZE_WA) podiumSendWA(entry);
   var ne=document.getElementById("pod-name"); if(ne) ne.value="";
