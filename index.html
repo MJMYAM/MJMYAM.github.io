@@ -1523,6 +1523,9 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kd-q,.kd-fq{width:77px;height:46px;background:linear-gradient(135deg,#5c6787,#454f6e);border-radius:6px 13px 10px 6px;display:flex;align-items:center;justify-content:center;color:#e7ebf5;font-weight:900;font-size:22px;}
 .kd-star{position:absolute;top:-5px;right:-5px;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ffd85a,#f0a828);display:flex;align-items:center;justify-content:center;color:#3a2600;font-size:13px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.55);border:1.5px solid #fff3c4;}
 .kd-score{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(9,13,32,.97);border:1.5px solid #4a5c92;border-radius:12px;padding:5px 15px;color:#f5b043;font-weight:900;font-size:24px;line-height:1.2;white-space:nowrap;box-shadow:0 3px 13px rgba(0,0,0,.72);z-index:4;}
+.kd-vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(9,13,32,.97);border:1.5px solid #3a4877;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:#9fb0d6;font-weight:900;font-size:14px;letter-spacing:.5px;box-shadow:0 3px 10px rgba(0,0,0,.6);z-index:4;}
+.kd-final .kd-vs{width:44px;height:44px;font-size:18px;}
+.kd-vs-bz{flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#9fb0d6;font-weight:900;font-size:13px;letter-spacing:.5px;}
 
 .kd-final{background:#131d3d;border:1px solid #3a4877;border-radius:20px;box-shadow:0 0 34px rgba(47,107,214,.28),0 10px 24px rgba(0,0,0,.6);gap:12px;padding:15px;}
 .kd-fslot{flex:1;display:flex;align-items:center;justify-content:center;}
@@ -3047,7 +3050,7 @@ function renderKODesign(el){
     }
     var scoreBadge = r
       ? '<div class="kd-score">'+r.txt+'</div>'
-      : '';
+      : '<div class="kd-vs">VS</div>';
     var gold = opts.gold ? ' kd-final' : '';
     return '<div class="kd-card'+gold+'" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" '
       + 'style="left:'+x+'px;top:'+y+'px;width:'+w+'px;height:'+h+'px;">'
@@ -3102,7 +3105,7 @@ function renderKODesign(el){
   } else {
     var f1=resolveKOName(fm?fm.h:""), f2=resolveKOName(fm?fm.a:"");
     finalSlots='<div class="kd-card kd-final" data-mn="104" onclick="radarMatchPopup(104)" role="button" style="left:462px;top:436px;width:156px;height:186px;">'
-      + bigSlot(f1) + bigSlot(f2) + '</div>';
+      + bigSlot(f1) + '<div class="kd-vs">VS</div>' + bigSlot(f2) + '</div>';
   }
   html += finalSlots;
 
@@ -3117,7 +3120,7 @@ function renderKODesign(el){
     var ic=iso(name);
     return ic ? '<div class="kd-bz-s"><img src="'+fUrl(ic)+'" onerror="this.replaceWith(\'؟\')"></div>' : '<div class="kd-bz-s kd-fq">؟</div>';
   }
-  html += '<div class="kd-bronze" data-mn="103" onclick="radarMatchPopup(103)" role="button" style="left:462px;top:652px;cursor:pointer;">'+bzSlot(bA)+bzSlot(bB)+'</div>';
+  html += '<div class="kd-bronze" data-mn="103" onclick="radarMatchPopup(103)" role="button" style="left:462px;top:652px;cursor:pointer;">'+bzSlot(bA)+'<div class="kd-vs-bz">VS</div>'+bzSlot(bB)+'</div>';
   html += '<div class="kd-bzlabel" style="top:734px;">المركز الثالث</div>';
 
   // العنوان
