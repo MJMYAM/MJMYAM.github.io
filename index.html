@@ -679,19 +679,26 @@ body.kofit main{padding-bottom:64px !important;}
 #koList .radar.fit .dt{display:none;}
 #koList .radar.fit .sc{font-size:13px;padding:2px 0;letter-spacing:0;line-height:1.03;}
 #koList .radar.fit .sc .pens{font-size:8px;display:block;}
-#koList .radar.fit .center{gap:5px;padding-top:0;justify-content:center;position:relative;}
-#koList .radar.fit .center .third{position:static;transform:none;margin-top:6px;}
-#koList .radar.fit .ftrophy{font-size:26px;}
-#koList .radar.fit .fbox{padding:5px 3px;border-radius:9px;width:70px;min-width:0;box-sizing:border-box;border-width:1px;}
-#koList .radar.fit .fbox .fd{font-size:10px;margin-bottom:2px;}
-#koList .radar.fit .fbox .fdate,#koList .radar.fit .fbox .ft{display:none;}
-#koList .radar.fit .fslots{gap:2px;}
-#koList .radar.fit .fslots .fs{width:22px;height:20px;border-width:1px;border-radius:5px;}
-#koList .radar.fit .fslots .vs{font-size:9px;}
-#koList .radar.fit .fslots .fs .qmark{font-size:10px;}
-#koList .radar.fit .third{padding:4px 3px;width:70px;min-width:0;box-sizing:border-box;border-radius:8px;}
-#koList .radar.fit .third .tt{font-size:9px;margin-bottom:2px;}
-#koList .radar.fit .third .ts{width:22px;height:18px;margin-bottom:2px;}
+#koList .radar.fit .center{gap:7px;padding-top:0;justify-content:center;position:relative;}
+#koList .radar.fit .center .third{position:static;transform:none;margin-top:8px;}
+#koList .radar.fit .ftrophy{font-size:32px;}
+#koList .radar.fit .fbox{padding:9px 8px;border-radius:14px;width:132px;min-width:0;box-sizing:border-box;border-width:1px;}
+#koList .radar.fit .fbox .fd{font-size:12px;margin-bottom:5px;letter-spacing:.3px;}
+#koList .radar.fit .fbox .fdate{display:block;font-size:8px;color:var(--rmut);margin-bottom:5px;}
+#koList .radar.fit .fbox .ft{display:none;}
+#koList .radar.fit .fslots{gap:7px;align-items:center;}
+#koList .radar.fit .fslots .fs{width:auto;height:auto;border:none;background:transparent;gap:3px;min-width:44px;}
+#koList .radar.fit .fslots .fs .fs-fl img{width:32px;height:22px;object-fit:cover;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.45);}
+#koList .radar.fit .fslots .fs .fs-fl{font-size:22px;line-height:1;}
+#koList .radar.fit .fslots .fs .fs-nm{font-size:9.5px;font-weight:800;line-height:1.1;}
+#koList .radar.fit .fslots .fs .qmark{font-size:20px;}
+#koList .radar.fit .fslots .vs{font-size:11px;font-weight:900;}
+#koList .radar.fit .fresult .cell .nm{font-size:10px;}
+#koList .radar.fit .third{padding:7px 8px;width:132px;min-width:0;box-sizing:border-box;border-radius:12px;}
+#koList .radar.fit .third .tt{font-size:10px;margin-bottom:4px;}
+#koList .radar.fit .third .ts{width:auto;height:auto;margin-bottom:3px;display:flex;align-items:center;justify-content:center;gap:5px;}
+#koList .radar.fit .third .ts .ts-fl img{width:22px;height:15px;object-fit:cover;border-radius:2px;}
+#koList .radar.fit .third .ts .qmark{font-size:15px;}
 #koList .radar.fit .third .td{display:none;}
 #koList .radar.fit .cell.empty .slot{height:18px;margin:1px 0;}
 /* ====== بطاقة تفاصيل المباراة (عريضة مدمجة) ====== */
@@ -866,6 +873,7 @@ html[data-theme="light"] #koList .radar{--rgold:#c8940e;--rgold2:#a9770a;--rcell
 #koList .radar .fbox .fslots .fs .fs-nm{font-size:11px;font-weight:800;color:var(--rtx);white-space:nowrap;}
 #koList .radar .third .ts .ts-fl img{width:24px;height:17px;object-fit:cover;border-radius:2px;vertical-align:middle;}
 #koList .radar .third .ts .vs-sm{margin:0 6px;color:var(--rmut);font-weight:800;font-size:11px;}
+#koList .radar .fbox .fslots .fs .fs-fl{font-size:26px;line-height:1;}
 #koList .radar .fbox .ft{margin-top:10px;font-size:13.5px;color:var(--rgold2);font-weight:800;}
 #koList .radar .fbox .fresult .cell,#koList .radar .third .fresult .cell{border:none;box-shadow:none;background:transparent;padding:2px;}
 #koList .radar .fbox .fresult .cell::before{display:none;}
