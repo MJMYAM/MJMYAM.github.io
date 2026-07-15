@@ -1499,6 +1499,45 @@ html[data-theme="light"] .cd-final .cf-sep{ color:rgba(156,111,13,.55); }
 html[data-theme="light"] .quiz-level,
 html[data-theme="light"] .qz-level{ color:#8a6208 !important; }
 html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-img{ background:#0a1024; }
+
+/* ============ ستايل شجرة الإقصائيات (أسلوب التصميم) ============ */
+.ko-design-wrap{width:100%;display:flex;justify-content:center;overflow-x:auto;padding:4px;}
+.kd-board{position:relative;width:1080px;height:1080px;flex:0 0 auto;
+  background:conic-gradient(from 25deg,#e5322d,#f0a53a,#1f9e57,#2f6bd6,#7b3fe4,#e5322d);
+  border-radius:28px;padding:7px;font-family:'Cairo','Tajawal',sans-serif;
+  transform-origin:top center;}
+.kd-board::before{content:"";position:absolute;inset:7px;border-radius:21px;background:#0a0f24;
+  background-image:radial-gradient(130% 100% at 68% 42%,#141c3a 0%,#0a0f24 58%);}
+.kd-title{position:absolute;top:30px;left:0;width:100%;text-align:center;color:#fff;font-weight:900;font-size:48px;line-height:1;letter-spacing:.5px;text-shadow:0 2px 12px rgba(0,0,0,.6);z-index:2;}
+.kd-sub{position:absolute;top:88px;left:0;width:100%;text-align:center;color:#9fb0d6;font-weight:700;font-size:17px;letter-spacing:3px;z-index:2;}
+.kd-champlabel{position:absolute;left:0;width:100%;text-align:center;color:#fff;font-weight:900;font-size:31px;z-index:2;}
+.kd-champ{position:absolute;width:120px;height:80px;background:linear-gradient(135deg,#5c6787,#454f6e);border-radius:10px 22px 16px 10px;display:flex;align-items:center;justify-content:center;color:#e7ebf5;font-weight:900;font-size:44px;box-shadow:0 6px 16px rgba(0,0,0,.5);z-index:2;}
+
+.kd-card{position:absolute;background:#0f1730;border:1px solid #253157;border-radius:14px;display:flex;flex-direction:column;justify-content:center;gap:7px;padding:8px;box-shadow:0 5px 16px rgba(0,0,0,.45);cursor:pointer;z-index:3;transition:transform .12s;}
+.kd-card:active{transform:scale(.97);}
+.kd-slot{flex:1;display:flex;align-items:center;justify-content:center;position:relative;}
+.kd-slot img.kd-fl{width:66px;height:44px;object-fit:cover;border-radius:6px 12px 10px 6px;box-shadow:0 2px 6px rgba(0,0,0,.6);}
+.kd-slot img.kd-imgerr{display:none;}
+.kd-slot img{width:66px;height:44px;}
+.kd-q,.kd-fq{width:66px;height:44px;background:linear-gradient(135deg,#5c6787,#454f6e);border-radius:6px 13px 10px 6px;display:flex;align-items:center;justify-content:center;color:#e7ebf5;font-weight:900;font-size:22px;}
+.kd-star{position:absolute;top:-5px;right:-5px;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ffd85a,#f0a828);display:flex;align-items:center;justify-content:center;color:#3a2600;font-size:13px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.55);border:1.5px solid #fff3c4;}
+.kd-score{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(9,13,32,.97);border:1.5px solid #4a5c92;border-radius:12px;padding:5px 15px;color:#f5b043;font-weight:900;font-size:24px;line-height:1.2;white-space:nowrap;box-shadow:0 3px 13px rgba(0,0,0,.72);z-index:4;}
+
+.kd-final{background:#131d3d;border:1px solid #3a4877;border-radius:20px;box-shadow:0 0 34px rgba(47,107,214,.28),0 10px 24px rgba(0,0,0,.6);gap:12px;padding:15px;}
+.kd-fslot{flex:1;display:flex;align-items:center;justify-content:center;}
+.kd-fslot img{width:120px;height:78px;object-fit:cover;border-radius:8px 17px 14px 8px;box-shadow:0 4px 10px rgba(0,0,0,.6);}
+.kd-fslot img.kd-ffl{width:120px;height:78px;object-fit:cover;border-radius:8px 17px 14px 8px;box-shadow:0 4px 10px rgba(0,0,0,.6);}
+.kd-fslot img.kd-imgerr{display:none;}
+.kd-final .kd-fq{width:120px;height:78px;font-size:40px;border-radius:8px 17px 14px 8px;}
+
+.kd-bronze{position:absolute;width:156px;height:76px;background:#0f1730;border:1px solid #253157;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px;z-index:3;}
+.kd-bz-s{display:flex;align-items:center;justify-content:center;}
+.kd-bz-s img{width:60px;height:44px;object-fit:cover;border-radius:6px 13px 10px 6px;box-shadow:0 2px 6px rgba(0,0,0,.6);}
+.kd-bz-s.kd-fq{width:60px;height:44px;font-size:24px;}
+.kd-bzlabel{position:absolute;left:440px;width:200px;text-align:center;color:#9fb0d6;font-weight:700;font-size:14px;letter-spacing:1px;z-index:2;}
+
+.kd-trophy{position:absolute;left:432px;top:800px;width:216px;text-align:center;font-size:150px;line-height:1;z-index:2;filter:drop-shadow(0 8px 20px rgba(240,168,58,.35));}
+
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -2935,11 +2974,146 @@ function resolveKOTeam(label){
   return label;
 }
 
+/* ============ شجرة الإقصائيات بأسلوب التصميم (حيّة) ============ */
+function renderKODesign(el){
+  el.className = "ko-design-wrap";
+  var ISOm = (typeof ISO!=="undefined")?ISO:{};
+  function iso(name){ return ISOm[name]||null; }
+  function fUrl(c){
+    if(!c) return "";
+    return (c.indexOf("-")>0) ? "https://flagcdn.com/w160/"+c+".png" : "https://flagcdn.com/w160/"+c+".png";
+  }
+  // نتيجة مباراة كنص + من الفائز (side)
+  function res(n){
+    var r = radarScore(getM(n));
+    if(!r || r.sh==null) return null;
+    var s = r.sh+"-"+r.sa;
+    if(r.pens) s += " ("+r.pens.replace(":","-")+")";
+    return {txt:s, win:r.win};
+  }
+  // بطاقة مواجهة: teamTop/teamBot أسماء، mn رقم المباراة
+  function pairCard(x, y, w, h, topName, botName, mn, opts){
+    opts = opts || {};
+    var r = mn?res(mn):null;
+    // نرتّب: الفائز فوق
+    var tName=topName, bName=botName, played=!!r;
+    if(r && r.win){
+      var m=getM(mn);
+      var winName = resolveKOName(r.win==="h"?m.h:m.a);
+      var loseName= resolveKOName(r.win==="h"?m.a:m.h);
+      tName=winName; bName=loseName;
+    }
+    function slot(name, dim, star){
+      var ic=iso(name);
+      var inner = ic
+        ? '<img src="'+fUrl(ic)+'" class="kd-fl" style="'
+          + (dim?'opacity:.72;filter:grayscale(.28) brightness(.82);':'')
+          + '" onerror="this.classList.add(\'kd-imgerr\')">'
+        : '<div class="kd-q">؟</div>';
+      var st = star ? '<div class="kd-star">★</div>' : '';
+      return '<div class="kd-slot">'+inner+st+'</div>';
+    }
+    var scoreBadge = r
+      ? '<div class="kd-score">'+r.txt+'</div>'
+      : '';
+    var gold = opts.gold ? ' kd-final' : '';
+    return '<div class="kd-card'+gold+'" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" '
+      + 'style="left:'+x+'px;top:'+y+'px;width:'+w+'px;height:'+h+'px;">'
+      + slot(tName, false, played)      // الفائز فوق (نجمة)
+      + slot(bName, played, false)      // الخاسر تحت (مباهت)
+      + scoreBadge
+      + '</div>';
+  }
+  // إحداثيات التصميم (نطاق 1080×1080)
+  var R32=[101,223,345,467,589,711,833,955];
+  var R16=[162,406,650,894];
+  var QF=[284,772];
+  var SF=528, W=88, H=118;
+  function C(x,cy){ return {x:x, y:Math.round(cy-H/2)}; }
+  // ترتيب المباريات حسب مواضع التصميم
+  var L_R32=[74,77,73,75,83,84,81,82], R_R32=[76,78,79,80,86,88,85,87];
+  var L_R16=[89,90,93,94],           R_R16=[91,92,95,96];
+  var L_QF=[97,98],                  R_QF=[99,100];
+  var html='';
+  // دور 32
+  for(var i=0;i<8;i++){ var p=C(26,R32[i]); html+=pairCardByMatch(26,R32[i],L_R32[i]); }
+  for(var i=0;i<8;i++){ html+=pairCardByMatch(966,R32[i],R_R32[i]); }
+  // دور 16
+  for(var i=0;i<4;i++){ html+=pairCardByMatch(148,R16[i],L_R16[i]); }
+  for(var i=0;i<4;i++){ html+=pairCardByMatch(844,R16[i],R_R16[i]); }
+  // ربع
+  for(var i=0;i<2;i++){ html+=pairCardByMatch(270,QF[i],L_QF[i]); }
+  for(var i=0;i<2;i++){ html+=pairCardByMatch(722,QF[i],R_QF[i]); }
+  // نصف
+  html+=pairCardByMatch(372,SF,101);
+  html+=pairCardByMatch(620,SF,102);
+
+  function pairCardByMatch(x,cy,mn){
+    var m=getM(mn); if(!m) return '';
+    var y=Math.round(cy-H/2);
+    var topName=resolveKOName(m.h), botName=resolveKOName(m.a);
+    return pairCard(x,y,W,H,topName,botName,mn,{});
+  }
+
+  // النهائي (بطاقة ذهبية بالوسط) + البطل + البرونزية
+  var fm=getM(104), fr=fm?radarScore(fm):null;
+  var finalSlots;
+  function bigSlot(name){
+    var ic=iso(name);
+    if(ic){
+      return '<div class="kd-fslot"><img src="'+fUrl(ic)+'" class="kd-ffl" onerror="this.classList.add(\'kd-imgerr\')"></div>';
+    }
+    return '<div class="kd-fslot kd-fq">؟</div>';
+  }
+  if(fr && fr.sh!=null){
+    finalSlots = pairCard(462,436,156,186,resolveKOName(fm.h),resolveKOName(fm.a),104,{gold:true});
+  } else {
+    var f1=resolveKOName(fm?fm.h:""), f2=resolveKOName(fm?fm.a:"");
+    finalSlots='<div class="kd-card kd-final" style="left:462px;top:436px;width:156px;height:186px;">'
+      + bigSlot(f1) + bigSlot(f2) + '</div>';
+  }
+  html += finalSlots;
+
+  // صندوق البطل
+  html += '<div class="kd-champ" style="left:480px;top:300px;">?</div>';
+  html += '<div class="kd-champlabel" style="top:206px;">بطل العالم</div>';
+
+  // البرونزية
+  var tm=getM(103);
+  var bA=tm?resolveKOName(tm.h):"", bB=tm?resolveKOName(tm.a):"";
+  function bzSlot(name){
+    var ic=iso(name);
+    return ic ? '<div class="kd-bz-s"><img src="'+fUrl(ic)+'" onerror="this.replaceWith(\'؟\')"></div>' : '<div class="kd-bz-s kd-fq">؟</div>';
+  }
+  html += '<div class="kd-bronze" style="left:462px;top:652px;">'+bzSlot(bA)+bzSlot(bB)+'</div>';
+  html += '<div class="kd-bzlabel" style="top:734px;">المركز الثالث</div>';
+
+  // العنوان
+  html = '<div class="kd-title">كأس العالم 2026</div><div class="kd-sub">الطريق إلى النهائي</div>' + html;
+
+  // الكأس
+  html += '<div class="kd-trophy">🏆</div>';
+
+  el.innerHTML = '<div class="kd-board">'+html+'</div>';
+}
+
+
 function renderKO(){
   var el=document.getElementById("koList");
   if(koMode==="list"){ el.className="ko-vertical"; renderKOList(el); }
-  else { el.className="ko-tree-wrap"; renderKOTree(el); }
+  else { renderKODesign(el); requestAnimationFrame(function(){ scaleKODesign(); setTimeout(scaleKODesign,60); }); }
 }
+function scaleKODesign(){
+  var wrap=document.querySelector(".ko-design-wrap"); if(!wrap) return;
+  var board=wrap.querySelector(".kd-board"); if(!board) return;
+  var avail=(wrap.clientWidth||wrap.parentNode.clientWidth||document.body.clientWidth)-8;
+  if(avail<=0) avail=document.documentElement.clientWidth-16;
+  var scale=Math.min(1, avail/1080);
+  if(!(scale>0)) scale=1;
+  board.style.transform="scale("+scale+")";
+  wrap.style.height=(1080*scale+8)+"px";
+}
+window.addEventListener("resize", function(){ try{scaleKODesign();}catch(e){} });
 function renderKOList(el){
   var order=["r32","r16","qf","sf","third","final"];
   el.innerHTML=order.map(function(rk){
