@@ -6353,14 +6353,28 @@ function podiumSendEmail(p){
   }catch(e){ podiumMarkSent(p.id,false); delete PODIUM_SENDING[p.id]; }
 }
 var PODIUM_REMOTE=[]; var PODIUM_FEED_TS=0;
+function podiumNormEntry(x){
+  if(!x) return null;
+  function sc(v){ if(v===undefined||v===null||v==="") return undefined; if(Array.isArray(v)) return [+v[0],+v[1]]; var m=String(v).match(/(\d+)\s*-\s*(\d+)/); return m?[+m[1],+m[2]]:undefined; }
+  var e={
+    id: x.id ? +x.id : (x.time ? new Date(x.time).getTime() : (x.وقت ? new Date(x.وقت).getTime() : Date.now())),
+    name: x.name||x.الاسم||"—", contact: x.contact||x.التواصل||"", mode: x.mode||x.النمط||"order",
+    c1: x.c1||x.البطل||"", c2: x.c2||x.الوصيف||"", c3: x.c3||x.الثالث||"", c4: x.c4||x.الرابع||""
+  };
+  var a=sc(x.s101), b=sc(x.s102), c=sc(x.s103), d=sc(x.s104);
+  if(a) e.s101=a; if(b) e.s102=b; if(c) e.s103=c; if(d) e.s104=d;
+  return e;
+}
 function podiumFetchFeed(){
   if(Date.now()-PODIUM_FEED_TS < 60000) return;
   PODIUM_FEED_TS=Date.now();
+  var src = SHEETS_URL ? (SHEETS_URL+"?read=1&v="+Date.now()) : ("preds.json?v="+Date.now());
   try{
-    fetch("preds.json?v="+Date.now(), {cache:"no-store"})
+    fetch(src, {cache:"no-store"})
       .then(function(r){ return r.ok ? r.json() : []; })
-      .then(function(arr){
-        if(!Array.isArray(arr)) return;
+      .then(function(data){
+        var arr = Array.isArray(data) ? data : (data && Array.isArray(data.rows) ? data.rows : []);
+        arr = arr.map(podiumNormEntry).filter(function(x){ return x && x.name && x.name!=="—" && x.c1; });
         var sig=JSON.stringify(arr);
         if(sig!==window._predFeedSig){
           window._predFeedSig=sig;
