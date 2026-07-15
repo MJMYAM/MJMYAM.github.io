@@ -1501,7 +1501,7 @@ html[data-theme="light"] .qz-level{ color:#8a6208 !important; }
 html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-img{ background:#0a1024; }
 
 /* ============ ستايل شجرة الإقصائيات (أسلوب التصميم) ============ */
-.ko-design-wrap{width:100%;display:flex;justify-content:center;overflow-x:auto;padding:4px;}
+.ko-design-wrap{position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;width:100vw;max-width:100vw;display:flex;justify-content:center;overflow:hidden;padding:0;}
 .kd-board{position:relative;width:1080px;height:1080px;flex:0 0 auto;
   background:conic-gradient(from 25deg,#e5322d,#f0a53a,#1f9e57,#2f6bd6,#7b3fe4,#e5322d);
   border-radius:28px;padding:7px;font-family:'Cairo','Tajawal',sans-serif;
@@ -3106,12 +3106,12 @@ function renderKO(){
 function scaleKODesign(){
   var wrap=document.querySelector(".ko-design-wrap"); if(!wrap) return;
   var board=wrap.querySelector(".kd-board"); if(!board) return;
-  var avail=(wrap.clientWidth||wrap.parentNode.clientWidth||document.body.clientWidth)-8;
-  if(avail<=0) avail=document.documentElement.clientWidth-16;
-  var scale=Math.min(1, avail/1080);
+  var avail=window.innerWidth||document.documentElement.clientWidth;
+  if(avail<=0) avail=360;
+  var scale=avail/1080;
   if(!(scale>0)) scale=1;
   board.style.transform="scale("+scale+")";
-  wrap.style.height=(1080*scale+8)+"px";
+  wrap.style.height=(1080*scale)+"px";
 }
 window.addEventListener("resize", function(){ try{scaleKODesign();}catch(e){} });
 function renderKOList(el){
