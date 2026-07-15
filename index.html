@@ -1525,6 +1525,9 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kd-score{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(9,13,32,.97);border:1.5px solid #4a5c92;border-radius:12px;padding:5px 15px;color:#f5b043;font-weight:900;font-size:24px;line-height:1.2;white-space:nowrap;box-shadow:0 3px 13px rgba(0,0,0,.72);z-index:4;}
 .kd-vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(9,13,32,.97);border:1.5px solid #3a4877;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:#9fb0d6;font-weight:900;font-size:14px;letter-spacing:.5px;box-shadow:0 3px 10px rgba(0,0,0,.6);z-index:4;}
 .kd-final .kd-vs{width:44px;height:44px;font-size:18px;}
+.kd-livesc{border-color:#e5484d;}
+.kd-livedot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e5484d;margin-left:7px;vertical-align:middle;animation:kdPulse 1.1s ease-in-out infinite;}
+@keyframes kdPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.45;transform:scale(.8);}}
 .kd-vs-bz{flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#9fb0d6;font-weight:900;font-size:13px;letter-spacing:.5px;}
 
 .kd-final{background:#131d3d;border:1px solid #3a4877;border-radius:20px;box-shadow:0 0 34px rgba(47,107,214,.28),0 10px 24px rgba(0,0,0,.6);gap:12px;padding:15px;}
@@ -3022,17 +3025,24 @@ function renderKODesign(el){
   function res(n){
     var r = radarScore(getM(n));
     if(!r || r.sh==null) return null;
+    // "منتهية" حصراً من status==="finished" (لا نعتمد وجود نتيجة — الحية والمجدولة لها نتيجة أيضاً)
+    var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[n]:null;
+    var sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[n]:null;
+    var st=(fr&&fr.status)||(sc&&sc.status)||"";
+    var fin=(st==="finished");
+    var liveish=/progress|live|half|paus/i.test(st);
+    if(!fin && !liveish) return null;   // مجدولة (حتى لو 0-0 من المصدر) → VS
     var s = r.sh+"-"+r.sa;
     if(r.pens) s += " ("+r.pens.replace(":","-")+")";
-    return {txt:s, win:r.win};
+    return {txt:s, win:r.win, fin:fin};
   }
   // بطاقة مواجهة: teamTop/teamBot أسماء، mn رقم المباراة
   function pairCard(x, y, w, h, topName, botName, mn, opts){
     opts = opts || {};
     var r = mn?res(mn):null;
-    // نرتّب: الفائز فوق
-    var tName=topName, bName=botName, played=!!r;
-    if(r && r.win){
+    // نرتّب: الفائز فوق — فقط بعد انتهاء المباراة
+    var tName=topName, bName=botName, fin=!!(r&&r.fin);
+    if(fin && r.win){
       var m=getM(mn);
       var winName = resolveKOName(r.win==="h"?m.h:m.a);
       var loseName= resolveKOName(r.win==="h"?m.a:m.h);
@@ -3049,13 +3059,13 @@ function renderKODesign(el){
       return '<div class="kd-slot">'+inner+st+'</div>';
     }
     var scoreBadge = r
-      ? '<div class="kd-score">'+r.txt+'</div>'
+      ? '<div class="kd-score'+(r.fin?'':' kd-livesc')+'">'+(r.fin?'':'<span class="kd-livedot"></span>')+r.txt+'</div>'
       : '<div class="kd-vs">VS</div>';
     var gold = opts.gold ? ' kd-final' : '';
     return '<div class="kd-card'+gold+'" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" '
       + 'style="left:'+x+'px;top:'+y+'px;width:'+w+'px;height:'+h+'px;">'
-      + slot(tName, false, played)      // الفائز فوق (نجمة)
-      + slot(bName, played, false)      // الخاسر تحت (مباهت)
+      + slot(tName, false, fin)         // نجمة الفائز بعد النهاية فقط
+      + slot(bName, fin, false)         // تبهيت الخاسر بعد النهاية فقط
       + scoreBadge
       + '</div>';
   }
