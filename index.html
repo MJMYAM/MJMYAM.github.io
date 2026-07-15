@@ -1537,7 +1537,8 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kd-bz-s.kd-fq{width:60px;height:44px;font-size:24px;}
 .kd-bzlabel{position:absolute;left:390px;width:300px;text-align:center;color:#9fb0d6;font-weight:800;font-size:22px;letter-spacing:1px;z-index:2;}
 
-.kd-trophy{position:absolute;left:432px;top:800px;width:216px;text-align:center;font-size:150px;line-height:1;z-index:2;filter:drop-shadow(0 8px 20px rgba(240,168,58,.35));}
+.kd-trophy{position:absolute;left:410px;top:792px;width:260px;display:flex;align-items:center;justify-content:center;z-index:2;}
+.kd-trophy img{width:150px;height:auto;display:block;background:#fff;border-radius:26px;padding:14px 16px;border:1.5px solid rgba(240,194,75,.6);box-shadow:0 14px 40px rgba(0,0,0,.5),inset 0 0 0 1px rgba(240,194,75,.12);}
 
 </style>
   <link rel="manifest" href="manifest.json">
@@ -3139,7 +3140,7 @@ function renderKODesign(el){
   html = svg + html;
 
   // الكأس
-  html += '<div class="kd-trophy">🏆</div>';
+  html += '<div class="kd-trophy"><img src="wc-logo.png" alt="شعار البطولة"></div>';
 
   el.innerHTML = '<div class="kd-board">'+html+'</div>';
 }
