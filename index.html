@@ -1509,7 +1509,7 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kd-board::before{content:"";position:absolute;inset:7px;border-radius:21px;background:#0a0f24;
   background-image:radial-gradient(130% 100% at 68% 42%,#141c3a 0%,#0a0f24 58%);}
 .kd-title{position:absolute;top:30px;left:0;width:100%;text-align:center;color:#fff;font-weight:900;font-size:48px;line-height:1;letter-spacing:.5px;text-shadow:0 2px 12px rgba(0,0,0,.6);z-index:2;}
-.kd-sub{position:absolute;top:88px;left:0;width:100%;text-align:center;color:#9fb0d6;font-weight:700;font-size:17px;letter-spacing:3px;z-index:2;}
+.kd-sub{position:absolute;top:84px;left:0;width:100%;text-align:center;color:#9fb0d6;font-weight:800;font-size:24px;letter-spacing:2px;z-index:2;}
 .kd-champlabel{position:absolute;left:0;width:100%;text-align:center;color:#fff;font-weight:900;font-size:31px;z-index:2;}
 .kd-champ{position:absolute;width:120px;height:80px;background:linear-gradient(135deg,#5c6787,#454f6e);border-radius:10px 22px 16px 10px;display:flex;align-items:center;justify-content:center;color:#e7ebf5;font-weight:900;font-size:44px;box-shadow:0 6px 16px rgba(0,0,0,.5);z-index:2;}
 
@@ -1535,7 +1535,7 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kd-bz-s{display:flex;align-items:center;justify-content:center;}
 .kd-bz-s img{width:60px;height:44px;object-fit:cover;border-radius:6px 13px 10px 6px;box-shadow:0 2px 6px rgba(0,0,0,.6);}
 .kd-bz-s.kd-fq{width:60px;height:44px;font-size:24px;}
-.kd-bzlabel{position:absolute;left:440px;width:200px;text-align:center;color:#9fb0d6;font-weight:700;font-size:14px;letter-spacing:1px;z-index:2;}
+.kd-bzlabel{position:absolute;left:390px;width:300px;text-align:center;color:#9fb0d6;font-weight:800;font-size:22px;letter-spacing:1px;z-index:2;}
 
 .kd-trophy{position:absolute;left:432px;top:800px;width:216px;text-align:center;font-size:150px;line-height:1;z-index:2;filter:drop-shadow(0 8px 20px rgba(240,168,58,.35));}
 
@@ -2928,6 +2928,30 @@ function koWinnerOf(matchNum, depth){
   if(ph!=null&&pa!=null){ if(ph>pa) return hName; if(pa>ph) return aName; }
   return null;
 }
+/* تحديد خاسر مباراة إقصائية (إن انتهت) — يحلّ "خاسر المباراة X" */
+function koLoserOf(matchNum, depth){
+  depth = depth || 0;
+  if(depth>10) return null;
+  var m = getM(matchNum);
+  if(!m) return null;
+  var fr = (typeof FINAL_RESULTS!=="undefined") ? FINAL_RESULTS[matchNum] : null;
+  var sc = (typeof SC_CACHE!=="undefined") ? SC_CACHE[matchNum] : null;
+  var sh=null, sa=null, done=false;
+  if(fr && fr.status==="finished"){ sh=fr.sh; sa=fr.sa; done=true; }
+  else if(sc && sc.found && sc.status==="finished"){ sh=sc.sh; sa=sc.sa; done=true; }
+  if(!done || sh==null || sa==null) return null;
+  var hName = resolveKOName(m.h, depth+1);
+  var aName = resolveKOName(m.a, depth+1);
+  if(sh>sa) return aName;
+  if(sa>sh) return hName;
+  var ws=(fr&&fr.winSide)||(sc&&sc.winSide)||null;
+  if(ws==="h") return aName;
+  if(ws==="a") return hName;
+  var ph=(fr&&fr.pH!=null)?fr.pH:((sc&&sc.pH!=null)?sc.pH:null);
+  var pa=(fr&&fr.pA!=null)?fr.pA:((sc&&sc.pA!=null)?sc.pA:null);
+  if(ph!=null&&pa!=null){ if(ph>pa) return aName; if(pa>ph) return hName; }
+  return null;
+}
 /* يحلّ أي اسم: فريق فعلي / متصدر-وصيف مجموعة / الفائز من مباراة */
 function resolveKOName(name, depth){
   if(!name || typeof name!=="string") return name;
@@ -2937,6 +2961,12 @@ function resolveKOName(name, depth){
   if(mw){
     var w = koWinnerOf(parseInt(mw[1],10), (depth||0)+1);
     return w || name;
+  }
+  // خاسر المباراة X
+  var ml = name.match(/خاسر المباراة\s+(\d+)/);
+  if(ml){
+    var lo = koLoserOf(parseInt(ml[1],10), (depth||0)+1);
+    return lo || name;
   }
   // متصدر/وصيف المجموعة (نعيد استخدام resolveKOTeam)
   if(typeof resolveKOTeam==="function"){
@@ -3070,7 +3100,7 @@ function renderKODesign(el){
     finalSlots = pairCard(462,436,156,186,resolveKOName(fm.h),resolveKOName(fm.a),104,{gold:true});
   } else {
     var f1=resolveKOName(fm?fm.h:""), f2=resolveKOName(fm?fm.a:"");
-    finalSlots='<div class="kd-card kd-final" style="left:462px;top:436px;width:156px;height:186px;">'
+    finalSlots='<div class="kd-card kd-final" data-mn="104" onclick="radarMatchPopup(104)" role="button" style="left:462px;top:436px;width:156px;height:186px;">'
       + bigSlot(f1) + bigSlot(f2) + '</div>';
   }
   html += finalSlots;
@@ -3086,7 +3116,7 @@ function renderKODesign(el){
     var ic=iso(name);
     return ic ? '<div class="kd-bz-s"><img src="'+fUrl(ic)+'" onerror="this.replaceWith(\'؟\')"></div>' : '<div class="kd-bz-s kd-fq">؟</div>';
   }
-  html += '<div class="kd-bronze" style="left:462px;top:652px;">'+bzSlot(bA)+bzSlot(bB)+'</div>';
+  html += '<div class="kd-bronze" data-mn="103" onclick="radarMatchPopup(103)" role="button" style="left:462px;top:652px;cursor:pointer;">'+bzSlot(bA)+bzSlot(bB)+'</div>';
   html += '<div class="kd-bzlabel" style="top:734px;">المركز الثالث</div>';
 
   // العنوان
