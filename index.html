@@ -1538,7 +1538,8 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kd-bz-s{display:flex;align-items:center;justify-content:center;}
 .kd-bz-s img{width:60px;height:44px;object-fit:cover;border-radius:6px 13px 10px 6px;box-shadow:0 2px 6px rgba(0,0,0,.6);}
 .kd-bz-s.kd-fq{width:60px;height:44px;font-size:24px;}
-.kd-bzlabel{position:absolute;left:390px;width:300px;text-align:center;color:#9fb0d6;font-weight:800;font-size:22px;letter-spacing:1px;z-index:2;}
+.kd-bzlabel{position:absolute;left:340px;width:400px;text-align:center;color:#c7d0ea;font-weight:800;font-size:21px;letter-spacing:.5px;z-index:2;line-height:1.35;}
+.kd-bzsub{display:block;color:#8492ba;font-weight:700;font-size:15px;letter-spacing:0;margin-top:2px;}
 
 .kd-trophy{position:absolute;left:410px;top:792px;width:260px;display:flex;align-items:center;justify-content:center;z-index:2;}
 .kd-trophy img{width:150px;height:auto;display:block;background:#fff;border-radius:26px;padding:14px 16px;border:1.5px solid rgba(240,194,75,.6);box-shadow:0 14px 40px rgba(0,0,0,.5),inset 0 0 0 1px rgba(240,194,75,.12);}
@@ -3121,7 +3122,7 @@ function renderKODesign(el){
     return ic ? '<div class="kd-bz-s"><img src="'+fUrl(ic)+'" onerror="this.replaceWith(\'؟\')"></div>' : '<div class="kd-bz-s kd-fq">؟</div>';
   }
   html += '<div class="kd-bronze" data-mn="103" onclick="radarMatchPopup(103)" role="button" style="left:462px;top:652px;cursor:pointer;">'+bzSlot(bA)+'<div class="kd-vs-bz">VS</div>'+bzSlot(bB)+'</div>';
-  html += '<div class="kd-bzlabel" style="top:734px;">المركز الثالث</div>';
+  html += '<div class="kd-bzlabel" style="top:730px;">مباراة تحديد المركز الثالث<span class="kd-bzsub">الخاسران من نصف النهائي</span></div>';
 
   // العنوان
   html = '<div class="kd-title">كأس العالم 2026</div><div class="kd-sub">الطريق إلى النهائي</div>' + html;
