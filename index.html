@@ -1525,7 +1525,9 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kd-score{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(9,13,32,.97);border:1.5px solid #4a5c92;border-radius:12px;padding:5px 15px;color:#f5b043;font-weight:900;font-size:24px;line-height:1.2;white-space:nowrap;box-shadow:0 3px 13px rgba(0,0,0,.72);z-index:4;}
 .kd-vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(9,13,32,.97);border:1.5px solid #3a4877;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:#9fb0d6;font-weight:900;font-size:14px;letter-spacing:.5px;box-shadow:0 3px 10px rgba(0,0,0,.6);z-index:4;}
 .kd-final .kd-vs{width:44px;height:44px;font-size:18px;}
-.kd-livesc{border-color:#e5484d;}
+.kd-livesc{border-color:#e5484d!important;color:#ff7b7b!important;}
+.kd-livedot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff4d4f;margin-inline-end:7px;vertical-align:middle;animation:kdpulse 1.2s infinite;}
+@keyframes kdpulse{50%{opacity:.3}}
 .kd-livedot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e5484d;margin-left:7px;vertical-align:middle;animation:kdPulse 1.1s ease-in-out infinite;}
 @keyframes kdPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.45;transform:scale(.8);}}
 .kd-vs-bz{flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#9fb0d6;font-weight:900;font-size:13px;letter-spacing:.5px;}
@@ -3586,15 +3588,15 @@ var FINAL_RESULTS={
   76:{sh:2, sa:1, status:"finished",
      gh:[{who:"كاسيميرو", min:"56"},{who:"غابرييل مارتينيلي", min:"90+5"}], ga:[{who:"كايشو سانو", min:"29"}]},
   77:{sh:3, sa:0, status:"finished",
-     gh:[{who:"كيليان مبابي", min:"45"},{who:"برادلي باركولا", min:""},{who:"كيليان مبابي", min:""}], ga:[]},
+     gh:[{who:"كيليان مبابي", min:"45"},{who:"برادلي باركولا", min:"53"},{who:"كيليان مبابي", min:"74"}], ga:[]},
   78:{sh:1, sa:2, status:"finished",
      gh:[{who:"عثمان ديالو", min:"74"}], ga:[{who:"أنطونيو نوسا", min:"39"},{who:"إيرلينغ هالاند", min:"86"}]},
   79:{sh:2, sa:0, status:"finished",
      gh:[{who:"خوليان كينيونيس", min:"22"},{who:"راؤول خيمينيز", min:"31"}], ga:[]},
   80:{sh:2, sa:1, status:"finished",
-     gh:[{who:"هاري كين", min:""},{who:"هاري كين", min:""}], ga:[{who:"بريان سيبينغا", min:""}]},
+     gh:[{who:"هاري كين", min:"75"},{who:"هاري كين", min:"86"}], ga:[{who:"بريان سيبينغا", min:"7"}]},
   81:{sh:2, sa:0, status:"finished",
-     gh:[{who:"فولارين بالوغون", min:""},{who:"مالك تيلمان", min:""}], ga:[]},
+     gh:[{who:"فولارين بالوغون", min:"45"},{who:"مالك تيلمان", min:"82"}], ga:[]},
   82:{sh:3, sa:2, status:"finished",
      gh:[{who:"روميلو لوكاكو", min:"86"},{who:"يوري تيليمانس", min:"89"},{who:"يوري تيليمانس", min:"120+5"}], ga:[{who:"حبيب ديارا", min:"24"},{who:"إسماعيلا سار", min:"51"}]},
   84:{sh:3, sa:0, status:"finished",
@@ -3602,7 +3604,7 @@ var FINAL_RESULTS={
   83:{sh:2, sa:1, status:"finished",
      gh:[{who:"كريستيانو رونالدو", min:"68"},{who:"غونسالو راموش", min:"90+4"}], ga:[{who:"إيفان بيريشيتش", min:"53"}]},
   85:{sh:2, sa:0, status:"finished",
-     gh:[{who:"بريل إمبولو", min:""},{who:"دان ندوي", min:"46"}], ga:[]},
+     gh:[{who:"بريل إمبولو", min:"10"},{who:"دان ندوي", min:"46"}], ga:[]},
   88:{sh:1, sa:1, status:"finished", winSide:"a", pH:2, pA:4,
      gh:[{who:"هدف عكسي (محمد هاني)", min:"", type:"عكسي"}], ga:[{who:"إمام عاشور", min:"13"}]},
   86:{sh:3, sa:2, status:"finished",
@@ -3635,7 +3637,9 @@ var FINAL_RESULTS={
   100:{sh:3, sa:1, status:"finished", winSide:"h",
      gh:[{who:"أليكسيس ماك أليستر", min:"10"},{who:"خوليان ألفاريز", min:"112"},{who:"لاوتارو مارتينيز", min:"120+1"}], ga:[{who:"دان ندوي", min:"67"}]},
   101:{sh:0, sa:2, status:"finished", winSide:"a",
-     gh:[], ga:[{who:"ميكيل أوياربال (ج)", min:"22"},{who:"بيدرو بورو", min:"58"}]}
+     gh:[], ga:[{who:"ميكيل أوياربال (ج)", min:"22"},{who:"بيدرو بورو", min:"58"}]},
+  102:{sh:1, sa:2, status:"finished", winSide:"a",
+     gh:[{who:"أنتوني غوردون", min:"55"}], ga:[{who:"إنزو فرنانديز", min:"85"},{who:"لاوتارو مارتينيز", min:"90+2"}]}
 };
 /* ===== تحديث تلقائي: أي مباراة إقصائية انتهت تُرقّى لنتيجة دائمة (بدون تدخل يدوي) ===== */
 try{
