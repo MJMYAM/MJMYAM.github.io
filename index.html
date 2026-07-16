@@ -2990,6 +2990,9 @@ function resolveKOTeam(label){
   if(typeof label==="string"){
     var mw=label.match(/الفائز من المباراة\s+(\d+)/);
     if(mw){ var w=koWinnerOf(parseInt(mw[1],10),0); if(w) return w; return label; }
+    // خاسر المباراة X → الخاسر الفعلي
+    var ml=label.match(/خاسر المباراة\s+(\d+)/);
+    if(ml){ var lo=koLoserOf(parseInt(ml[1],10),0); if(lo) return lo; return label; }
   }
   if(!label || typeof label!=="string") return label;
   // متصدر/وصيف المجموعة X
