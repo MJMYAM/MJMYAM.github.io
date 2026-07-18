@@ -1623,7 +1623,7 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kr-brand img{height:230px;filter:drop-shadow(0 8px 26px rgba(0,0,0,.5));}
 .kr-foot{position:absolute;bottom:22px;left:0;width:100%;text-align:center;color:#bfc6d8;font-weight:800;font-size:22px;letter-spacing:.4px;z-index:2;}
 /* بطاقة دور الـ32: اسم/علم/نتيجة/علم/اسم */
-.kr-c{position:absolute;width:122px;background:#262629;border:1px solid #3d3d41;border-radius:16px;padding:7px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;box-shadow:0 8px 20px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02);cursor:pointer;z-index:3;}
+.kr-c{position:absolute;width:122px;height:196px;justify-content:center;background:#262629;border:1px solid #3d3d41;border-radius:16px;padding:7px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;box-shadow:0 8px 20px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02);cursor:pointer;z-index:3;}
 .kr-c:active{transform:scale(.97);}
 .kr-nm{font-weight:800;font-size:16px;color:#e9edf6;line-height:1.15;white-space:nowrap;max-width:114px;overflow:hidden;text-overflow:ellipsis;}
 .kr-fl{width:82px;height:52px;object-fit:cover;border-radius:10px;box-shadow:0 3px 9px rgba(0,0,0,.55);}
@@ -1631,7 +1631,7 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kr-sc{font-weight:900;font-size:24px;color:#fff;line-height:1;padding:1px 0;}
 .kr-sc small{display:inline;font-size:13.5px;color:#d9b25e;font-weight:800;margin-inline-start:4px;}
 /* بطاقة الأدوار التالية: صفّا فريقين + وسط (نتيجة أو موعد) */
-.kr-m{position:absolute;width:122px;background:#262629;border:1px solid #3d3d41;border-radius:18px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 8px 20px rgba(0,0,0,.45);cursor:pointer;z-index:3;}
+.kr-m{position:absolute;width:122px;height:230px;justify-content:center;background:#262629;border:1px solid #3d3d41;border-radius:18px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 8px 20px rgba(0,0,0,.45);cursor:pointer;z-index:3;}
 .kr-m:active{transform:scale(.97);}
 .kr-row{display:flex;flex-direction:column;align-items:center;gap:4px;}
 .kr-m .kr-fl{width:84px;height:54px;}
@@ -3306,7 +3306,7 @@ function renderKORadarPoster(el){
     var hN=resolveKOName(m.h), aN=resolveKOName(m.a);
     var s=fin(mn)?scoreOf(mn):null;
     var mid=s?('<div class="kr-sc">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):whenHTML(m);
-    var h=196; var y=Math.round(cy-h/2);
+    var y=Math.round(cy-98);
     return '<div class="kr-c" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" style="left:'+x+'px;top:'+y+'px;">'
       +'<div class="kr-nm">'+hN+'</div>'+flag(hN)+mid+flag(aN)+'<div class="kr-nm">'+aN+'</div></div>';
   }
@@ -3316,7 +3316,7 @@ function renderKORadarPoster(el){
     var hN=resolveKOName(m.h), aN=resolveKOName(m.a);
     var s=fin(mn)?scoreOf(mn):null;
     var mid=s?('<div class="kr-mid">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):whenHTML(m);
-    var h=236; var y=Math.round(cy-h/2);
+    var y=Math.round(cy-115);
     function row(n){ return '<div class="kr-row">'+flag(n)+'<div class="kr-nm">'+n+'</div></div>'; }
     return '<div class="kr-m" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" style="left:'+x+'px;top:'+y+'px;">'
       +row(hN)+mid+row(aN)+'</div>';
@@ -3324,7 +3324,7 @@ function renderKORadarPoster(el){
   /* التخطيط */
   var Y32=[236,436,636,836,1036,1236,1436,1636];
   var Y16=[336,736,1136,1536], YQF=[618,1294], YSF=956;
-  var Lx={c1:16,c2:158,c3:300,c4:372}, Rx={c1:1080-16-122,c2:1080-158-122,c3:1080-300-122,c4:1080-372-122};
+  var Lx={c1:14,c2:170,c3:338,c4:372}, Rx={c1:1080-14-122,c2:1080-170-122,c3:1080-338-122,c4:1080-372-122};
   var L32=[74,77,73,75,83,84,81,82], R32=[76,78,79,80,86,88,85,87];
   var L16=[89,90,93,94], R16m=[91,92,95,96];
   var LQF=[97,98], RQF=[99,100];
@@ -3342,7 +3342,7 @@ function renderKORadarPoster(el){
   var fMid = fs?('<div class="kr-cmid"><div class="t2">'+fs.main+'</div>'+(fs.pens?'<div class="t1">'+fs.pens+'</div>':'')+'</div>')
               :('<div class="kr-cmid"><div class="t2">'+ft.t+ft.ap+'</div><div class="t3">🏟️</div></div>');
   html+='<div class="kr-datecap" style="top:340px;">'+fmtD(fm.d)+'</div>';
-  html+='<div class="kr-final" data-mn="104" onclick="radarMatchPopup(104)" style="left:310px;top:376px;width:460px;height:122px;">'
+  html+='<div class="kr-final" data-mn="104" onclick="radarMatchPopup(104)" style="left:330px;top:376px;width:420px;height:122px;">'
       + slot(resolveKOName(fm.h)) + fMid + slot(resolveKOName(fm.a)) + '</div>';
   /* المركز الثالث */
   var tMid = ts?('<div class="kr-cmid"><div class="t2">'+ts.main+'</div>'+(ts.pens?'<div class="t1">'+ts.pens+'</div>':'')+'</div>')
@@ -3351,24 +3351,42 @@ function renderKORadarPoster(el){
   html+='<div class="kr-bronze" data-mn="103" onclick="radarMatchPopup(103)" style="left:322px;top:1608px;width:436px;height:110px;">'
       + slot(resolveKOName(tmm.h)) + tMid + slot(resolveKOName(tmm.a)) + '</div>';
 
-  /* خطوط ذهبية */
+  /* خطوط ذهبية مرتّبة: دخول من منتصف البطاقة، أقواس متناظرة */
   var P=[];
-  function elbow(x1,y1,xm,x2,y2){ P.push('M'+x1+','+y1+' L'+xm+','+y1+' L'+xm+','+y2+' L'+x2+','+y2); }
-  // يسار: 32→16
-  var eL1=Lx.c1+122, sL2=Lx.c2, eL2=Lx.c2+122, sL3=Lx.c3, eL3=Lx.c3+122;
-  for(var i=0;i<4;i++){ elbow(eL1,Y32[2*i],(eL1+sL2)/2,sL2,Y16[i]); elbow(eL1,Y32[2*i+1],(eL1+sL2)/2,sL2,Y16[i]); }
-  for(var i=0;i<2;i++){ elbow(eL2,Y16[2*i],(eL2+sL3)/2,sL3,YQF[i]); elbow(eL2,Y16[2*i+1],(eL2+sL3)/2,sL3,YQF[i]); }
-  elbow(eL3,YQF[0],(eL3+Lx.c4)/2,Lx.c4,YSF); elbow(eL3,YQF[1],(eL3+Lx.c4)/2,Lx.c4,YSF);
-  // نصف يسار → النهائي
-  P.push('M'+(Lx.c4+61)+','+(YSF-118)+' L'+(Lx.c4+61)+',540 L540,540');
-  // يمين (مرآة)
-  var eR1=Rx.c1, sR2=Rx.c2+122, sR2b=Rx.c2, eR3=Rx.c3;
-  for(var i=0;i<4;i++){ elbow(eR1,Y32[2*i],(eR1+sR2)/2,sR2,Y16[i]); elbow(eR1,Y32[2*i+1],(eR1+sR2)/2,sR2,Y16[i]); }
-  for(var i=0;i<2;i++){ elbow(sR2b,Y16[2*i],(sR2b+Rx.c3+122)/2,Rx.c3+122,YQF[i]); elbow(sR2b,Y16[2*i+1],(sR2b+Rx.c3+122)/2,Rx.c3+122,YQF[i]); }
-  elbow(eR3,YQF[0],(eR3+Rx.c4+122)/2,Rx.c4+122,YSF); elbow(eR3,YQF[1],(eR3+Rx.c4+122)/2,Rx.c4+122,YSF);
-  P.push('M'+(Rx.c4+61)+','+(YSF-118)+' L'+(Rx.c4+61)+',540 L540,540');
+  var W=122;
+  function pairJoin(srcRight, y1, y2, tgtLeft, ty){
+    var xm=(srcRight+tgtLeft)/2;
+    P.push('M'+srcRight+','+y1+' L'+xm+','+y1+' L'+xm+','+ty+' L'+tgtLeft+','+ty);
+    P.push('M'+srcRight+','+y2+' L'+xm+','+y2+' L'+xm+','+ty+' L'+tgtLeft+','+ty);
+  }
+  function pairJoinR(srcLeft, y1, y2, tgtRight, ty){
+    var xm=(srcLeft+tgtRight)/2;
+    P.push('M'+srcLeft+','+y1+' L'+xm+','+y1+' L'+xm+','+ty+' L'+tgtRight+','+ty);
+    P.push('M'+srcLeft+','+y2+' L'+xm+','+y2+' L'+xm+','+ty+' L'+tgtRight+','+ty);
+  }
+  /* 32→16 */
+  for(var i2=0;i2<4;i2++){
+    pairJoin(Lx.c1+W, Y32[2*i2], Y32[2*i2+1], Lx.c2, Y16[i2]);
+    pairJoinR(Rx.c1, Y32[2*i2], Y32[2*i2+1], Rx.c2+W, Y16[i2]);
+  }
+  /* 16→ربع */
+  for(var i2=0;i2<2;i2++){
+    pairJoin(Lx.c2+W, Y16[2*i2], Y16[2*i2+1], Lx.c3, YQF[i2]);
+    pairJoinR(Rx.c2, Y16[2*i2], Y16[2*i2+1], Rx.c3+W, YQF[i2]);
+  }
+  /* ربع→نصف: دخول من أعلى/أسفل بطاقة النصف بساق عمودية بعد عمود الربع */
+  var stL=Lx.c3+W+14, stR=Rx.c3-14;
+  var sfTop=YSF-115, sfBot=YSF+115;
+  P.push('M'+(Lx.c3+W)+','+YQF[0]+' L'+stL+','+YQF[0]+' L'+stL+','+sfTop);
+  P.push('M'+(Lx.c3+W)+','+YQF[1]+' L'+stL+','+YQF[1]+' L'+stL+','+sfBot);
+  P.push('M'+Rx.c3+','+YQF[0]+' L'+stR+','+YQF[0]+' L'+stR+','+sfTop);
+  P.push('M'+Rx.c3+','+YQF[1]+' L'+stR+','+YQF[1]+' L'+stR+','+sfBot);
+  /* نصف→النهائي: نزول عمودي من أسفل صندوق النهائي إلى منتصف بطاقة النصف */
+  var fL=330, fR=750, fBot=498;
+  P.push('M'+fL+','+fBot+' L'+fL+','+YSF+' L'+(Lx.c4)+','+YSF);
+  P.push('M'+fR+','+fBot+' L'+fR+','+YSF+' L'+(Rx.c4+W)+','+YSF);
   var svg='<svg class="kr-conn" viewBox="0 0 1080 1920" preserveAspectRatio="none">'
-    +P.map(function(d){return '<path d="'+d+'" fill="none" stroke="#c9a24b" stroke-width="2" opacity=".85"></path>';}).join("")
+    +P.map(function(d){return '<path d="'+d+'" fill="none" stroke="#c9a24b" stroke-width="2" opacity=".9" stroke-linejoin="round" stroke-linecap="round"></path>';}).join("")
     +'</svg>';
 
   var top='<div class="kr-rainbow"></div><div class="kr-title">الطريق إلى النهائي</div>'
