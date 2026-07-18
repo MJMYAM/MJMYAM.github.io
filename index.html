@@ -3960,7 +3960,7 @@ var FINAL_RESULTS={
   91:{sh:1, sa:2, status:"finished", winSide:"a",
      gh:[{who:"نيمار (ج)", min:"90+10"}], ga:[{who:"إيرلينغ هالاند", min:"79"},{who:"إيرلينغ هالاند", min:"90"}]},
   92:{sh:2, sa:3, status:"finished", winSide:"a",
-     gh:[{who:"خوليان كينيونس", min:"42"},{who:"راؤول خيمينيز (ج)", min:"69"}], ga:[{who:"جود بيلينغهام", min:"36"},{who:"جود بيلينغهام", min:"38"},{who:"هاري كين (ج)", min:"60"}]},
+     gh:[{who:"خوليان كينيونيس", min:"42"},{who:"راؤول خيمينيز (ج)", min:"69"}], ga:[{who:"جود بيلينغهام", min:"36"},{who:"جود بيلينغهام", min:"38"},{who:"هاري كين (ج)", min:"60"}]},
   93:{sh:0, sa:1, status:"finished", winSide:"a",
      gh:[], ga:[{who:"ميكيل مرينو", min:"90+1"}]},
   94:{sh:1, sa:4, status:"finished", winSide:"a",
@@ -5389,7 +5389,7 @@ var STAT_DATA={
     {n:"إسماعيلا سار", t:"السنغال", v:4},
     {n:"يوهان مانزامبي", t:"سويسرا", v:3},
     {n:"إسماعيل الصيباري", t:"المغرب", v:3},
-    {n:"خوليان كينيونس", t:"المكسيك", v:3},
+    {n:"خوليان كينيونيس", t:"المكسيك", v:3},
     {n:"يوان ويسا", t:"الكونغو الديمقراطية", v:3},
     {n:"كريستيانو رونالدو", t:"البرتغال", v:3},
     {n:"جوناثان ديفيد", t:"كندا", v:3}
@@ -5644,6 +5644,7 @@ function renderTeamStats(){
 }
 
 async function fetchGoalsSilent(n, evId){
+  if(typeof FINAL_RESULTS!=="undefined" && FINAL_RESULTS[n] && (FINAL_RESULTS[n].gh||FINAL_RESULTS[n].ga)) return; /* الأسماء المدقّقة لا تُستبدل */
   try{
     var res=await fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event="+evId);
     if(!res.ok) return;
