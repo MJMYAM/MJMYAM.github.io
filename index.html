@@ -1652,6 +1652,11 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .kr-cmid .t3{font-size:20px;}
 .kr-datecap{position:absolute;width:100%;text-align:center;color:#e9edf6;font-weight:900;font-size:24px;z-index:3;}
 .kr-lbl{position:absolute;width:100%;text-align:center;color:#fff;font-weight:900;font-size:30px;z-index:3;}
+.kr-lose{opacity:.42;}
+img.kr-fl.kr-lose,.kr-slot.kr-lose img{filter:grayscale(.75);}
+.kr-thirdwin{position:absolute;left:322px;top:1740px;width:436px;height:58px;display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#2a2016,#1d1a15);border:1.5px solid #c98b4a;border-radius:16px;color:#f0d9b8;font-weight:900;font-size:22px;box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 20px rgba(201,139,74,.15);cursor:pointer;z-index:4;}
+.kr-thirdwin img{width:64px;height:42px;object-fit:cover;border-radius:8px;box-shadow:0 3px 8px rgba(0,0,0,.6);}
+.kr-thirdwin b{color:#ffe9c9;}
 .kr-conn{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 </style>
   <link rel="manifest" href="manifest.json">
@@ -3292,10 +3297,11 @@ function renderKORadarPoster(el){
     var r=radarScore(getM(n)); if(!r||r.sh==null) return null;
     return {main:r.sh+"-"+r.sa, pens:(r.pens ? ("("+r.pens.replace(":","-")+") ركلات") : null)};
   }
-  function flag(name,w){
-    var ic=iso(name);
-    return ic?'<img class="kr-fl" src="'+fU(ic)+'" onerror="this.classList.add(\'kd-imgerr\')">':'<div class="kr-q">؟</div>';
+  function flag(name,lose){
+    var ic=iso(name), lc=lose?' kr-lose':'';
+    return ic?'<img class="kr-fl'+lc+'" src="'+fU(ic)+'" onerror="this.classList.add(\'kd-imgerr\')">':'<div class="kr-q'+lc+'">؟</div>';
   }
+  function winOf(mn){ if(!fin(mn)) return null; var r=radarScore(getM(mn)); return r?r.win:null; }
   function whenHTML(m){
     var t=fmtT(m.t);
     return '<div class="kr-when">'+fmtD(m.d).replace(/ 2026$/,"")+'<br><b>'+t.t+' '+t.ap+'</b></div>';
@@ -3307,8 +3313,9 @@ function renderKORadarPoster(el){
     var s=fin(mn)?scoreOf(mn):null;
     var mid=s?('<div class="kr-sc">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):whenHTML(m);
     var y=Math.round(cy-98);
+    var w=winOf(mn), lh=(w==="a"), la=(w==="h");
     return '<div class="kr-c" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" style="left:'+x+'px;top:'+y+'px;">'
-      +'<div class="kr-nm">'+hN+'</div>'+flag(hN)+mid+flag(aN)+'<div class="kr-nm">'+aN+'</div></div>';
+      +'<div class="kr-nm'+(lh?' kr-lose':'')+'">'+hN+'</div>'+flag(hN,lh)+mid+flag(aN,la)+'<div class="kr-nm'+(la?' kr-lose':'')+'">'+aN+'</div></div>';
   }
   /* بطاقة الأدوار التالية: علم+اسم / وسط / علم+اسم */
   function cM(x,cy,mn){
@@ -3317,9 +3324,10 @@ function renderKORadarPoster(el){
     var s=fin(mn)?scoreOf(mn):null;
     var mid=s?('<div class="kr-mid">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):whenHTML(m);
     var y=Math.round(cy-115);
-    function row(n){ return '<div class="kr-row">'+flag(n)+'<div class="kr-nm">'+n+'</div></div>'; }
+    var w=winOf(mn), lh=(w==="a"), la=(w==="h");
+    function row(n,lo){ return '<div class="kr-row'+(lo?' kr-lose':'')+'">'+flag(n,lo)+'<div class="kr-nm">'+n+'</div></div>'; }
     return '<div class="kr-m" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" style="left:'+x+'px;top:'+y+'px;">'
-      +row(hN)+mid+row(aN)+'</div>';
+      +row(hN,lh)+mid+row(aN,la)+'</div>';
   }
   /* التخطيط */
   var Y32=[236,436,636,836,1036,1236,1436,1636];
@@ -3336,20 +3344,25 @@ function renderKORadarPoster(el){
 
   /* النهائي بالمنتصف الأعلى */
   var fm=getM(104), tmm=getM(103);
-  function slot(n,cls){ var ic=iso(n); return '<div class="kr-slot">'+(ic?'<img src="'+fU(ic)+'">':'<div class="kr-q">؟</div>')+'</div>'; }
+  function slot(n,lo){ var ic=iso(n); return '<div class="kr-slot'+(lo?' kr-lose':'')+'">'+(ic?'<img src="'+fU(ic)+'">':'<div class="kr-q">؟</div>')+'</div>'; }
   var ft=fmtT(fm.t), tt3=fmtT(tmm.t);
   var fs=fin(104)?scoreOf(104):null, ts=fin(103)?scoreOf(103):null;
   var fMid = fs?('<div class="kr-cmid"><div class="t2">'+fs.main+'</div>'+(fs.pens?'<div class="t1">'+fs.pens+'</div>':'')+'</div>')
               :('<div class="kr-cmid"><div class="t2">'+ft.t+ft.ap+'</div><div class="t3">🏟️</div></div>');
   html+='<div class="kr-datecap" style="top:340px;">'+fmtD(fm.d)+'</div>';
   html+='<div class="kr-final" data-mn="104" onclick="radarMatchPopup(104)" style="left:330px;top:376px;width:420px;height:122px;">'
-      + slot(resolveKOName(fm.h)) + fMid + slot(resolveKOName(fm.a)) + '</div>';
+      + slot(resolveKOName(fm.h), winOf(104)==='a') + fMid + slot(resolveKOName(fm.a), winOf(104)==='h') + '</div>';
   /* المركز الثالث */
   var tMid = ts?('<div class="kr-cmid"><div class="t2">'+ts.main+'</div>'+(ts.pens?'<div class="t1">'+ts.pens+'</div>':'')+'</div>')
               :('<div class="kr-cmid"><div class="t1">'+fmtD(tmm.d).replace(/ 2026$/,"")+'</div><div class="t2">'+tt3.t+tt3.ap+'</div></div>');
   html+='<div class="kr-lbl" style="top:1560px;">المركز الثالث</div>';
   html+='<div class="kr-bronze" data-mn="103" onclick="radarMatchPopup(103)" style="left:322px;top:1608px;width:436px;height:110px;">'
-      + slot(resolveKOName(tmm.h)) + tMid + slot(resolveKOName(tmm.a)) + '</div>';
+      + slot(resolveKOName(tmm.h), winOf(103)==='a') + tMid + slot(resolveKOName(tmm.a), winOf(103)==='h') + '</div>';
+  var thirdW=koWinnerOf(103,0);
+  if(fin(103) && thirdW){
+    html+='<div class="kr-thirdwin" data-mn="103" onclick="radarMatchPopup(103)">🥉 صاحب المركز الثالث · '
+        + (iso(thirdW)?'<img src="'+fU(iso(thirdW))+'">':'') + ' <b>'+thirdW+'</b></div>';
+  }
 
   /* خطوط ذهبية مرتّبة: دخول من منتصف البطاقة، أقواس متناظرة */
   var P=[];
@@ -5754,7 +5767,7 @@ function stripGoalHTML(s){return (s||"").replace(/<[^>]*>/g,"").trim();}
 /* القائمة الدقيقة = أساس ثابت حتى نقطة القطع؛ ما بعدها يُحتسب من المباريات ويُدمج فوقها */
 var STAT_BASE={g:STAT_DATA.g.map(function(x){return {n:x.n,t:x.t,v:x.v};}), a:STAT_DATA.a.map(function(x){return {n:x.n,t:x.t,v:x.v};})};
 var STAT_CUT=new Date("2026-07-13T08:00:00+03:00").getTime();
-var AR_NAME={"kylian mbappe":"كيليان مبابي","mbappe":"كيليان مبابي","lionel messi":"ليونيل ميسي","messi":"ليونيل ميسي","erling haaland":"إيرلينغ هالاند","haaland":"إيرلينغ هالاند","harry kane":"هاري كين","vinicius junior":"فينيسيوس جونيور","vinicius jr":"فينيسيوس جونيور","vinicius jr.":"فينيسيوس جونيور","ousmane dembele":"عثمان ديمبيلي","michael olise":"مايكل أوليسي","ismael saibari":"إسماعيل الصيباري","jonathan david":"جوناثان ديفيد","matheus cunha":"ماتيوس كونيا","brian brobbey":"برايان بروبي","ismaila sarr":"إسماعيلا سار","deniz undav":"دينيز أونداف","bruno guimaraes":"برونو غيماريش","alexander isak":"ألكسندر إيساك","martin odegaard":"مارتن أوديغارد","florian wirtz":"فلوريان فيرتز","brahim diaz":"براهيم دياز","julio enciso":"خوليو إنسيسو","joshua kimmich":"يوشوا كيميش","crysencio summerville":"كريسينسيو سامرفيل","mohamed salah":"محمد صلاح","bukayo saka":"بوكايو ساكا","ryan gravenberch":"ريان غرافينبيرش","cody gakpo":"كودي خاكبو","kai havertz":"كاي هافيرتس","casemiro":"كاسيميرو","gabriel martinelli":"غابرييل مارتينيلي","romelu lukaku":"روميلو لوكاكو","youri tielemans":"يوري تيليمانس","habib diarra":"حبيب ديارا","cristiano ronaldo":"كريستيانو رونالدو","goncalo ramos":"غونسالو راموش","ivan perisic":"إيفان بيريشيتش","bradley barcola":"برادلي باركولا","antonio nusa":"أنطونيو نوسا","amad diallo":"أماد ديالو","stephen eustaquio":"ستيفن يوستاكيو","raul jimenez":"راؤول خيمينيز","emam ashour":"إمام عاشور","breel embolo":"بريل إمبولو","dan ndoye":"دان ندوي","achraf hakimi":"أشرف حكيمي","lamine yamal":"لامين يامال","nico williams":"نيكو ويليامز","mikel oyarzabal":"ميكيل أوياربال","oyarzabal":"ميكيل أوياربال","folarin balogun":"فولارين بالوغون","malik tillman":"مالك تيلمان","pedri":"بيدري","jamal musiala":"جمال موسيالا","serhou guirassy":"سيرهو غيراسي","azzedine ounahi":"عز الدين أوناحي","ounahi":"عز الدين أوناحي","youssef en-nesyri":"يوسف النصيري","en-nesyri":"يوسف النصيري","youssef en nesyri":"يوسف النصيري","brahim diaz":"إبراهيم دياز","hakim ziyech":"حكيم زياش","sofiane boufal":"سفيان بوفال","noussair mazraoui":"نصير مزراوي","youssef nesyri":"يوسف النصيري","abde ezzalzouli":"عبد الصمد الزلزولي","ezzalzouli":"عبد الصمد الزلزولي","eljif elmaselli":"إليف المسالي","bilal el khannouss":"بلال الخنوس","el khannouss":"بلال الخنوس","jonathan david":"جوناثان ديفيد","alphonso davies":"ألفونسو ديفيز","davies":"ألفونسو ديفيز","cyle larin":"كايل لارين","larin":"كايل لارين","tajon buchanan":"تاجون بوكانان","jonathan osorio":"جوناثان أوسوريو","jacob shaffelburg":"جيكوب شافلبرغ","ismael kone":"إسماعيل كوني","phil foden":"فيل فودين","jude bellingham":"جود بيلينغهام","bellingham":"جود بيلينغهام","cole palmer":"كول بالمر","marcus rashford":"ماركوس راشفورد","declan rice":"ديكلان رايس","bukayo saka":"بوكايو ساكا","raphinha":"رافينيا","rodrygo":"رودريغو","neymar":"نيمار","richarlison":"ريتشارليسون","vinicius":"فينيسيوس جونيور","lautaro martinez":"لاوتارو مارتينيز","julian alvarez":"خوليان ألفاريز","angel di maria":"أنخيل دي ماريا","di maria":"أنخيل دي ماريا","nicolas gonzalez":"نيكولاس غونزاليس","enzo fernandez":"إنزو فرنانديز","alexis mac allister":"أليكسيس ماك أليستر","kevin de bruyne":"كيفن دي بروين","de bruyne":"كيفن دي بروين","jeremy doku":"جيريمي دوكو","leandro trossard":"لياندرو تروسارد","jimenez":"راؤول خيمينيز","hirving lozano":"إيرفينغ لوزانو","lozano":"إيرفينغ لوزانو","santiago gimenez":"سانتياغو خيمينيز","edson alvarez":"إدسون ألفاريز","antoine griezmann":"أنطوان غريزمان","griezmann":"أنطوان غريزمان","kingsley coman":"كينغسلي كومان","randal kolo muani":"راندال كولو مواني","kolo muani":"راندال كولو مواني","martin odegaard":"مارتن أوديغارد","erling braut haaland":"إيرلينغ هالاند","oscar bobb":"أوسكار بوب","xavi simons":"تشافي سيمونز","memphis depay":"ممفيس ديباي","depay":"ممفيس ديباي","donyell malen":"دونيال مالين","rafael leao":"رافائيل لياو","leao":"رافائيل لياو","bruno fernandes":"برونو فيرنانديز","bernardo silva":"برناردو سيلفا","joao felix":"جواو فيليكس","pedro neto":"بيدرو نيتو","omar marmoush":"عمر مرموش","marmoush":"عمر مرموش","mostafa mohamed":"مصطفى محمد","trezeguet":"تريزيغيه","mahmoud trezeguet":"تريزيغيه","dani olmo":"داني أولمو","morgan rogers":"مورغان روجرز","anthony gordon":"أنتوني غوردون","pedro porro":"بيدرو بورو","ivan toney":"إيفان توني","toney":"إيفان توني","eberechi eze":"إيبيريتشي إيزي","eze":"إيبيريتشي إيزي","djed spence":"جيد سبنس","marc guehi":"مارك غيهي","ezri konsa":"إزري كونسا","jarell quansah":"جاريل كوانساه","dean henderson":"دين هندرسون","elliot anderson":"إليوت أندرسون","noni madueke":"نوني مادويكي","ollie watkins":"أولي واتكينز","kobbie mainoo":"كوبي مينو","rayan cherki":"ريان شرقي","cherki":"ريان شرقي","desire doue":"ديزيري دويه","doue":"ديزيري دويه","warren zaire-emery":"وارن زئير إيمري","zaire-emery":"وارن زئير إيمري","manu kone":"مانو كوني","maghnes akliouche":"مغنس أكليوش","malo gusto":"مالو غوستو","maxence lacroix":"ماكسنس لاكروا","ibrahima konate":"إبراهيما كوناتي","theo hernandez":"ثيو هيرنانديز","adrien rabiot":"أدريان رابيو","ngolo kante":"نغولو كانتي","n'golo kante":"نغولو كانتي","mike maignan":"مايك مينيان","olise":"مايكل أوليسي","saka":"بوكايو ساكا","rashford":"ماركوس راشفورد","rice":"ديكلان رايس","rogers":"مورغان روجرز","gordon":"أنتوني غوردون"};
+var AR_NAME={"kylian mbappe":"كيليان مبابي","mbappe":"كيليان مبابي","lionel messi":"ليونيل ميسي","messi":"ليونيل ميسي","erling haaland":"إيرلينغ هالاند","haaland":"إيرلينغ هالاند","harry kane":"هاري كين","vinicius junior":"فينيسيوس جونيور","vinicius jr":"فينيسيوس جونيور","vinicius jr.":"فينيسيوس جونيور","ousmane dembele":"عثمان ديمبيلي","michael olise":"مايكل أوليسي","ismael saibari":"إسماعيل الصيباري","jonathan david":"جوناثان ديفيد","matheus cunha":"ماتيوس كونيا","brian brobbey":"برايان بروبي","ismaila sarr":"إسماعيلا سار","deniz undav":"دينيز أونداف","bruno guimaraes":"برونو غيماريش","alexander isak":"ألكسندر إيساك","martin odegaard":"مارتن أوديغارد","florian wirtz":"فلوريان فيرتز","brahim diaz":"براهيم دياز","julio enciso":"خوليو إنسيسو","joshua kimmich":"يوشوا كيميش","crysencio summerville":"كريسينسيو سامرفيل","mohamed salah":"محمد صلاح","bukayo saka":"بوكايو ساكا","ryan gravenberch":"ريان غرافينبيرش","cody gakpo":"كودي خاكبو","kai havertz":"كاي هافيرتس","casemiro":"كاسيميرو","gabriel martinelli":"غابرييل مارتينيلي","romelu lukaku":"روميلو لوكاكو","youri tielemans":"يوري تيليمانس","habib diarra":"حبيب ديارا","cristiano ronaldo":"كريستيانو رونالدو","goncalo ramos":"غونسالو راموش","ivan perisic":"إيفان بيريشيتش","bradley barcola":"برادلي باركولا","antonio nusa":"أنطونيو نوسا","amad diallo":"أماد ديالو","stephen eustaquio":"ستيفن يوستاكيو","raul jimenez":"راؤول خيمينيز","emam ashour":"إمام عاشور","breel embolo":"بريل إمبولو","dan ndoye":"دان ندوي","achraf hakimi":"أشرف حكيمي","lamine yamal":"لامين يامال","nico williams":"نيكو ويليامز","mikel oyarzabal":"ميكيل أوياربال","oyarzabal":"ميكيل أوياربال","folarin balogun":"فولارين بالوغون","malik tillman":"مالك تيلمان","pedri":"بيدري","jamal musiala":"جمال موسيالا","serhou guirassy":"سيرهو غيراسي","azzedine ounahi":"عز الدين أوناحي","ounahi":"عز الدين أوناحي","youssef en-nesyri":"يوسف النصيري","en-nesyri":"يوسف النصيري","youssef en nesyri":"يوسف النصيري","brahim diaz":"إبراهيم دياز","hakim ziyech":"حكيم زياش","sofiane boufal":"سفيان بوفال","noussair mazraoui":"نصير مزراوي","youssef nesyri":"يوسف النصيري","abde ezzalzouli":"عبد الصمد الزلزولي","ezzalzouli":"عبد الصمد الزلزولي","eljif elmaselli":"إليف المسالي","bilal el khannouss":"بلال الخنوس","el khannouss":"بلال الخنوس","jonathan david":"جوناثان ديفيد","alphonso davies":"ألفونسو ديفيز","davies":"ألفونسو ديفيز","cyle larin":"كايل لارين","larin":"كايل لارين","tajon buchanan":"تاجون بوكانان","jonathan osorio":"جوناثان أوسوريو","jacob shaffelburg":"جيكوب شافلبرغ","ismael kone":"إسماعيل كوني","phil foden":"فيل فودين","jude bellingham":"جود بيلينغهام","bellingham":"جود بيلينغهام","cole palmer":"كول بالمر","marcus rashford":"ماركوس راشفورد","declan rice":"ديكلان رايس","bukayo saka":"بوكايو ساكا","raphinha":"رافينيا","rodrygo":"رودريغو","neymar":"نيمار","richarlison":"ريتشارليسون","vinicius":"فينيسيوس جونيور","lautaro martinez":"لاوتارو مارتينيز","julian alvarez":"خوليان ألفاريز","angel di maria":"أنخيل دي ماريا","di maria":"أنخيل دي ماريا","nicolas gonzalez":"نيكولاس غونزاليس","enzo fernandez":"إنزو فرنانديز","alexis mac allister":"أليكسيس ماك أليستر","kevin de bruyne":"كيفن دي بروين","de bruyne":"كيفن دي بروين","jeremy doku":"جيريمي دوكو","leandro trossard":"لياندرو تروسارد","jimenez":"راؤول خيمينيز","hirving lozano":"إيرفينغ لوزانو","lozano":"إيرفينغ لوزانو","santiago gimenez":"سانتياغو خيمينيز","edson alvarez":"إدسون ألفاريز","antoine griezmann":"أنطوان غريزمان","griezmann":"أنطوان غريزمان","kingsley coman":"كينغسلي كومان","randal kolo muani":"راندال كولو مواني","kolo muani":"راندال كولو مواني","martin odegaard":"مارتن أوديغارد","erling braut haaland":"إيرلينغ هالاند","oscar bobb":"أوسكار بوب","xavi simons":"تشافي سيمونز","memphis depay":"ممفيس ديباي","depay":"ممفيس ديباي","donyell malen":"دونيال مالين","rafael leao":"رافائيل لياو","leao":"رافائيل لياو","bruno fernandes":"برونو فيرنانديز","bernardo silva":"برناردو سيلفا","joao felix":"جواو فيليكس","pedro neto":"بيدرو نيتو","omar marmoush":"عمر مرموش","marmoush":"عمر مرموش","mostafa mohamed":"مصطفى محمد","trezeguet":"تريزيغيه","mahmoud trezeguet":"تريزيغيه","dani olmo":"داني أولمو","morgan rogers":"مورغان روجرز","anthony gordon":"أنتوني غوردون","eduardo camavinga":"إدواردو كامافينغا","aurelien tchouameni":"أوريليان تشواميني","dayot upamecano":"دايو أوباميكانو","jules kounde":"جول كوندي","christopher nkunku":"كريستوفر نكونكو","lucas digne":"لوكاس دين","william saliba":"وليام صليبا","john stones":"جون ستونز","jordan pickford":"جوردان بيكفورد","james trafford":"جيمس ترافورد","cristian romero":"كريستيان روميرو","rodrigo de paul":"رودريغو دي بول","leandro paredes":"لياندرو باريديس","nicolas otamendi":"نيكولاس أوتامندي","nicolas tagliafico":"نيكولاس تاليافيكو","lisandro martinez":"ليساندرو مارتينيز","nahuel molina":"ناهويل مولينا","emiliano martinez":"إميليانو مارتينيز","giovani lo celso":"جيوفاني لو سيلسو","thiago almada":"تياغو ألمادا","ferran torres":"فيران توريس","alvaro morata":"ألفارو موراتا","unai simon":"أوناي سيمون","marc cucurella":"مارك كوكوريا","dani carvajal":"داني كارفخال","aymeric laporte":"إيمريك لابورت","robin le normand":"روبن لو نورمان","martin zubimendi":"مارتن زوبيمندي","mikel merino":"ميكيل مرينو","fabian ruiz":"فابيان رويز","julian quinones":"خوليان كينيونيس","pedro porro":"بيدرو بورو","ivan toney":"إيفان توني","toney":"إيفان توني","eberechi eze":"إيبيريتشي إيزي","eze":"إيبيريتشي إيزي","djed spence":"جيد سبنس","marc guehi":"مارك غيهي","ezri konsa":"إزري كونسا","jarell quansah":"جاريل كوانساه","dean henderson":"دين هندرسون","elliot anderson":"إليوت أندرسون","noni madueke":"نوني مادويكي","ollie watkins":"أولي واتكينز","kobbie mainoo":"كوبي مينو","rayan cherki":"ريان شرقي","cherki":"ريان شرقي","desire doue":"ديزيري دويه","doue":"ديزيري دويه","warren zaire-emery":"وارن زئير إيمري","zaire-emery":"وارن زئير إيمري","manu kone":"مانو كوني","maghnes akliouche":"مغنس أكليوش","malo gusto":"مالو غوستو","maxence lacroix":"ماكسنس لاكروا","ibrahima konate":"إبراهيما كوناتي","theo hernandez":"ثيو هيرنانديز","adrien rabiot":"أدريان رابيو","ngolo kante":"نغولو كانتي","n'golo kante":"نغولو كانتي","mike maignan":"مايك مينيان","olise":"مايكل أوليسي","saka":"بوكايو ساكا","rashford":"ماركوس راشفورد","rice":"ديكلان رايس","rogers":"مورغان روجرز","gordon":"أنتوني غوردون"};
 /* تعريب تلقائي حرف-بحرف لأي اسم لاتيني بلا ترجمة يدوية — احتياط يضمن عدم ظهور اسم إنجليزي */
 function translitAr(name){
   try{
