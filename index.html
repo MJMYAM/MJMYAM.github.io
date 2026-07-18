@@ -1571,6 +1571,43 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .hero-round{display:inline-flex;align-items:center;gap:6px;font-weight:900;font-size:13.5px;padding:5px 13px;border-radius:999px;margin-bottom:10px;letter-spacing:.2px;}
 .hr-silver{background:linear-gradient(135deg,#f4f7fc,#c3ccdd 45%,#eef2f9);color:#26314c;box-shadow:0 3px 12px rgba(150,165,195,.45),inset 0 1px 0 #fff;}
 .hr-gold{background:linear-gradient(135deg,#ffeaa9,#e0a92f 50%,#ffd873);color:#4a3200;box-shadow:0 3px 12px rgba(220,170,50,.5),inset 0 1px 0 #fff6d8;}
+
+/* ===== شجرة الإقصائيات — ستايل رادار كورة (فحمي/ذهبي) ===== */
+.rk-board{position:relative;width:1080px;height:1960px;flex:0 0 auto;
+  background:conic-gradient(from 25deg,#e5322d,#f0a53a,#1f9e57,#2f6bd6,#7b3fe4,#e5322d);
+  border-radius:30px;padding:7px;font-family:'Cairo','Tajawal',sans-serif;transform-origin:top center;}
+.rk-board::before{content:"";position:absolute;inset:7px;border-radius:23px;
+  background:#141518;
+  background-image:radial-gradient(90% 40% at 50% 0%,#232428 0%,transparent 60%),
+                   radial-gradient(60% 30% at 15% 85%,#1d1e22 0%,transparent 70%),
+                   radial-gradient(60% 30% at 85% 85%,#1d1e22 0%,transparent 70%);}
+.rk-title{position:absolute;top:34px;left:0;width:100%;text-align:center;color:#fff;font-weight:900;font-size:52px;line-height:1;z-index:2;text-shadow:0 3px 16px rgba(0,0,0,.7);}
+.rk-trophy{position:absolute;top:92px;left:50%;transform:translateX(-50%);z-index:2;text-align:center;}
+.rk-trophy img{height:198px;width:auto;filter:drop-shadow(0 14px 34px rgba(240,180,60,.35));}
+.rk-conn{position:absolute;inset:7px;width:calc(100% - 14px);height:calc(100% - 14px);pointer-events:none;z-index:1;}
+.rk-card{position:absolute;background:#232428;border:1px solid #3a3b40;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:9px 6px;box-shadow:0 6px 18px rgba(0,0,0,.5);cursor:pointer;z-index:3;transition:transform .12s;}
+.rk-card:active{transform:scale(.97);}
+.rk-nm{color:#fff;font-weight:800;font-size:15px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.rk-fl{width:66px;height:44px;object-fit:cover;border-radius:9px;box-shadow:0 3px 8px rgba(0,0,0,.55);}
+.rk-mid{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:24px;justify-content:center;}
+.rk-sc{color:#fff;font-weight:900;font-size:21px;line-height:1;letter-spacing:1px;white-space:nowrap;}
+.rk-pen{color:#e8c25a;font-weight:800;font-size:11.5px;line-height:1;white-space:nowrap;}
+.rk-dt{color:#cfd2da;font-weight:700;font-size:11.5px;line-height:1.35;text-align:center;white-space:nowrap;}
+.rk-dt b{color:#e8c25a;font-weight:900;}
+.rk-live{display:flex;align-items:center;gap:5px;color:#ff7b7b;font-weight:900;font-size:15px;}
+.rk-live i{width:8px;height:8px;border-radius:50%;background:#ff4d4f;animation:kdpulse 1.2s infinite;}
+.rk-q{width:66px;height:44px;border:1.6px solid #c9a24b;border-radius:10px;background:rgba(201,162,75,.06);}
+.rk-final{position:absolute;background:#1c1d21;border:1.6px solid #c9a24b;border-radius:20px;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:0 0 30px rgba(201,162,75,.18),0 10px 26px rgba(0,0,0,.6);cursor:pointer;}
+.rk-final .rk-frow{display:flex;align-items:center;gap:16px;}
+.rk-final .rk-ffl{width:104px;height:69px;object-fit:cover;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.6);}
+.rk-final .rk-fq{width:104px;height:69px;border:1.8px solid #c9a24b;border-radius:12px;background:rgba(201,162,75,.06);}
+.rk-fdate{color:#fff;font-weight:900;font-size:17.5px;}
+.rk-ftime{color:#e8c25a;font-weight:900;font-size:19px;}
+.rk-fsc{color:#fff;font-weight:900;font-size:27px;letter-spacing:1px;}
+.rk-3lbl{position:absolute;left:0;width:100%;text-align:center;color:#fff;font-weight:900;font-size:26px;z-index:2;}
+.rk-logo{position:absolute;left:50%;transform:translateX(-50%);z-index:2;}
+.rk-logo img{width:158px;background:#fff;border-radius:24px;padding:13px 15px;border:1.5px solid rgba(201,162,75,.55);box-shadow:0 12px 34px rgba(0,0,0,.5);}
+.rk-note{position:absolute;left:0;width:100%;text-align:center;color:#c9a24b;font-weight:800;font-size:16px;z-index:2;}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -3192,20 +3229,127 @@ function renderKODesign(el){
 }
 
 
+
+/* ===== شجرة الإقصائيات بستايل رادار كورة (حيّة) ===== */
+function renderKODesignRK(el){
+  el.className="ko-design-wrap";
+  function iso(name){ return (typeof ISO!=="undefined")?ISO[name]||null:null; }
+  function fUrl(c){ return "https://flagcdn.com/w160/"+c+".png"; }
+  function apShort(ap){ return ap==="مساءً"?"م":"ص"; }
+  function dtLine(m){ var t=fmtT(m.t); return fmtD(m.d)+" · <b>"+t.t+apShort(t.ap)+"</b>"; }
+  function stateOf(n){
+    var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[n]:null;
+    var sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[n]:null;
+    var st=(fr&&fr.status)||(sc&&sc.status)||"";
+    var fin=(st==="finished"), live=/progress|live|half|paus/i.test(st);
+    var sh=null,sa=null,pH=null,pA=null;
+    if(fr&&fr.sh!=null){sh=fr.sh;sa=fr.sa;pH=(fr.pH!=null?fr.pH:null);pA=(fr.pA!=null?fr.pA:null);}
+    else if(sc&&sc.found&&sc.sh!=null){sh=sc.sh;sa=sc.sa;pH=(sc.pH!=null?sc.pH:null);pA=(sc.pA!=null?sc.pA:null);}
+    return {fin:fin,live:live,sh:sh,sa:sa,pH:pH,pA:pA};
+  }
+  var W=118,H=196,H2=252;
+  function flagOrBox(name){
+    var ic=iso(name);
+    return ic?'<img class="rk-fl" src="'+fUrl(ic)+'" onerror="this.classList.add(\'kd-imgerr\')">':'<div class="rk-q"></div>';
+  }
+  function card(n,x,cy,tall){
+    var m=getM(n); if(!m) return "";
+    var hh=tall?H2:H, top=Math.round(cy-hh/2);
+    var hN=resolveKOName(m.h), aN=resolveKOName(m.a);
+    var s=stateOf(n), mid;
+    if(s.fin&&s.sh!=null){
+      mid='<div class="rk-mid"><div class="rk-sc">'+s.sh+' : '+s.sa+'</div>'
+        +(s.pH!=null?'<div class="rk-pen">ركلات '+s.pH+' : '+s.pA+'</div>':'')
+        +(tall?'<div class="rk-dt">'+dtLine(m)+'</div>':'')+'</div>';
+    } else if(s.live){
+      mid='<div class="rk-mid"><div class="rk-live"><i></i>'+(s.sh!=null?s.sh+' : '+s.sa:'مباشر')+'</div></div>';
+    } else {
+      mid='<div class="rk-mid"><div class="rk-dt">'+dtLine(m)+'</div></div>';
+    }
+    return '<div class="rk-card" data-mn="'+n+'" onclick="radarMatchPopup('+n+')" style="left:'+x+'px;top:'+top+'px;width:'+W+'px;height:'+hh+'px;">'
+      +'<div class="rk-nm">'+hN+'</div>'+flagOrBox(hN)+mid+flagOrBox(aN)+'<div class="rk-nm">'+aN+'</div></div>';
+  }
+  var L_R32=[74,77,73,75,83,84,81,82], R_R32=[76,78,79,80,86,88,85,87];
+  var L_R16=[89,90,93,94], R_R16=[91,92,95,96];
+  var L_QF=[97,98], R_QF=[99,100];
+  var c32=[327,535,743,951,1159,1367,1575,1783];
+  var c16=[431,847,1263,1679], cQF=[639,1471], cSF=1055;
+  var XL={r32:16,r16:150,qf:284,sf:418}, XR={r32:946,r16:812,qf:678,sf:544};
+  var html="";
+  for(var i=0;i<8;i++){ html+=card(L_R32[i],XL.r32,c32[i],false)+card(R_R32[i],XR.r32,c32[i],false); }
+  for(var i=0;i<4;i++){ html+=card(L_R16[i],XL.r16,c16[i],true)+card(R_R16[i],XR.r16,c16[i],true); }
+  for(var i=0;i<2;i++){ html+=card(L_QF[i],XL.qf,cQF[i],true)+card(R_QF[i],XR.qf,cQF[i],true); }
+  html+=card(101,XL.sf,cSF,true)+card(102,XR.sf,cSF,true);
+
+  /* النهائي (تحت الكأس مباشرة) */
+  var fm=getM(104), fs=stateOf(104);
+  var f1=resolveKOName(fm.h), f2=resolveKOName(fm.a);
+  function bigFlag(name){ var ic=iso(name);
+    return ic?'<img class="rk-ffl" src="'+fUrl(ic)+'" onerror="this.classList.add(\'kd-imgerr\')">':'<div class="rk-fq"></div>'; }
+  var ft=fmtT(fm.t);
+  var fmid = fs.fin&&fs.sh!=null ? '<div class="rk-fsc">'+fs.sh+' : '+fs.sa+'</div>'
+           : (fs.live ? '<div class="rk-live" style="font-size:22px"><i></i>'+(fs.sh!=null?fs.sh+' : '+fs.sa:'مباشر')+'</div>'
+           : '<div class="rk-ftime">🏟️ '+ft.t+apShort(ft.ap)+'</div>');
+  html+='<div class="rk-final" data-mn="104" onclick="radarMatchPopup(104)" style="left:350px;top:314px;width:380px;height:170px;">'
+    +'<div class="rk-fdate">'+fmtD(fm.d)+' 2026</div>'
+    +'<div class="rk-frow">'+bigFlag(f1)+fmid+bigFlag(f2)+'</div></div>';
+
+  /* شعار البطولة بالوسط */
+  html+='<div class="rk-logo" style="top:1248px;"><img src="wc-logo.png" alt="شعار البطولة"></div>';
+
+  /* المركز الثالث */
+  var tm=getM(103), ts=stateOf(103);
+  var b1=resolveKOName(tm.h), b2=resolveKOName(tm.a);
+  var tt=fmtT(tm.t);
+  var tmid = ts.fin&&ts.sh!=null ? '<div class="rk-fsc" style="font-size:24px">'+ts.sh+' : '+ts.sa+'</div>'
+           : (ts.live ? '<div class="rk-live" style="font-size:18px"><i></i>'+(ts.sh!=null?ts.sh+' : '+ts.sa:'مباشر')+'</div>'
+           : '<div class="rk-ftime" style="font-size:16px">'+tt.t+apShort(tt.ap)+'</div>');
+  html+='<div class="rk-3lbl" style="top:1568px;">مباراة المركز الثالث والرابع</div>'
+    +'<div class="rk-final" data-mn="103" onclick="radarMatchPopup(103)" style="left:360px;top:1618px;width:360px;height:168px;">'
+    +'<div class="rk-fdate" style="font-size:16.5px">'+fmtD(tm.d)+'</div>'
+    +'<div class="rk-frow" style="gap:12px">'
+    +(iso(b1)?'<img class="rk-ffl" style="width:96px;height:64px" src="'+fUrl(iso(b1))+'">':'<div class="rk-fq" style="width:96px;height:64px"></div>')
+    +tmid
+    +(iso(b2)?'<img class="rk-ffl" style="width:96px;height:64px" src="'+fUrl(iso(b2))+'">':'<div class="rk-fq" style="width:96px;height:64px"></div>')
+    +'</div></div>';
+
+  /* الخطوط الذهبية */
+  var conn=[];
+  function U(cx,mx,px,y1,y2){ var cy=(y1+y2)/2; conn.push('M'+cx+','+y1+' L'+mx+','+y1+' L'+mx+','+y2+' L'+cx+','+y2+' M'+mx+','+cy+' L'+px+','+cy); }
+  for(var i=0;i<4;i++) U(134,142,150,c32[2*i],c32[2*i+1]);
+  for(var i=0;i<2;i++) U(268,276,284,c16[2*i],c16[2*i+1]);
+  U(402,410,418,cQF[0],cQF[1]);
+  for(var i=0;i<4;i++) U(946,938,930,c32[2*i],c32[2*i+1]);
+  for(var i=0;i<2;i++) U(812,804,796,c16[2*i],c16[2*i+1]);
+  U(678,670,662,cQF[0],cQF[1]);
+  conn.push('M477,929 L477,399 L350,399');
+  conn.push('M603,929 L603,399 L730,399');
+  var svg='<svg class="rk-conn" viewBox="0 0 1080 1960" preserveAspectRatio="none">'
+    +conn.map(function(d){return '<path d="'+d+'" fill="none" stroke="#b9962e" stroke-width="2" stroke-linejoin="round"></path>';}).join("")
+    +'</svg>';
+
+  var head='<div class="rk-title">الطريق إلى النهائي</div>'
+    +'<div class="rk-trophy"><img src="wc-trophy.png" alt="الكأس" onerror="this.style.display=\'none\'"></div>'
+    +'<div class="rk-note" style="top:1908px;">جميع المباريات بتوقيت الكويت 🇰🇼</div>';
+
+  el.innerHTML='<div class="rk-board" data-bh="1960">'+svg+head+html+'</div>';
+}
+
 function renderKO(){
   var el=document.getElementById("koList");
   if(koMode==="list"){ el.className="ko-vertical"; renderKOList(el); }
-  else { renderKODesign(el); requestAnimationFrame(function(){ scaleKODesign(); setTimeout(scaleKODesign,60); }); }
+  else { renderKODesignRK(el); requestAnimationFrame(function(){ scaleKODesign(); setTimeout(scaleKODesign,60); }); }
 }
 function scaleKODesign(){
   var wrap=document.querySelector(".ko-design-wrap"); if(!wrap) return;
-  var board=wrap.querySelector(".kd-board"); if(!board) return;
+  var board=wrap.querySelector(".kd-board, .rk-board"); if(!board) return;
+  var bh=parseInt(board.getAttribute("data-bh")||"1080",10)||1080;
   var avail=window.innerWidth||document.documentElement.clientWidth;
   if(avail<=0) avail=360;
   var scale=avail/1080;
   if(!(scale>0)) scale=1;
   board.style.transform="scale("+scale+")";
-  wrap.style.height=(1080*scale)+"px";
+  wrap.style.height=(bh*scale)+"px";
 }
 window.addEventListener("resize", function(){ try{scaleKODesign();}catch(e){} });
 function renderKOList(el){
