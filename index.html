@@ -1608,6 +1608,51 @@ html[data-theme="light"] .behin-frame, html[data-theme="light"] .np-jersey.has-i
 .rk-logo{position:absolute;left:50%;transform:translateX(-50%);z-index:2;}
 .rk-logo img{width:158px;background:#fff;border-radius:24px;padding:13px 15px;border:1.5px solid rgba(201,162,75,.55);box-shadow:0 12px 34px rgba(0,0,0,.5);}
 .rk-note{position:absolute;left:0;width:100%;text-align:center;color:#c9a24b;font-weight:800;font-size:16px;z-index:2;}
+
+/* ===== شجرة الإقصائيات بأسلوب البوستر الطولي (kr) ===== */
+.kr-board{position:relative;width:1080px;height:1920px;flex:0 0 auto;background:#1b1b1d;border-radius:0;font-family:'Cairo','Tajawal',sans-serif;transform-origin:top center;overflow:hidden;}
+.kr-board::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(60% 30% at 50% 0%, rgba(255,255,255,.05), transparent 60%),
+  radial-gradient(45% 25% at 15% 78%, rgba(255,255,255,.03), transparent 60%),
+  radial-gradient(45% 25% at 85% 30%, rgba(255,255,255,.03), transparent 60%);}
+.kr-rainbow{position:absolute;top:0;left:0;width:100%;height:16px;background:linear-gradient(90deg,#7b3fe4,#2f6bd6,#1f9e57,#f0a53a,#e5322d,#f0a53a,#1f9e57,#2f6bd6,#7b3fe4);opacity:.9;}
+.kr-title{position:absolute;top:34px;left:0;width:100%;text-align:center;font-weight:900;font-size:64px;line-height:1;color:#fff;background:linear-gradient(180deg,#ffffff,#b9c0cf);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 4px 18px rgba(0,0,0,.55);z-index:3;}
+.kr-trophy{position:absolute;top:112px;left:50%;transform:translateX(-50%);z-index:2;text-align:center;}
+.kr-trophy img{height:225px;filter:drop-shadow(0 12px 34px rgba(240,180,60,.35));}
+.kr-brand{position:absolute;left:50%;transform:translateX(-50%);z-index:2;text-align:center;}
+.kr-brand img{height:230px;filter:drop-shadow(0 8px 26px rgba(0,0,0,.5));}
+.kr-foot{position:absolute;bottom:22px;left:0;width:100%;text-align:center;color:#bfc6d8;font-weight:800;font-size:22px;letter-spacing:.4px;z-index:2;}
+/* بطاقة دور الـ32: اسم/علم/نتيجة/علم/اسم */
+.kr-c{position:absolute;width:122px;background:#262629;border:1px solid #3d3d41;border-radius:16px;padding:7px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;box-shadow:0 8px 20px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02);cursor:pointer;z-index:3;}
+.kr-c:active{transform:scale(.97);}
+.kr-nm{font-weight:800;font-size:16px;color:#e9edf6;line-height:1.15;white-space:nowrap;max-width:114px;overflow:hidden;text-overflow:ellipsis;}
+.kr-fl{width:82px;height:52px;object-fit:cover;border-radius:10px;box-shadow:0 3px 9px rgba(0,0,0,.55);}
+.kr-q{width:82px;height:52px;border-radius:10px;background:#3a3a3f;display:flex;align-items:center;justify-content:center;color:#cfd4e2;font-weight:900;font-size:24px;}
+.kr-sc{font-weight:900;font-size:24px;color:#fff;line-height:1;padding:1px 0;}
+.kr-sc small{display:inline;font-size:13.5px;color:#d9b25e;font-weight:800;margin-inline-start:4px;}
+/* بطاقة الأدوار التالية: صفّا فريقين + وسط (نتيجة أو موعد) */
+.kr-m{position:absolute;width:122px;background:#262629;border:1px solid #3d3d41;border-radius:18px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 8px 20px rgba(0,0,0,.45);cursor:pointer;z-index:3;}
+.kr-m:active{transform:scale(.97);}
+.kr-row{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.kr-m .kr-fl{width:84px;height:54px;}
+.kr-mid{font-weight:900;font-size:22px;color:#fff;line-height:1.05;text-align:center;}
+.kr-mid small{display:block;font-size:14.5px;color:#d9b25e;font-weight:800;margin-top:2px;}
+.kr-when{text-align:center;color:#cfd4e2;font-weight:800;font-size:14px;line-height:1.5;}
+.kr-when b{color:#f0c24b;font-size:17.5px;}
+/* صندوقا النهائي والمركز الثالث */
+.kr-final,.kr-bronze{position:absolute;background:#232326;border:1.5px solid #c9a24b;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 26px rgba(201,162,75,.14);cursor:pointer;z-index:4;}
+.kr-final:active,.kr-bronze:active{transform:scale(.985);}
+.kr-slot img{width:140px;height:92px;object-fit:cover;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.6);}
+.kr-slot .kr-q{width:140px;height:92px;font-size:36px;}
+.kr-bronze .kr-slot img{width:112px;height:74px;}
+.kr-bronze .kr-slot .kr-q{width:112px;height:74px;font-size:30px;}
+.kr-cmid{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:120px;}
+.kr-cmid .t1{color:#e9edf6;font-weight:800;font-size:17px;}
+.kr-cmid .t2{color:#f0c24b;font-weight:900;font-size:26px;}
+.kr-cmid .t3{font-size:20px;}
+.kr-datecap{position:absolute;width:100%;text-align:center;color:#e9edf6;font-weight:900;font-size:24px;z-index:3;}
+.kr-lbl{position:absolute;width:100%;text-align:center;color:#fff;font-weight:900;font-size:30px;z-index:3;}
+.kr-conn{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -3231,6 +3276,109 @@ function renderKODesign(el){
 
 
 /* ===== شجرة الإقصائيات بستايل رادار كورة (حيّة) ===== */
+
+/* ===== شجرة بأسلوب البوستر الطولي (1080×1920) — حيّة ===== */
+function renderKORadarPoster(el){
+  el.className="ko-design-wrap";
+  function iso(name){ return (typeof ISO!=="undefined")?ISO[name]:null; }
+  function fU(c){ return "https://flagcdn.com/w160/"+c+".png"; }
+  function fin(n){
+    var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[n]:null;
+    var sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[n]:null;
+    var st=(fr&&fr.status)||(sc&&sc.status)||"";
+    return st==="finished";
+  }
+  function scoreOf(n){
+    var r=radarScore(getM(n)); if(!r||r.sh==null) return null;
+    return {main:r.sh+"-"+r.sa, pens:(r.pens ? ("("+r.pens.replace(":","-")+") ركلات") : null)};
+  }
+  function flag(name,w){
+    var ic=iso(name);
+    return ic?'<img class="kr-fl" src="'+fU(ic)+'" onerror="this.classList.add(\'kd-imgerr\')">':'<div class="kr-q">؟</div>';
+  }
+  function whenHTML(m){
+    var t=fmtT(m.t);
+    return '<div class="kr-when">'+fmtD(m.d).replace(/ 2026$/,"")+'<br><b>'+t.t+' '+t.ap+'</b></div>';
+  }
+  /* بطاقة دور الـ32: اسم فوق/علم/نتيجة/علم/اسم تحت */
+  function c32(x,cy,mn){
+    var m=getM(mn); if(!m) return "";
+    var hN=resolveKOName(m.h), aN=resolveKOName(m.a);
+    var s=fin(mn)?scoreOf(mn):null;
+    var mid=s?('<div class="kr-sc">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):whenHTML(m);
+    var h=196; var y=Math.round(cy-h/2);
+    return '<div class="kr-c" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" style="left:'+x+'px;top:'+y+'px;">'
+      +'<div class="kr-nm">'+hN+'</div>'+flag(hN)+mid+flag(aN)+'<div class="kr-nm">'+aN+'</div></div>';
+  }
+  /* بطاقة الأدوار التالية: علم+اسم / وسط / علم+اسم */
+  function cM(x,cy,mn){
+    var m=getM(mn); if(!m) return "";
+    var hN=resolveKOName(m.h), aN=resolveKOName(m.a);
+    var s=fin(mn)?scoreOf(mn):null;
+    var mid=s?('<div class="kr-mid">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):whenHTML(m);
+    var h=236; var y=Math.round(cy-h/2);
+    function row(n){ return '<div class="kr-row">'+flag(n)+'<div class="kr-nm">'+n+'</div></div>'; }
+    return '<div class="kr-m" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" style="left:'+x+'px;top:'+y+'px;">'
+      +row(hN)+mid+row(aN)+'</div>';
+  }
+  /* التخطيط */
+  var Y32=[236,436,636,836,1036,1236,1436,1636];
+  var Y16=[336,736,1136,1536], YQF=[618,1294], YSF=956;
+  var Lx={c1:16,c2:158,c3:300,c4:372}, Rx={c1:1080-16-122,c2:1080-158-122,c3:1080-300-122,c4:1080-372-122};
+  var L32=[74,77,73,75,83,84,81,82], R32=[76,78,79,80,86,88,85,87];
+  var L16=[89,90,93,94], R16m=[91,92,95,96];
+  var LQF=[97,98], RQF=[99,100];
+  var html="";
+  for(var i=0;i<8;i++){ html+=c32(Lx.c1,Y32[i],L32[i]); html+=c32(Rx.c1,Y32[i],R32[i]); }
+  for(var i=0;i<4;i++){ html+=cM(Lx.c2,Y16[i],L16[i]); html+=cM(Rx.c2,Y16[i],R16m[i]); }
+  for(var i=0;i<2;i++){ html+=cM(Lx.c3,YQF[i],LQF[i]); html+=cM(Rx.c3,YQF[i],RQF[i]); }
+  html+=cM(Lx.c4,YSF,101); html+=cM(Rx.c4,YSF,102);
+
+  /* النهائي بالمنتصف الأعلى */
+  var fm=getM(104), tmm=getM(103);
+  function slot(n,cls){ var ic=iso(n); return '<div class="kr-slot">'+(ic?'<img src="'+fU(ic)+'">':'<div class="kr-q">؟</div>')+'</div>'; }
+  var ft=fmtT(fm.t), tt3=fmtT(tmm.t);
+  var fs=fin(104)?scoreOf(104):null, ts=fin(103)?scoreOf(103):null;
+  var fMid = fs?('<div class="kr-cmid"><div class="t2">'+fs.main+'</div>'+(fs.pens?'<div class="t1">'+fs.pens+'</div>':'')+'</div>')
+              :('<div class="kr-cmid"><div class="t2">'+ft.t+ft.ap+'</div><div class="t3">🏟️</div></div>');
+  html+='<div class="kr-datecap" style="top:340px;">'+fmtD(fm.d)+'</div>';
+  html+='<div class="kr-final" data-mn="104" onclick="radarMatchPopup(104)" style="left:310px;top:376px;width:460px;height:122px;">'
+      + slot(resolveKOName(fm.h)) + fMid + slot(resolveKOName(fm.a)) + '</div>';
+  /* المركز الثالث */
+  var tMid = ts?('<div class="kr-cmid"><div class="t2">'+ts.main+'</div>'+(ts.pens?'<div class="t1">'+ts.pens+'</div>':'')+'</div>')
+              :('<div class="kr-cmid"><div class="t1">'+fmtD(tmm.d).replace(/ 2026$/,"")+'</div><div class="t2">'+tt3.t+tt3.ap+'</div></div>');
+  html+='<div class="kr-lbl" style="top:1560px;">المركز الثالث</div>';
+  html+='<div class="kr-bronze" data-mn="103" onclick="radarMatchPopup(103)" style="left:322px;top:1608px;width:436px;height:110px;">'
+      + slot(resolveKOName(tmm.h)) + tMid + slot(resolveKOName(tmm.a)) + '</div>';
+
+  /* خطوط ذهبية */
+  var P=[];
+  function elbow(x1,y1,xm,x2,y2){ P.push('M'+x1+','+y1+' L'+xm+','+y1+' L'+xm+','+y2+' L'+x2+','+y2); }
+  // يسار: 32→16
+  var eL1=Lx.c1+122, sL2=Lx.c2, eL2=Lx.c2+122, sL3=Lx.c3, eL3=Lx.c3+122;
+  for(var i=0;i<4;i++){ elbow(eL1,Y32[2*i],(eL1+sL2)/2,sL2,Y16[i]); elbow(eL1,Y32[2*i+1],(eL1+sL2)/2,sL2,Y16[i]); }
+  for(var i=0;i<2;i++){ elbow(eL2,Y16[2*i],(eL2+sL3)/2,sL3,YQF[i]); elbow(eL2,Y16[2*i+1],(eL2+sL3)/2,sL3,YQF[i]); }
+  elbow(eL3,YQF[0],(eL3+Lx.c4)/2,Lx.c4,YSF); elbow(eL3,YQF[1],(eL3+Lx.c4)/2,Lx.c4,YSF);
+  // نصف يسار → النهائي
+  P.push('M'+(Lx.c4+61)+','+(YSF-118)+' L'+(Lx.c4+61)+',540 L540,540');
+  // يمين (مرآة)
+  var eR1=Rx.c1, sR2=Rx.c2+122, sR2b=Rx.c2, eR3=Rx.c3;
+  for(var i=0;i<4;i++){ elbow(eR1,Y32[2*i],(eR1+sR2)/2,sR2,Y16[i]); elbow(eR1,Y32[2*i+1],(eR1+sR2)/2,sR2,Y16[i]); }
+  for(var i=0;i<2;i++){ elbow(sR2b,Y16[2*i],(sR2b+Rx.c3+122)/2,Rx.c3+122,YQF[i]); elbow(sR2b,Y16[2*i+1],(sR2b+Rx.c3+122)/2,Rx.c3+122,YQF[i]); }
+  elbow(eR3,YQF[0],(eR3+Rx.c4+122)/2,Rx.c4+122,YSF); elbow(eR3,YQF[1],(eR3+Rx.c4+122)/2,Rx.c4+122,YSF);
+  P.push('M'+(Rx.c4+61)+','+(YSF-118)+' L'+(Rx.c4+61)+',540 L540,540');
+  var svg='<svg class="kr-conn" viewBox="0 0 1080 1920" preserveAspectRatio="none">'
+    +P.map(function(d){return '<path d="'+d+'" fill="none" stroke="#c9a24b" stroke-width="2" opacity=".85"></path>';}).join("")
+    +'</svg>';
+
+  var top='<div class="kr-rainbow"></div><div class="kr-title">الطريق إلى النهائي</div>'
+    +'<div class="kr-trophy"><img src="wc-trophy.png" onerror="this.style.display=\'none\'"></div>';
+  var brand='<div class="kr-brand" style="top:1040px;"><img src="wc-logo-white.png" onerror="this.src=\'wc-logo.png\'"></div>';
+  var foot='<div class="kr-foot">جميع المباريات بتوقيت الكويت 🇰🇼</div>';
+
+  el.innerHTML='<div class="kr-board" data-bh="1920">'+svg+top+brand+html+foot+'</div>';
+}
+
 function renderKODesignRK(el){
   el.className="ko-design-wrap";
   function iso(name){ return (typeof ISO!=="undefined")?ISO[name]||null:null; }
@@ -3338,11 +3486,11 @@ function renderKODesignRK(el){
 function renderKO(){
   var el=document.getElementById("koList");
   if(koMode==="list"){ el.className="ko-vertical"; renderKOList(el); }
-  else { renderKODesignRK(el); requestAnimationFrame(function(){ scaleKODesign(); setTimeout(scaleKODesign,60); }); }
+  else { renderKORadarPoster(el); requestAnimationFrame(function(){ scaleKODesign(); setTimeout(scaleKODesign,60); }); }
 }
 function scaleKODesign(){
   var wrap=document.querySelector(".ko-design-wrap"); if(!wrap) return;
-  var board=wrap.querySelector(".kd-board, .rk-board"); if(!board) return;
+  var board=wrap.querySelector(".kd-board, .rk-board, .kr-board"); if(!board) return;
   var bh=parseInt(board.getAttribute("data-bh")||"1080",10)||1080;
   var avail=window.innerWidth||document.documentElement.clientWidth;
   if(avail<=0) avail=360;
