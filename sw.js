@@ -1,5 +1,5 @@
 // v38: شبكة أولاً للصفحة (بدون كاش المتصفح) + تفعيل فوري للنسخة الجديدة + مسح الكاش القديم
-const CACHE="wc2026-v94";
+const CACHE="wc2026-v95";
 self.addEventListener("install", e=>{ self.skipWaiting(); });
 self.addEventListener("message", e=>{ if(e.data && e.data.type==="SKIP_WAITING") self.skipWaiting(); });
 self.addEventListener("activate", e=>{
