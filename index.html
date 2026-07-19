@@ -1690,6 +1690,22 @@ img.kr-fl.kr-lose,.kr-slot.kr-lose img{filter:grayscale(.75);}
 .cwin-pods b{color:var(--gold2,#ffd873);font-size:13px;}
 .cwin-pods small{color:#8df0b8;font-weight:700;font-size:10.5px;}
 .cwin-pods i{width:1px;height:14px;background:#2c2f38;}
+
+/* المسابقة انتهت: التبويب يعرض النتائج فقط */
+#tab-predict>*:not(.cwin):not(.cwin-full){display:none!important;}
+.cwin-full{background:var(--card,#151a2e);border:1px solid var(--line,#26304f);border-radius:18px;margin-top:14px;overflow:hidden;}
+.cf-h{background:#131419;padding:11px 14px;font-weight:900;font-size:14px;color:#e8edfa;border-bottom:1px solid #22242c;}
+.cf-list{padding:4px 10px;}
+.sr{display:flex;align-items:center;gap:11px;padding:9px 4px;border-bottom:1px solid rgba(255,255,255,.05);}
+.sr:last-child{border-bottom:none;}
+.sr-rk{flex:0 0 34px;text-align:center;font-weight:900;font-size:15px;color:#8b93a5;}
+.sr.top .sr-rk{font-size:21px;}
+.sr-n{flex:1;font-weight:800;font-size:13.5px;color:#dde3f0;line-height:1.35;min-width:0;}
+.sr-n small{display:block;font-weight:600;font-size:10.5px;color:#7d8598;margin-top:1px;}
+.sr-p{flex:0 0 auto;font-weight:900;font-size:18px;color:#ffd873;}
+.sr.top{background:linear-gradient(90deg,rgba(232,178,58,.07),transparent 60%);border-radius:12px;}
+.sr.top .sr-n{font-size:14.5px;color:#fff;}
+.cf-foot{background:#131419;padding:9px 14px;font-size:10.5px;color:#7d8598;text-align:center;border-top:1px solid #22242c;font-weight:600;}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -1967,6 +1983,52 @@ if("serviceWorker" in navigator){
         <span>🥉 Fahad <b>٦</b></span><i></i>
         <span>٤· عبدالرحمن المعتوق <b>٤</b> <small>🎯 أصاب ١-٠</small></span>
       </div>
+    </div>
+    <div class="cwin-full">
+      <div class="cf-h">📋 الترتيب الكامل — ٤٠ مشاركًا</div>
+      <div class="cf-list">
+        <div class="sr top"><span class="sr-rk">🥇</span><span class="sr-n">حمد مبارك المعتوق<small>الأربعاء 8:54م</small></span><span class="sr-p">٨</span></div>
+        <div class="sr top"><span class="sr-rk">🥈</span><span class="sr-n">عنود<small>الأربعاء 9:16م</small></span><span class="sr-p">٨</span></div>
+        <div class="sr top"><span class="sr-rk">🥉</span><span class="sr-n">Fahad<small>الثلاثاء 8:51م</small></span><span class="sr-p">٦</span></div>
+        <div class="sr"><span class="sr-rk">٤</span><span class="sr-n">Abdulrahman almatouq<small>الثلاثاء 8:00م</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">٥</span><span class="sr-n">Yousef Almansour<small>الثلاثاء 8:01م</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">٦</span><span class="sr-n">عبدالله الفرحان<small>الثلاثاء 8:02م</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">٧</span><span class="sr-n">Sulaiman<small>الثلاثاء 8:40م</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">٨</span><span class="sr-n">انس الكندري<small>الأربعاء 1:04ص</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">٩</span><span class="sr-n">عبدالله<small>الأربعاء 2:27ص</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">١٠</span><span class="sr-n">حصه محمد المعتوق<small>الأربعاء 12:27م</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">١١</span><span class="sr-n">Yaqoub bin jabal<small>الأربعاء 3:17م</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">١٢</span><span class="sr-n">نجاح المعتوق<small>الأربعاء 9:31م</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">١٣</span><span class="sr-n">Hamad<small>الأربعاء 11:29م</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">١٤</span><span class="sr-n">Omran alswailm<small>الخميس 12:19م</small></span><span class="sr-p">٤</span></div>
+        <div class="sr"><span class="sr-rk">١٥</span><span class="sr-n">عبدالله الشطي<small>الثلاثاء 8:23م</small></span><span class="sr-p">٢</span></div>
+        <div class="sr"><span class="sr-rk">١٦</span><span class="sr-n">Barrak alroumi<small>الثلاثاء 8:43م</small></span><span class="sr-p">٢</span></div>
+        <div class="sr"><span class="sr-rk">١٧</span><span class="sr-n">Ali alfadhalah<small>الثلاثاء 8:49م</small></span><span class="sr-p">٢</span></div>
+        <div class="sr"><span class="sr-rk">١٨</span><span class="sr-n">احمد المطيري<small>الثلاثاء 9:33م</small></span><span class="sr-p">٢</span></div>
+        <div class="sr"><span class="sr-rk">١٩</span><span class="sr-n">Abdulaziz shams<small>الثلاثاء 10:28م</small></span><span class="sr-p">٢</span></div>
+        <div class="sr"><span class="sr-rk">٢٠</span><span class="sr-n">جاسم المعتوق<small>الأربعاء 11:05ص</small></span><span class="sr-p">٢</span></div>
+        <div class="sr"><span class="sr-rk">٢١</span><span class="sr-n">مبارك المطيري<small>الأربعاء 11:23ص</small></span><span class="sr-p">٢</span></div>
+        <div class="sr"><span class="sr-rk">٢٢</span><span class="sr-n">عبدالله محمد المعتوق<small>الأربعاء 2:09م</small></span><span class="sr-p">٢</span></div>
+        <div class="sr"><span class="sr-rk">٢٣</span><span class="sr-n">أحمد مبارك المعتوق<small>الأربعاء 9:09م</small></span><span class="sr-p">٢</span></div>
+        <div class="sr"><span class="sr-rk">٢٤</span><span class="sr-n">احمد الكندري<small>الثلاثاء 8:01م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٢٥</span><span class="sr-n">خالد المعتوق<small>الثلاثاء 8:03م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٢٦</span><span class="sr-n">Khalid Alawad<small>الثلاثاء 8:20م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٢٧</span><span class="sr-n">احمد الذييب<small>الثلاثاء 8:26م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٢٨</span><span class="sr-n">Saad almejmed<small>الثلاثاء 8:38م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٢٩</span><span class="sr-n">عبدالله الميع<small>الثلاثاء 8:43م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣٠</span><span class="sr-n">Salem<small>الثلاثاء 8:47م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣١</span><span class="sr-n">فهد<small>الثلاثاء 8:48م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣٢</span><span class="sr-n">خالد سعود<small>الثلاثاء 8:56م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣٣</span><span class="sr-n">حسين المتروك<small>الثلاثاء 9:42م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣٤</span><span class="sr-n">Athbi<small>الثلاثاء 10:07م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣٥</span><span class="sr-n">عبدالله المطيري<small>الثلاثاء 10:25م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣٦</span><span class="sr-n">خالد العازمي<small>الثلاثاء 11:49م</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣٧</span><span class="sr-n">عثمان العصفور<small>الأربعاء 5:23ص</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣٨</span><span class="sr-n">Bo7meed<small>الأربعاء 6:24ص</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٣٩</span><span class="sr-n">Jassem<small>الأربعاء 11:06ص</small></span><span class="sr-p">٠</span></div>
+        <div class="sr"><span class="sr-rk">٤٠</span><span class="sr-n">هيوفه المزيونه<small>الأربعاء 9:15م</small></span><span class="sr-p">٠</span></div>
+      </div>
+      <div class="cf-foot">كل مركز صحيح = ٢ · كل نتيجة دقيقة = ٤ · التعادل للأسبق تسجيلًا</div>
     </div>
     <div class="sec-t"><i></i><span>🏅 توقعات المنصة</span> <span class="cnt">بطل · وصيف · ثالث · رابع</span></div>
     <div class="podium-card">
