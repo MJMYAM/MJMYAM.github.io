@@ -4045,7 +4045,8 @@ var FINAL_RESULTS={
      gh:[], ga:[{who:"ميكيل أوياربال (ج)", min:"22"},{who:"بيدرو بورو", min:"58", as:"داني أولمو"}]},
   102:{sh:1, sa:2, status:"finished", winSide:"a",
      gh:[{who:"أنتوني غوردون", min:"55", as:"مورغان روجرز"}], ga:[{who:"إنزو فرنانديز", min:"85", as:"ليونيل ميسي"},{who:"لاوتارو مارتينيز", min:"90+2", as:"ليونيل ميسي"}]},
-  103:{sh:4, sa:6, status:"finished", winSide:"a"}
+  103:{sh:4, sa:6, status:"finished", winSide:"a"},
+  104:{sh:1, sa:0, status:"finished", winSide:"h"}
 };
 /* ===== تحديث تلقائي: أي مباراة إقصائية انتهت تُرقّى لنتيجة دائمة (بدون تدخل يدوي) ===== */
 try{
@@ -6160,6 +6161,8 @@ function runHealthCheck(manual){
     // 12) فحص وظيفي: بطاقة المباراة القادمة (توليد فعلي)
     try{
       var cnx=M.filter(function(m){return m.d&&statusOf(m)!=="done";}).sort(function(a,b){return dateObj(a)-dateObj(b);})[0];
+      // بعد ختام البطولة لا توجد مباراة قادمة — نفحص توليد بطاقة النهائي المنتهي بدلًا منها
+      if(!cnx) cnx=getM(104);
       var _card=cnx?matchCard(cnx,{showDate:true}):"";
       var _resolvable=cnx&&TEAMS[resolveKOName(cnx.h)]&&TEAMS[resolveKOName(cnx.a)];
       var okc=_card.indexOf("flagcdn")>=0 && _card.indexOf("التشكيلة")>=0 && (!_resolvable || _card.indexOf("الفائز من المباراة")<0);
