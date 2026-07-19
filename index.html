@@ -2762,8 +2762,9 @@ function tick(){
   document.getElementById("beamFill").style.width=(pct*100).toFixed(2)+"%";
   var day=Math.floor((now-start)/86400000)+1;
   var bd=document.getElementById("beamDay");
-  if(now<start) bd.textContent="تنطلق البطولة قريبًا";
-  else if(now>end) bd.textContent="انتهت البطولة";
+  if(typeof FINAL_RESULTS!=="undefined" && FINAL_RESULTS[104] && FINAL_RESULTS[104].status==="finished"){ bd.textContent="🏆 كأس العالم 2026"; }
+  else if(now<start) bd.textContent="تنطلق البطولة قريبًا";
+  else if(now>end) bd.textContent="🏆 كأس العالم 2026";
   else bd.textContent="اليوم "+day+" من 39";
 }
 
