@@ -1667,6 +1667,13 @@ img.kr-fl.kr-lose,.kr-slot.kr-lose img{filter:grayscale(.75);}
 .kr-wonname{font-weight:900;font-size:30px;color:#fff;line-height:1.15;}
 .kr-wonscore{font-weight:700;font-size:14px;color:#98a0b3;margin-top:3px;}
 .kr-minifl{width:56px;height:36px;object-fit:cover;border-radius:8px;opacity:.4;filter:grayscale(.8);align-self:center;}
+.hf-min{display:inline-flex;align-items:center;background:rgba(229,72,77,.16);border:1px solid rgba(229,72,77,.55);color:#ff8d93;font-weight:900;font-size:14px;padding:2px 9px;border-radius:999px;margin-inline-start:8px;animation:kdpulse 1.4s infinite;}
+.rmp-score.rmp-live{color:#ff8d93;text-shadow:0 2px 10px rgba(229,72,77,.35);}
+.rmp-min{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:800;color:#ff9aa2;justify-content:center;}
+.rmp-min i{width:7px;height:7px;border-radius:50%;background:#ff4d4f;animation:kdpulse 1.2s infinite;}
+.kr-livemid{display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:900;font-size:24px;color:#ff8d93;line-height:1;}
+.kr-livemid small{font-size:13px;color:#ff9aa2;font-weight:800;}
+.kr-livemid i{width:8px;height:8px;border-radius:50%;background:#ff4d4f;animation:kdpulse 1.2s infinite;}
 .kr-conn{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 </style>
   <link rel="manifest" href="manifest.json">
@@ -2616,7 +2623,7 @@ function heroCardHTML(m){
       var _mnt = _hsc.minute ? _hsc.minute : "";
       _hln = '<div class="hf-line hf-live">'
         +'<span class="hf-team'+(_lead==="h"?" hf-win":"")+'">'+_hN+(_lead==="h"?' <span class="lead-ar">▲</span>':'')+'</span>'
-        +'<span class="hf-score">'+_hsc.sh+' - '+_hsc.sa+'</span>'
+        +'<span class="hf-score">'+_hsc.sh+' - '+_hsc.sa+'</span>'+(_mnt?'<span class="hf-min">⏱ '+_mnt+'</span>':'')
         +'<span class="hf-team'+(_lead==="a"?" hf-win":"")+'">'+_aN+(_lead==="a"?' <span class="lead-ar">▲</span>':'')+'</span>'
       +'</div>'
       +'<div class="live-tag">'+(_hpen?'🥅 ركلات الترجيح جارية':('🔴 جارية الآن'+(_mnt?' · '+_mnt:'')))
@@ -3312,6 +3319,14 @@ function renderKORadarPoster(el){
     return ic?'<img class="kr-fl'+lc+'" src="'+fU(ic)+'" onerror="this.classList.add(\'kd-imgerr\')">':'<div class="kr-q'+lc+'">؟</div>';
   }
   function winOf(mn){ if(!fin(mn)) return null; var r=radarScore(getM(mn)); return r?r.win:null; }
+  function liveOrWhen(mn,m){
+    if(typeof statusOf==="function" && statusOf(m)==="live"){
+      var sc=(typeof SC_CACHE!=="undefined")?SC_CACHE[mn]:null;
+      var s=(sc&&sc.sh!=null)?(sc.sh+"-"+sc.sa):"0-0";
+      return '<div class="kr-livemid"><i></i>'+s+'<small>'+((sc&&sc.minute)?sc.minute:"مباشر")+'</small></div>';
+    }
+    return whenHTML(m);
+  }
   function whenHTML(m){
     var t=fmtT(m.t);
     return '<div class="kr-when">'+fmtD(m.d).replace(/ 2026$/,"")+'<br><b>'+t.t+' '+t.ap+'</b></div>';
@@ -3321,7 +3336,7 @@ function renderKORadarPoster(el){
     var m=getM(mn); if(!m) return "";
     var hN=resolveKOName(m.h), aN=resolveKOName(m.a);
     var s=fin(mn)?scoreOf(mn):null;
-    var mid=s?('<div class="kr-sc">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):whenHTML(m);
+    var mid=s?('<div class="kr-sc">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):liveOrWhen(mn,m);
     var y=Math.round(cy-98);
     var w=winOf(mn), lh=(w==="a"), la=(w==="h");
     return '<div class="kr-c" data-mn="'+mn+'" onclick="radarMatchPopup('+mn+')" style="left:'+x+'px;top:'+y+'px;">'
@@ -3332,7 +3347,7 @@ function renderKORadarPoster(el){
     var m=getM(mn); if(!m) return "";
     var hN=resolveKOName(m.h), aN=resolveKOName(m.a);
     var s=fin(mn)?scoreOf(mn):null;
-    var mid=s?('<div class="kr-mid">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):whenHTML(m);
+    var mid=s?('<div class="kr-mid">'+s.main+(s.pens?'<small>'+s.pens+'</small>':'')+'</div>'):liveOrWhen(mn,m);
     var y=Math.round(cy-115);
     var w=winOf(mn), lh=(w==="a"), la=(w==="h");
     function row(n,lo){ return '<div class="kr-row'+(lo?' kr-lose':'')+'">'+flag(n,lo)+'<div class="kr-nm">'+n+'</div></div>'; }
@@ -3368,7 +3383,13 @@ function renderKORadarPoster(el){
         + (iso(fl)?'<img class="kr-minifl" src="'+fU(iso(fl))+'">':'')
         + '</div>';
   } else {
-    var fMid='<div class="kr-cmid"><div class="t2">'+ft.t+ft.ap+'</div><div class="t3">🏟️</div></div>';
+    var fMid;
+    if(typeof statusOf==="function" && statusOf(fm)==="live"){
+      var fsc=(typeof SC_CACHE!=="undefined")?SC_CACHE[104]:null;
+      fMid='<div class="kr-cmid"><div class="t2" style="color:#ff7b7b">'+((fsc&&fsc.sh!=null)?(fsc.sh+"-"+fsc.sa):"0-0")+'</div><div class="t1" style="color:#ff9aa2">🔴 '+((fsc&&fsc.minute)?fsc.minute:"مباشر")+'</div></div>';
+    } else {
+      fMid='<div class="kr-cmid"><div class="t2">'+ft.t+ft.ap+'</div><div class="t3">🏟️</div></div>';
+    }
     html+='<div class="kr-final" data-mn="104" onclick="radarMatchPopup(104)" style="left:330px;top:376px;width:420px;height:122px;">'
         + slot(resolveKOName(fm.h), false) + fMid + slot(resolveKOName(fm.a), false) + '</div>';
   }
@@ -3659,9 +3680,13 @@ function radarMatchPopup(mnum){
   function teamSide(name, has){
     return '<div class="rmp-tside">'+(has?'<span class="rmp-tflag">'+flagImg(name)+'</span>':'<span class="rmp-tbd">🏳️</span>')+'<span class="rmp-tn">'+(has?name:"يُحدَّد")+'</span></div>';
   }
-  var scoreMid = r.played
-    ? '<div class="rmp-score">'+r.sh+'<span class="rmp-colon">:</span>'+r.sa+(r.pens?'<div class="rmp-pens">('+r.pens+')</div>':'')+'</div>'
-    : '<div class="rmp-vs"><span class="rmp-vt">'+radarTime(m.t)+'</span><span class="rmp-vsx">VS</span></div>';
+  var _lv=(typeof statusOf==="function" && statusOf(m)==="live");
+  var _lsc=(typeof SC_CACHE!=="undefined")?SC_CACHE[m.n]:null;
+  var scoreMid = (_lv && _lsc && _lsc.sh!=null)
+    ? '<div class="rmp-score rmp-live">'+_lsc.sh+'<span class="rmp-colon">:</span>'+_lsc.sa+'<div class="rmp-min"><i></i>'+(_lsc.minute||"مباشر")+'</div></div>'
+    : (r.played
+        ? '<div class="rmp-score">'+r.sh+'<span class="rmp-colon">:</span>'+r.sa+(r.pens?'<div class="rmp-pens">('+r.pens+')</div>':'')+'</div>'
+        : '<div class="rmp-vs"><span class="rmp-vt">'+radarTime(m.t)+'</span><span class="rmp-vsx">VS</span></div>');
   var body;
   if(r.played){
     var g=goalsOf();
@@ -5014,7 +5039,7 @@ function refreshHeroScore(){
         var _pen=(sc.pH!=null&&sc.pA!=null)?'<div class="pens plive" style="justify-content:center"><span class="pen-lbl">🥅 ركلات الترجيح</span><span class="pen-sc"><span class="pn">'+sc.pH+'</span><span class="psep">:</span><span class="pn">'+sc.pA+'</span></span></div>':'';
         el.innerHTML='<div class="hf-line hf-live">'
           +'<span class="hf-team'+(_lead==="h"?" hf-win":"")+'">'+_h+(_lead==="h"?' <span class="lead-ar">▲</span>':'')+'</span>'
-          +'<span class="hf-score">'+sc.sh+' - '+sc.sa+'</span>'
+          +'<span class="hf-score">'+sc.sh+' - '+sc.sa+'</span>'+(sc.minute?'<span class="hf-min">⏱ '+sc.minute+'</span>':'')
           +'<span class="hf-team'+(_lead==="a"?" hf-win":"")+'">'+_a+(_lead==="a"?' <span class="lead-ar">▲</span>':'')+'</span>'
         +'</div>'
         +'<div class="live-tag">'+(_pen?'🥅 ركلات الترجيح جارية':('🔴 جارية الآن'+(sc.status==="ht"?' · استراحة':(sc.minute?' · '+sc.minute:''))))
