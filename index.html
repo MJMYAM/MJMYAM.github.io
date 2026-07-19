@@ -1657,6 +1657,16 @@ img.kr-fl.kr-lose,.kr-slot.kr-lose img{filter:grayscale(.75);}
 .kr-thirdwin{position:absolute;left:322px;top:1740px;width:436px;height:58px;display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#2a2016,#1d1a15);border:1.5px solid #c98b4a;border-radius:16px;color:#f0d9b8;font-weight:900;font-size:22px;box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 20px rgba(201,139,74,.15);cursor:pointer;z-index:4;}
 .kr-thirdwin img{width:64px;height:42px;object-fit:cover;border-radius:8px;box-shadow:0 3px 8px rgba(0,0,0,.6);}
 .kr-thirdwin b{color:#ffe9c9;}
+.kr-won{gap:16px;justify-content:center;}
+.kr-bigfl{width:150px;height:96px;object-fit:cover;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.65),0 0 0 2px rgba(255,255,255,.08);}
+.kr-final.kr-won .kr-bigfl{width:164px;height:104px;}
+.kr-woncol{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:170px;}
+.kr-wontitle{font-weight:900;font-size:23px;line-height:1.2;}
+.wt-bronze{color:#e8b988;}
+.wt-gold{color:#ffd873;}
+.kr-wonname{font-weight:900;font-size:30px;color:#fff;line-height:1.15;}
+.kr-wonscore{font-weight:700;font-size:14px;color:#98a0b3;margin-top:3px;}
+.kr-minifl{width:56px;height:36px;object-fit:cover;border-radius:8px;opacity:.4;filter:grayscale(.8);align-self:center;}
 .kr-conn{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 </style>
   <link rel="manifest" href="manifest.json">
@@ -3347,22 +3357,38 @@ function renderKORadarPoster(el){
   function slot(n,lo){ var ic=iso(n); return '<div class="kr-slot'+(lo?' kr-lose':'')+'">'+(ic?'<img src="'+fU(ic)+'">':'<div class="kr-q">؟</div>')+'</div>'; }
   var ft=fmtT(fm.t), tt3=fmtT(tmm.t);
   var fs=fin(104)?scoreOf(104):null, ts=fin(103)?scoreOf(103):null;
-  var fMid = fs?('<div class="kr-cmid"><div class="t2">'+fs.main+'</div>'+(fs.pens?'<div class="t1">'+fs.pens+'</div>':'')+'</div>')
-              :('<div class="kr-cmid"><div class="t2">'+ft.t+ft.ap+'</div><div class="t3">🏟️</div></div>');
   html+='<div class="kr-datecap" style="top:340px;">'+fmtD(fm.d)+'</div>';
-  html+='<div class="kr-final" data-mn="104" onclick="radarMatchPopup(104)" style="left:330px;top:376px;width:420px;height:122px;">'
-      + slot(resolveKOName(fm.h), winOf(104)==='a') + fMid + slot(resolveKOName(fm.a), winOf(104)==='h') + '</div>';
-  /* المركز الثالث */
-  var tMid = ts?('<div class="kr-cmid"><div class="t2">'+ts.main+'</div>'+(ts.pens?'<div class="t1">'+ts.pens+'</div>':'')+'</div>')
-              :('<div class="kr-cmid"><div class="t1">'+fmtD(tmm.d).replace(/ 2026$/,"")+'</div><div class="t2">'+tt3.t+tt3.ap+'</div></div>');
-  html+='<div class="kr-lbl" style="top:1560px;">المركز الثالث</div>';
-  html+='<div class="kr-bronze" data-mn="103" onclick="radarMatchPopup(103)" style="left:322px;top:1608px;width:436px;height:110px;">'
-      + slot(resolveKOName(tmm.h), winOf(103)==='a') + tMid + slot(resolveKOName(tmm.a), winOf(103)==='h') + '</div>';
-  var thirdW=koWinnerOf(103,0);
-  if(fin(103) && thirdW){
-    html+='<div class="kr-thirdwin" data-mn="103" onclick="radarMatchPopup(103)">🥉 صاحب المركز الثالث · '
-        + (iso(thirdW)?'<img src="'+fU(iso(thirdW))+'">':'') + ' <b>'+thirdW+'</b></div>';
+  if(fs){
+    var fw=(winOf(104)==="a")?resolveKOName(fm.a):resolveKOName(fm.h);
+    var fl=(winOf(104)==="a")?resolveKOName(fm.h):resolveKOName(fm.a);
+    var fscoreLine=resolveKOName(fm.h)+' '+fs.main.replace('-',' - ')+' '+resolveKOName(fm.a)+(fs.pens?' · '+fs.pens:'');
+    html+='<div class="kr-final kr-won" data-mn="104" onclick="radarMatchPopup(104)" style="left:310px;top:368px;width:460px;height:138px;">'
+        + (iso(fw)?'<img class="kr-bigfl" src="'+fU(iso(fw))+'">':'<div class="kr-q">؟</div>')
+        + '<div class="kr-woncol"><div class="kr-wontitle wt-gold">🏆 بطل العالم</div><div class="kr-wonname">'+fw+'</div><div class="kr-wonscore">'+fscoreLine+'</div></div>'
+        + (iso(fl)?'<img class="kr-minifl" src="'+fU(iso(fl))+'">':'')
+        + '</div>';
+  } else {
+    var fMid='<div class="kr-cmid"><div class="t2">'+ft.t+ft.ap+'</div><div class="t3">🏟️</div></div>';
+    html+='<div class="kr-final" data-mn="104" onclick="radarMatchPopup(104)" style="left:330px;top:376px;width:420px;height:122px;">'
+        + slot(resolveKOName(fm.h), false) + fMid + slot(resolveKOName(fm.a), false) + '</div>';
   }
+  /* المركز الثالث */
+  if(ts){
+    var tw=(winOf(103)==="a")?resolveKOName(tmm.a):resolveKOName(tmm.h);
+    var tl=(winOf(103)==="a")?resolveKOName(tmm.h):resolveKOName(tmm.a);
+    var tscoreLine=resolveKOName(tmm.h)+' '+ts.main.replace('-',' - ')+' '+resolveKOName(tmm.a)+(ts.pens?' · '+ts.pens:'');
+    html+='<div class="kr-bronze kr-won" data-mn="103" onclick="radarMatchPopup(103)" style="left:310px;top:1596px;width:460px;height:126px;">'
+        + (iso(tw)?'<img class="kr-bigfl" src="'+fU(iso(tw))+'">':'<div class="kr-q">؟</div>')
+        + '<div class="kr-woncol"><div class="kr-wontitle wt-bronze">🥉 المركز الثالث</div><div class="kr-wonname">'+tw+'</div><div class="kr-wonscore">'+tscoreLine+'</div></div>'
+        + (iso(tl)?'<img class="kr-minifl" src="'+fU(iso(tl))+'">':'')
+        + '</div>';
+  } else {
+    var tMid='<div class="kr-cmid"><div class="t1">'+fmtD(tmm.d).replace(/ 2026$/,"")+'</div><div class="t2">'+tt3.t+tt3.ap+'</div></div>';
+    html+='<div class="kr-lbl" style="top:1560px;">المركز الثالث</div>';
+    html+='<div class="kr-bronze" data-mn="103" onclick="radarMatchPopup(103)" style="left:322px;top:1608px;width:436px;height:110px;">'
+        + slot(resolveKOName(tmm.h), false) + tMid + slot(resolveKOName(tmm.a), false) + '</div>';
+  }
+
 
   /* خطوط ذهبية مرتّبة: دخول من منتصف البطاقة، أقواس متناظرة */
   var P=[];
@@ -4189,23 +4215,13 @@ async function fetchGoals(n, box, btn){
   }catch(err){
     if(!isReal(m)){ box.innerHTML='<div class="lu-note">🔒 طرفا المباراة يتحددان لاحقًا</div>'; return; }
     box.innerHTML='<div class="lu-err">تعذّر جلب الأهداف الآن — تظهر بعد بدء المباراة.'
-      +'<br><a href="https://www.google.com/search?q='+encodeURIComponent("أهداف "+((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" كأس العالم 2026")+'" target="_blank" rel="noopener">🔎 فتح في المتصفح</a>'
       +' &nbsp;·&nbsp; <button class="lu-alt" data-goals="'+n+'">↻ إعادة المحاولة</button></div>';
   }
 }
 
 /* ================= beIN SPORTS Video (مباشر) ================= */
-var BEIN_CHANNEL_URL = "https://www.youtube.com/@beINSPORTS/videos";
 
-function openBeinMatch(btn){
-  var card = btn.closest(".match");
-  if(!card) return;
-  var m = getM(+card.dataset.mn);
-  if(!m) return;
-  var q = "ملخص "+((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" كأس العالم 2026 beIN SPORTS";
-  // يحوّل مباشرة على يوتيوب (يفتح تطبيق يوتيوب على الجوال)
-  window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(q), "_blank", "noopener");
-}
+
 
 /* ================= LINEUPS & TV (live fetch) ================= */
 var LU_CACHE = {};
@@ -4215,11 +4231,7 @@ function isReal(m){
   return !!(TEAMS[h] && TEAMS[a]);
 }
 function getM(n){for(var i=0;i<M.length;i++){if(M[i].n===n) return M[i];} return null;}
-function gLink(m){
-  var h=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
-  var a=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
-  return "https://www.google.com/search?q="+encodeURIComponent("تشكيلة "+h+" ضد "+a+" كأس العالم 2026 والقناة الناقلة");
-}
+
 
 
 /* جدول ترتيب المجموعة داخل بطاقة المباراة */
@@ -4263,7 +4275,7 @@ function extShell(m){
     if(stxV==="done"){
       var q=encodeURIComponent(((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" beIN Sports ملخص");
       var qMatch=encodeURIComponent(m.h+" ضد "+m.a);
-      summaryBox='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button><div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div><div class="ext-div"></div>';
+      summaryBox='';
     }
     if(stxV!=="done"){
       var llbl = stxV==="live" ? "🔴 شاهد المباراة بثًّا مباشراً الآن" : "📺 روابط بث المباراة المباشر";
@@ -4697,7 +4709,6 @@ async function fetchLU(n, box, btn){
     return;
   }
   box.innerHTML='<div class="lu-err">التشكيلة غير متاحة حاليًا — أعد المحاولة قبيل المباراة.'
-    +'<br><a href="'+gLink(m)+'" target="_blank" rel="noopener">🔎 فتح بحث التشكيلة في المتصفح</a>'
     +' &nbsp;·&nbsp; <button class="lu-alt" data-lu="'+n+'">↻ إعادة المحاولة</button></div>';
 }
 
@@ -5120,7 +5131,7 @@ async function fetchStanding(g, btn){
     if(ST_CACHE[g]){ if(btn){btn.disabled=false;} return; }
   }catch(e0){}
   if(box) box.innerHTML='<div class="lu-err">تعذّر جلب الترتيب حاليًا — تأكد من اتصال الإنترنت ثم أعد المحاولة.'
-    +'<br><a href="https://www.google.com/search?q='+encodeURIComponent("ترتيب المجموعة "+g+" كأس العالم 2026")+'" target="_blank" rel="noopener">🔎 فتح الترتيب في المتصفح</a>'
+    
     +' &nbsp;·&nbsp; <button class="lu-alt" data-st="'+g+'">↻ إعادة المحاولة</button></div>';
   if(btn){btn.disabled=false; btn.innerHTML='📊 الترتيب المباشر للمجموعة '+g;}
 }
@@ -5287,13 +5298,9 @@ function renderCd(){ buildCdFilters(); renderCdFinal(); renderCdList(); }
 
 
 /* ===== روابط البث المباشر (مواقع متعددة) ===== */
+var LIVE_STREAM_URL="https://youtube.com/live/l8n49y8Ue8c";
 var LIVE_TV_SITES=[
-  {name:"HD2Live", url:"https://www.hd2live.com/", desc:"بث مباشر HD"},
-  {name:"Live7", url:"https://live7.sx/", desc:"بث مباشر"},
-  {name:"LiveHD6", url:"https://www.livehd6.com/", desc:"بث مباشر بديل"},
-  {name:"LiveHD7", url:"https://www.livehd7top.com/", desc:"بث مباشر HD"},
-  {name:"LivaHD7", url:"https://livahd7.live/sport/", desc:"قسم الرياضة"},
-  {name:"LiveHD2", url:"https://www.livehd2.live/", desc:"بث مباشر بديل"}
+  {name:"البث الرسمي المباشر", url:LIVE_STREAM_URL, desc:"نهائي كأس العالم — إسبانيا × الأرجنتين 🔴"}
 ];
 function openLiveTV(btn){
   var card=btn.closest(".match"); if(!card) return;
@@ -5308,9 +5315,7 @@ function openLiveTV(btn){
       +'<span class="lt-info"><b>'+st.name+'</b><small>'+st.desc+'</small></span>'
       +'<span class="lt-go">فتح ↗</span></a>';
   }).join("");
-  box.innerHTML='<div class="livetv-head">📡 اختر موقع البث — إن لم يعمل الأول جرّب البديل</div>'
-    +links
-    +'<div class="livetv-note">⚠️ مواقع بث خارجية مستقلة · قد تظهر بها إعلانات · الروابط قد تتغير</div>';
+  box.innerHTML='<div class="livetv-head">🔴 البث الرسمي المباشر</div>'+links;
 }
 function openLiveTVModal(mn){
   var m=getM(+mn); if(!m) return;
@@ -5329,9 +5334,8 @@ function openLiveTVModal(mn){
     +'<div class="ltv-x">✕</div>'
     +'<div class="ltv-title">🔴 مشاهدة المباراة مباشرة</div>'
     +'<div class="ltv-teams">'+th+' × '+ta+'</div>'
-    +'<div class="livetv-head">📡 اختر موقع البث — إن لم يعمل الأول جرّب البديل</div>'
+    +'<div class="livetv-head">🔴 البث الرسمي المباشر — اضغط للمشاهدة</div>'
     +links
-    +'<div class="livetv-note">⚠️ مواقع بث خارجية مستقلة · قد تظهر بها إعلانات · الروابط قد تتغير</div>'
     +'</div>';
   ov.addEventListener("click", function(e){ if(e.target===ov || e.target.classList.contains("ltv-x")) ov.remove(); });
   document.body.appendChild(ov);
@@ -5494,12 +5498,11 @@ function renderStats(){
   if(upd) upd.innerHTML = STAT_DATA.live ? '🟢 مُحدّث مباشرةً' : ('🗓️ آخر تحديث: '+STAT_DATA.upd);
   var foot=document.getElementById("stFoot");
   if(foot) foot.innerHTML = 'الأرقام تتغيّر بعد كل مباراة · '
-    + '<a href="https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/statistics/player-statistics" target="_blank" rel="noopener">📊 إحصائيات FIFA الرسمية</a>';
+    + '';
 }
 /* ===== جلب الأهداف والتمريرات الحاسمة من ESPN لكل المباريات المنتهية ===== */
 
 /* ============ خانة أهداف البطولة (يوتيوب) ============ */
-function ytLink(q){ return "https://www.youtube.com/results?search_query="+encodeURIComponent(q); }
 function goalRows(m){
   var fr=(typeof FINAL_RESULTS!=="undefined")?FINAL_RESULTS[m.n]:null;
   var gc=(typeof GOAL_CACHE!=="undefined")?GOAL_CACHE[m.n]:null;
@@ -5565,7 +5568,7 @@ function renderGoalsTab(){
     }
     var items=teamBlock(hN, homeGoals, gr.sh)+teamBlock(aN, awayGoals, gr.sa);
     var yqSum="ملخص "+hN+" ضد "+aN+" كأس العالم 2026 بي ان سبورت";
-    var beinBtn='<a class="gt-bein" href="'+ytLink(yqSum)+'" target="_blank" rel="noopener"><span class="gt-bein-ic">🎬</span> شاهد ملخص المباراة على beIN</a>';
+    var beinBtn='';
     html+='<div class="gt-block">'+head+items+beinBtn+'</div>';
   });
   var cnt=document.getElementById("goalsCnt");
@@ -5924,8 +5927,6 @@ document.body.addEventListener("click", function(e){
   // زر beIN SPORTS — منفصل (لما يضغط على data-bein-q مباشرة)
   var ltv=e.target.closest("[data-livetv]");
   if(ltv){ openLiveTV(ltv); return; }
-  var bvb=e.target.closest("[data-bein-q]");
-  if(bvb){ openBeinMatch(bvb); return; }
   var lub=e.target.closest("[data-lu]");
   if(lub){
     var ln=+lub.dataset.lu, lcard=lub.closest(".match");
