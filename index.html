@@ -2248,18 +2248,18 @@ function statusOf(m){
   // نتيجة نهائية مثبّتة = انتهت
   if(typeof FINAL_RESULTS!=="undefined" && FINAL_RESULTS[m.n] && FINAL_RESULTS[m.n].status==="finished") return "done";
   var KO=(m.r && m.r!=="group");
-  var liveMax = KO ? 175 : 125;   // الإقصائيات قد تمتد بالأشواط الإضافية وركلات الترجيح
+  var liveMax = KO ? 210 : 125;   // الإقصائيات قد تمتد بالأشواط الإضافية وركلات الترجيح والوقت البدل الطويل
   if(m.d){
     var mins=(Date.now()-dateObj(m).getTime())/60000;
     if(sc && sc.found && sc.status){
       if(sc.status==="finished") return "done";
       if(sc.status==="live" || sc.status==="ht"){
-        // سقف مطلق: بعد تجاوز أقصى مدة ممكنة، تُعتبر منتهية حتى لو المصدر ما زال يرسل "مباشر"
-        // (يمنع بقاء المباراة عالقة على "مباشر" حين يتأخر المصدر في وسم الانتهاء، خصوصًا مع التحديث كل 5ث)
-        var hardCap = KO ? 165 : 118;   // 90+وقت بدل+فاصل؛ الإقصائي مع تمديد وترجيح
-        if(mins>hardCap) return "done";
-        var fresh = sc._ts && (Date.now()-sc._ts) < 6*60000;  // بيانات حديثة خلال آخر 6 دقائق
+        // المصدر الحي الطازج يحكم دائمًا: ما دام البث يقول "مباشر" وبياناته تتحدث، فالمباراة مباشرة
+        // مهما طالت (أشواط إضافية، ركلات ترجيح، وقت بدل طويل) — السقف احتياط للبيانات الميتة فقط
+        var fresh = sc._ts && (Date.now()-sc._ts) < 6*60000;
         if(fresh) return "live";
+        var hardCap = KO ? 205 : 118;
+        if(mins>hardCap) return "done";
         return (mins>liveMax) ? "done" : "live";
       }
       if(sc.status==="not_started") return "up";
