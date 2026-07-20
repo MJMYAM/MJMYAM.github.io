@@ -1706,6 +1706,17 @@ img.kr-fl.kr-lose,.kr-slot.kr-lose img{filter:grayscale(.75);}
 .sr.top{background:linear-gradient(90deg,rgba(232,178,58,.07),transparent 60%);border-radius:12px;}
 .sr.top .sr-n{font-size:14.5px;color:#fff;}
 .cf-foot{background:#131419;padding:9px 14px;font-size:10.5px;color:#7d8598;text-align:center;border-top:1px solid #22242c;font-weight:600;}
+
+/* ===== جوائز البطولة الفردية ===== */
+.awards{margin:14px 0 4px;border-radius:18px;padding:1.5px;background:conic-gradient(from 210deg,#e8b23a,#ffe9b0,#c78e1e,#ffd873,#e8b23a);}
+.aw-h{background:linear-gradient(135deg,#221c0f,#171512);border-radius:16px 16px 0 0;padding:10px 14px;font-weight:900;font-size:14.5px;color:#ffe9ae;}
+.aw-r{display:flex;align-items:center;gap:11px;background:#14161b;padding:10px 13px;border-top:1px solid rgba(232,178,58,.14);}
+.aw-r:last-child{border-radius:0 0 16px 16px;}
+.aw-i{font-size:21px;flex:0 0 26px;text-align:center;}
+.aw-t{flex:0 0 96px;font-weight:800;font-size:12.5px;color:#cfd5e2;line-height:1.35;}
+.aw-t small{display:block;font-weight:700;font-size:9.5px;color:#8b93a5;}
+.aw-n{flex:1;font-weight:900;font-size:14.5px;color:#fff;line-height:1.4;min-width:0;}
+.aw-n i{display:block;font-style:normal;font-weight:700;font-size:10.5px;color:#e8b23a;margin-top:1px;}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -1801,6 +1812,14 @@ if("serviceWorker" in navigator){
     <div class="beam-wrap" id="beamWrap">
       <div class="beam-meta"><span id="beamDay"></span><span>11 يونيو ← 19 يوليو</span></div>
       <div class="beam"><i id="beamFill"></i></div>
+    </div>
+    <div class="awards">
+      <div class="aw-h">🏅 جوائز البطولة الفردية</div>
+      <div class="aw-r"><span class="aw-i">🏆</span><span class="aw-t">أفضل لاعب <small>الكرة الذهبية</small></span><span class="aw-n">رودري <i>🇪🇸 إسبانيا — قائد وسط الأبطال</i></span></div>
+      <div class="aw-r"><span class="aw-i">👟</span><span class="aw-t">الهدّاف <small>الحذاء الذهبي</small></span><span class="aw-n">كيليان مبابي <i>🇫🇷 ١٠ أهداف — الأول تاريخيًا يحرزه مرتين</i></span></div>
+      <div class="aw-r"><span class="aw-i">🎯</span><span class="aw-t">أفضل صانع <small>الأكثر صناعةً</small></span><span class="aw-n">مايكل أوليسي <i>🇫🇷 ٧ صناعات — حطّم رقم بيليه (١٩٧٠)</i></span></div>
+      <div class="aw-r"><span class="aw-i">🧤</span><span class="aw-t">أفضل حارس <small>القفاز الذهبي</small></span><span class="aw-n">أوناي سيمون <i>🇪🇸 ٧ شباك نظيفة قياسية</i></span></div>
+      <div class="aw-r"><span class="aw-i">🌟</span><span class="aw-t">أفضل شاب</span><span class="aw-n">باو كوبارسي <i>🇪🇸 ١٩ سنة</i></span></div>
     </div>
 
     <div class="stats">
@@ -4140,7 +4159,8 @@ var FINAL_RESULTS={
   102:{sh:1, sa:2, status:"finished", winSide:"a",
      gh:[{who:"أنتوني غوردون", min:"55", as:"مورغان روجرز"}], ga:[{who:"إنزو فرنانديز", min:"85", as:"ليونيل ميسي"},{who:"لاوتارو مارتينيز", min:"90+2", as:"ليونيل ميسي"}]},
   103:{sh:4, sa:6, status:"finished", winSide:"a"},
-  104:{sh:1, sa:0, status:"finished", winSide:"h"}
+  104:{sh:1, sa:0, status:"finished", winSide:"h",
+     gh:[{who:"فيران توريس", min:"106"}], ga:[]}
 };
 /* ===== تحديث تلقائي: أي مباراة إقصائية انتهت تُرقّى لنتيجة دائمة (بدون تدخل يدوي) ===== */
 try{
@@ -5513,15 +5533,15 @@ document.getElementById("bn").addEventListener("click", function(e){
 /* ================= STATS TAB (الهدّافون / صنّاع الأهداف) ================= */
 var statMode="g";
 var STAT_DATA={
-  upd:"12 يوليو 2026 · بعد ربع النهائي",
+  upd:"20 يوليو 2026 · نهائية — بعد ختام البطولة",
   live:false,
   g:[
     {n:"ليونيل ميسي", t:"الأرجنتين", v:8},
-    {n:"كيليان مبابي", t:"فرنسا", v:8},
+    {n:"كيليان مبابي", t:"فرنسا", v:10},
     {n:"إيرلينغ هالاند", t:"النرويج", v:7},
     {n:"هاري كين", t:"إنجلترا", v:6},
-    {n:"جود بيلينغهام", t:"إنجلترا", v:6},
-    {n:"عثمان ديمبيلي", t:"فرنسا", v:5},
+    {n:"جود بيلينغهام", t:"إنجلترا", v:7},
+    {n:"عثمان ديمبيلي", t:"فرنسا", v:6},
     {n:"ميكيل أوياربال", t:"إسبانيا", v:4},
     {n:"فينيسيوس جونيور", t:"البرازيل", v:4},
     {n:"إسماعيلا سار", t:"السنغال", v:4},
@@ -5533,7 +5553,7 @@ var STAT_DATA={
     {n:"جوناثان ديفيد", t:"كندا", v:3}
   ],
   a:[
-    {n:"مايكل أوليسي", t:"فرنسا", v:5},
+    {n:"مايكل أوليسي", t:"فرنسا", v:7},
     {n:"مارتن أوديغارد", t:"النرويج", v:4},
     {n:"برونو غيماريش", t:"البرازيل", v:4},
     {n:"براهيم دياز", t:"المغرب", v:4},
@@ -5542,7 +5562,7 @@ var STAT_DATA={
     {n:"بوكايو ساكا", t:"إنجلترا", v:3},
     {n:"أندرياس شيلدروب", t:"النرويج", v:3},
     {n:"فلوريان فيرتز", t:"ألمانيا", v:3},
-    {n:"كيليان مبابي", t:"فرنسا", v:3},
+    {n:"كيليان مبابي", t:"فرنسا", v:4},
     {n:"ليونيل ميسي", t:"الأرجنتين", v:2},
     {n:"أشرف حكيمي", t:"المغرب", v:2}
   ]
