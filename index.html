@@ -1738,6 +1738,23 @@ img.kr-fl.kr-lose,.kr-slot.kr-lose img{filter:grayscale(.75);}
 .gc-col b{font-weight:900;font-size:15px;display:block;}
 .gc-col small{display:block;font-weight:600;font-size:11px;color:#95a3c4;margin-top:2px;line-height:1.6;}
 .gc-go{font-weight:900;font-size:12.5px;color:#9db8ff;background:rgba(120,150,255,.12);border:1px solid rgba(120,150,255,.4);border-radius:999px;padding:6px 13px;}
+
+/* ===== تبويب اللقطات ===== */
+.pr-wrap{margin-bottom:9px;}
+.pr-row{display:flex;align-items:center;gap:8px;background:var(--card,#151a2e);border:1px solid var(--line,#26304f);border-radius:14px;padding:10px 12px;cursor:pointer;}
+.pr-row:active{transform:scale(.995);}
+.pr-t{flex:1;display:flex;align-items:center;gap:6px;font-weight:800;font-size:12.5px;min-width:0;}
+.pr-t:last-of-type{justify-content:flex-end;}
+.pr-t img{width:24px;height:16px;border-radius:3px;object-fit:cover;}
+.pr-sc{font-weight:900;font-size:14px;color:#ffd873;min-width:44px;text-align:center;}
+.pr-sc.pr-vs{color:#6f7890;font-size:11px;}
+.pr-cam{font-size:15px;opacity:.8;}
+.pics-panel{padding:9px 2px 2px;}
+.pic-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pic-cell{display:block;position:relative;border-radius:12px;overflow:hidden;border:1px solid #2a3350;background:#0d1120;}
+.pic-cell img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;}
+.pic-cell span{position:absolute;inset-inline:0;bottom:0;background:linear-gradient(transparent,rgba(5,8,16,.92));color:#e8edfa;font-size:10px;font-weight:700;padding:14px 7px 6px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.pics-getty{display:block;text-align:center;margin-top:14px;color:#9db8ff;font-weight:800;font-size:12px;text-decoration:none;background:rgba(120,150,255,.08);border:1px solid rgba(120,150,255,.3);border-radius:12px;padding:10px;}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -1848,11 +1865,6 @@ if("serviceWorker" in navigator){
       <div class="aw-r"><span class="aw-i">🧤</span><span class="aw-t">أفضل حارس <small>القفاز الذهبي</small></span><span class="aw-n">أوناي سيمون <i>🇪🇸 ٧ شباك نظيفة قياسية</i></span></div>
       <div class="aw-r"><span class="aw-i">🌟</span><span class="aw-t">أفضل شاب</span><span class="aw-n">باو كوبارسي <i>🇪🇸 ١٩ سنة</i></span></div>
     </div>
-    <a class="gallery-card" href="https://www.gettyimages.com/photos/fifa-world-cup-2026" target="_blank" rel="noopener">
-      <span class="gc-ic">📸</span>
-      <span class="gc-col"><b>معرض صور البطولة</b><small>Getty — الوكالة المصوّرة الرسمية المعتمدة · كل المباريات واللحظات من الافتتاح للتتويج</small></span>
-      <span class="gc-go">فتح ↗</span>
-    </a>
 
     <div class="stats">
       <div class="stat"><div class="v">104</div><div class="l">مباراة</div></div>
@@ -1916,6 +1928,12 @@ if("serviceWorker" in navigator){
   </section>
 
   <!-- ============ GROUPS ============ -->
+  <section id="tab-pics" class="tab">
+    <div class="sec-t"><i></i>📸 لقطات المباريات <span class="cnt">٤ لقطات مختارة لكل مباراة</span></div>
+    <div class="st-source" style="margin-bottom:12px">اضغط أي مباراة لعرض أبرز أحداثها بالصور — من مصدر النتائج الرسمي</div>
+    <div id="picsList"></div>
+    <a class="pics-getty" href="https://www.gettyimages.com/photos/fifa-world-cup-2026" target="_blank" rel="noopener">🖼 المعرض الرسمي الكامل (Getty) ↗</a>
+  </section>
   <section id="tab-groups" class="tab">
     <div class="sec-t"><i></i>المجموعات الـ12 <span class="cnt">48 منتخبًا</span></div>
     <div id="stSource" class="st-source">المصدر: حساب تلقائي من النتائج</div>
@@ -2094,6 +2112,7 @@ if("serviceWorker" in navigator){
   <button data-tab="matches"><span class="ic">📅</span>المباريات</button>
   <button data-tab="stats"><span class="ic">📊</span>الإحصائيات</button>
   <button data-tab="goals"><span class="ic">📋</span>الملخص</button>
+  <button data-tab="pics"><span class="ic">📸</span>اللقطات</button>
   <button data-tab="groups"><span class="ic">🧩</span>المجموعات</button>
   <button data-tab="ko"><span class="ic">🏆</span>الإقصائيات</button>
   <button data-tab="champions"><span class="ic">👑</span><span data-i18n="tab_champs">الأبطال</span></button>
@@ -4302,6 +4321,56 @@ function renderGoals(m, g){
   }
   return '<div class="gl-grid">'+col(hN,g.home)+col(aN,g.away)+'</div>';
 }
+var PIC_CACHE={};
+function renderPics(){
+  var box=document.getElementById("picsList");
+  if(!box || box.dataset.done) return;
+  var order=[]; for(var i=104;i>=1;i--){ var m=getM(i); if(m&&m.d) order.push(m); }
+  box.innerHTML=order.map(function(m){
+    var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
+    var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
+    var r=(typeof radarScore==="function")?radarScore(m):null;
+    var mid=(r&&r.played)?('<b class="pr-sc">'+r.sh+'-'+r.sa+'</b>'):'<b class="pr-sc pr-vs">VS</b>';
+    return '<div class="pr-wrap"><div class="pr-row" data-picsm="'+m.n+'">'
+      +'<span class="pr-t">'+flagImg(hN)+' '+hN+'</span>'+mid+'<span class="pr-t">'+aN+' '+flagImg(aN)+'</span>'
+      +'<span class="pr-cam">📸</span></div>'
+      +'<div class="pics-panel" id="pics-'+m.n+'" style="display:none"></div></div>';
+  }).join("");
+  box.dataset.done="1";
+}
+async function fetchMatchPics(n, box){
+  if(PIC_CACHE[n]){ box.innerHTML=PIC_CACHE[n]; return; }
+  box.innerHTML='<div class="lu-note">جارٍ جلب اللقطات <span class="spin"></span></div>';
+  try{
+    var m=getM(n);
+    var id=EV_ID[n];
+    if(!id && m && m.d){
+      var base=dateObj(m).getTime();
+      await loadScoresESPN(ymd(new Date(base-30*3600000)), ymd(new Date(base+30*3600000)));
+      id=EV_ID[n];
+    }
+    if(!id) throw new Error("noid");
+    var r1=await fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event="+id);
+    if(!r1.ok) throw new Error("sum");
+    var d1=await r1.json();
+    var seen={}, pics=[];
+    (d1.videos||[]).forEach(function(v){
+      var img=v.thumbnail||(v.posterImages&&v.posterImages.default&&v.posterImages.default.href)||"";
+      if(!img||seen[img]) return; seen[img]=1;
+      pics.push({img:img, cap:(v.headline||v.title||"").trim()});
+    });
+    pics=pics.slice(0,4);
+    if(!pics.length){ box.innerHTML='<div class="lu-note">لا تتوفر لقطات لهذه المباراة حاليًا 📷</div>'; return; }
+    var html='<div class="pic-grid">'+pics.map(function(p){
+      return '<a class="pic-cell" href="'+p.img+'" target="_blank" rel="noopener">'
+        +'<img src="'+p.img+'" loading="lazy" alt="">'
+        +(p.cap?'<span>'+p.cap+'</span>':'')+'</a>';
+    }).join("")+'</div>';
+    PIC_CACHE[n]=html; box.innerHTML=html;
+  }catch(e){
+    box.innerHTML='<div class="lu-err">تعذّر جلب اللقطات — <button class="lu-alt" data-picsr="'+n+'">↻ إعادة المحاولة</button></div>';
+  }
+}
 async function fetchGoals(n, box, btn){
   var m=getM(n); if(!m || !box) return;
   if(FINAL_RESULTS[n] && GOAL_CACHE[n]){ box.innerHTML=renderGoals(m,GOAL_CACHE[n]); return; }
@@ -5528,6 +5597,7 @@ function openMatchFull(mn){
 function goTab(id){
   if(id==="info" && !window._stadDone){ if(typeof renderStadiums==="function"){ renderStadiums(); window._stadDone=true; } }
   if(id==="ko"){ renderKO(); }
+  if(id==="pics"){ renderPics(); }
   if(id==="stats"){ try{buildLeaderboard();}catch(_e){} renderStats(); }
   if(id==="goals"){ try{buildLeaderboard();}catch(_e){} renderGoalsTab(); }
   if(id==="info" && !window._infoDone){ renderInfo(); window._infoDone=true; }
@@ -6091,6 +6161,15 @@ document.body.addEventListener("click", function(e){
   if(ltv){ openLiveTV(ltv); return; }
   var bvb=e.target.closest("[data-bein-q]");
   if(bvb){ openBeinMatch(bvb); return; }
+  var prw=e.target.closest("[data-picsm]");
+  if(prw){
+    var pn=+prw.dataset.picsm, pb=document.getElementById("pics-"+pn);
+    if(pb.style.display==="none"){ pb.style.display="block"; fetchMatchPics(pn,pb); }
+    else pb.style.display="none";
+    return;
+  }
+  var prr=e.target.closest("[data-picsr]");
+  if(prr){ fetchMatchPics(+prr.dataset.picsr, document.getElementById("pics-"+prr.dataset.picsr)); return; }
   var lub=e.target.closest("[data-lu]");
   if(lub){
     var ln=+lub.dataset.lu, lcard=lub.closest(".match");
