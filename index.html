@@ -1720,6 +1720,17 @@ img.kr-fl.kr-lose,.kr-slot.kr-lose img{filter:grayscale(.75);}
 .aw-champ{background:linear-gradient(135deg,rgba(198,11,30,.20),rgba(232,178,58,.16)),#191510;padding:12px 14px;border-top:1px solid rgba(232,178,58,.25);font-weight:900;font-size:16.5px;color:#fff;line-height:1.5;}
 .aw-champ b{color:#ffd873;font-size:18px;}
 .aw-champ small{display:block;font-weight:700;font-size:11px;color:#d9c99e;margin-top:2px;}
+
+/* ===== بطاقة الوداع ===== */
+.farewell{border-radius:20px;padding:1.5px;background:conic-gradient(from 200deg,#e8b23a,#ffe9b0,#b9821a,#ffd873,#e8b23a);margin-bottom:14px;box-shadow:0 16px 44px -18px rgba(232,178,58,.45);}
+.fw-top{background:linear-gradient(135deg,#231c0e,#181510);border-radius:18px 18px 0 0;padding:12px 16px 10px;font-weight:900;font-size:19px;color:#ffe9ae;}
+.fw-body{background:#15161b;padding:12px 16px;font-size:13.5px;font-weight:600;color:#d5dae6;line-height:2;}
+.fw-tease{background:#131419;border-radius:0 0 18px 18px;padding:12px 16px;font-size:13.5px;font-weight:700;color:#cfd5e2;line-height:1.9;}
+.fw-tease b{color:#ffd873;}
+.fw-tease span{display:inline-block;margin-inline-start:8px;background:rgba(232,178,58,.15);border:1px solid rgba(232,178,58,.5);color:#ffe9b0;font-weight:900;font-size:12.5px;padding:3px 14px;border-radius:999px;animation:kdpulse 1.6s infinite;}
+/* زر اللقطات */
+.pics-btn{display:block;width:100%;margin-top:8px;background:linear-gradient(135deg,#1c2333,#151a26);border:1px solid #2c3a5c;color:#cfe0ff;font-weight:900;font-size:13px;padding:11px;border-radius:13px;cursor:pointer;font-family:inherit;}
+.pics-btn:active{transform:scale(.98);}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -1811,6 +1822,11 @@ if("serviceWorker" in navigator){
 
   <!-- ============ HOME ============ -->
   <section id="tab-home" class="tab active">
+    <div class="farewell">
+      <div class="fw-top">🏆 انتهت الحكاية</div>
+      <div class="fw-body">٣٩ يومًا و١٠٤ مباريات عشناها لحظة بلحظة — من صافرة الافتتاح إلى ليلة تتويج إسبانيا. شكرًا لكل من تابع وتوقّع وتفاعل وعاش معنا هذا العرس العالمي 🇰🇼 كنتم أجمل ما في البطولة.</div>
+      <div class="fw-tease">وهذي مو النهاية… <b>أمر جميل قادم يستاهل الانتظار</b> 👀✨<span>انتظرونا</span></div>
+    </div>
     <div id="heroStack"></div>
     <div class="beam-wrap" id="beamWrap">
       <div class="beam-meta"><span id="beamDay"></span><span>11 يونيو ← 19 يوليو</span></div>
@@ -1908,12 +1924,6 @@ if("serviceWorker" in navigator){
 
 
   <!-- ============ COUNTDOWN ============ -->
-  <section id="tab-cd" class="tab">
-    <div class="sec-t"><i></i>العدّ التنازلي <span class="cnt">لكل المباريات</span></div>
-    <div id="cdFinal"></div>
-    <div class="cd-filters" id="cdFilters"></div>
-    <div id="cdList"></div>
-  </section>
 
   <!-- ============ INFO ============ -->
   <section id="tab-info" class="tab">
@@ -1963,22 +1973,6 @@ if("serviceWorker" in navigator){
   </section>
 
   <!-- ============ MAP (خريطة الملاعب) ============ -->
-  <section id="tab-map" class="tab">
-    <div class="sec-t"><i></i><span data-i18n="map_title">خريطة الملاعب</span> <span class="cnt">16 ملعبًا</span></div>
-    <div id="mapContainer"></div>
-    <div class="st-source" style="margin-bottom:8px">📍 اضغط على أي ملعب لمعرفة تفاصيله ومبارياته</div>
-    <div id="mapBottom"></div>
-  </section>
-
-  <!-- ============ COMPARE (مقارنة منتخبين) ============ -->
-  <section id="tab-compare" class="tab">
-    <div class="sec-t"><i></i><span data-i18n="cmp_title">قارن منتخبين</span> <span class="cnt">Head-to-Head</span></div>
-    <div class="sel-row" style="margin-bottom:14px">
-      <select id="cmpA"></select>
-      <select id="cmpB"></select>
-    </div>
-    <div id="cmpResult"></div>
-  </section>
 
   <!-- ============ CHAMPIONS (الأبطال التاريخيون) ============ -->
   <section id="tab-champions" class="tab">
@@ -2088,11 +2082,8 @@ if("serviceWorker" in navigator){
   <button data-tab="matches"><span class="ic">📅</span>المباريات</button>
   <button data-tab="stats"><span class="ic">📊</span>الإحصائيات</button>
   <button data-tab="goals"><span class="ic">📋</span>الملخص</button>
-  <button data-tab="cd"><span class="ic">⏳</span>العدّاد</button>
   <button data-tab="groups"><span class="ic">🧩</span>المجموعات</button>
   <button data-tab="ko"><span class="ic">🏆</span>الإقصائيات</button>
-  <button data-tab="map"><span class="ic">🗺️</span><span data-i18n="tab_map">الخريطة</span></button>
-  <button data-tab="compare"><span class="ic">⚖️</span><span data-i18n="cmp_title">المقارنة</span></button>
   <button data-tab="champions"><span class="ic">👑</span><span data-i18n="tab_champs">الأبطال</span></button>
   <button data-tab="predict"><span class="ic">🔮</span><span data-i18n="tab_predict">توقّعاتي</span></button>
   <button data-tab="info"><span class="ic">ℹ️</span><span data-i18n="info_title">البطولة</span></button>
@@ -4419,7 +4410,9 @@ function extShell(m){
     if(stxV==="done"){
       var q=encodeURIComponent(((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" beIN Sports ملخص");
       var qMatch=encodeURIComponent(m.h+" ضد "+m.a);
-      summaryBox='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button><div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div><div class="ext-div"></div>';
+      summaryBox='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button>'
+        +'<button class="pics-btn" data-pics="'+m.n+'">📸 لقطات وصور المباراة</button>'
+        +'<div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div><div class="ext-div"></div>';
     }
     if(stxV!=="done"){
       var llbl = stxV==="live" ? "🔴 شاهد المباراة بثًّا مباشراً الآن" : "📺 روابط بث المباراة المباشر";
@@ -5462,6 +5455,12 @@ function openLiveTV(btn){
   box.innerHTML='<div class="livetv-head">🔴 البث الرسمي المباشر</div>'+links;
 }
 function ytLink(q){ return "https://www.youtube.com/results?search_query="+encodeURIComponent(q); }
+function openMatchPics(btn){
+  var m=getM(+btn.dataset.pics);
+  if(!m) return;
+  var q="صور مباراة "+((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" كأس العالم 2026";
+  window.open("https://www.google.com/search?tbm=isch&q="+encodeURIComponent(q), "_blank", "noopener");
+}
 function openBeinMatch(btn){
   var card = btn.closest(".match");
   if(!card) return;
@@ -6082,6 +6081,8 @@ document.body.addEventListener("click", function(e){
   if(ltv){ openLiveTV(ltv); return; }
   var bvb=e.target.closest("[data-bein-q]");
   if(bvb){ openBeinMatch(bvb); return; }
+  var pcb=e.target.closest("[data-pics]");
+  if(pcb){ openMatchPics(pcb); return; }
   var lub=e.target.closest("[data-lu]");
   if(lub){
     var ln=+lub.dataset.lu, lcard=lub.closest(".match");
@@ -6456,14 +6457,6 @@ setInterval(refreshStatuses, 60000);
     <div class="modal-handle"></div>
     <div class="modal-head" id="wikiHead"></div>
     <div class="modal-body" id="wikiBody"></div>
-  </div>
-</div>
-
-<div class="modal-bg" id="compareModal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-head"><h2>📊 قارن منتخبين</h2><button class="modal-close" onclick="closeCompareModal()">✕</button></div>
-    <div class="modal-body" id="compareBody"></div>
   </div>
 </div>
 
