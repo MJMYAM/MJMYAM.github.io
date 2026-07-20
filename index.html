@@ -1739,30 +1739,6 @@ img.kr-fl.kr-lose,.kr-slot.kr-lose img{filter:grayscale(.75);}
 .gc-col small{display:block;font-weight:600;font-size:11px;color:#95a3c4;margin-top:2px;line-height:1.6;}
 .gc-go{font-weight:900;font-size:12.5px;color:#9db8ff;background:rgba(120,150,255,.12);border:1px solid rgba(120,150,255,.4);border-radius:999px;padding:6px 13px;}
 
-/* ===== تبويب اللقطات ===== */
-.pr-wrap{margin-bottom:9px;}
-.pr-row{display:flex;align-items:center;gap:8px;background:var(--card,#151a2e);border:1px solid var(--line,#26304f);border-radius:14px;padding:10px 12px;cursor:pointer;}
-.pr-row:active{transform:scale(.995);}
-.pr-t{flex:1;display:flex;align-items:center;gap:6px;font-weight:800;font-size:12.5px;min-width:0;}
-.pr-t:last-of-type{justify-content:flex-end;}
-.pr-t img{width:24px;height:16px;border-radius:3px;object-fit:cover;}
-.pr-sc{font-weight:900;font-size:14px;color:#ffd873;min-width:44px;text-align:center;}
-.pr-sc.pr-vs{color:#6f7890;font-size:11px;}
-.pr-cam{font-size:15px;opacity:.8;}
-.pics-panel{padding:9px 2px 2px;}
-.pic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.pic-cell{display:block;position:relative;border-radius:13px;overflow:hidden;border:1px solid #2a3350;background:#0d1120;cursor:pointer;}
-.pic-cell.pic-hero{grid-column:1/-1;}
-.pic-cell img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;}
-.pic-cell.pic-hero img{aspect-ratio:16/8;}
-.pic-cell span{position:absolute;inset-inline:0;bottom:0;background:linear-gradient(transparent,rgba(5,8,16,.94));color:#e8edfa;font-size:10px;font-weight:700;padding:16px 8px 6px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.pic-cell.pic-hero span{font-size:12px;padding:20px 10px 8px;}
-.pic-swap{position:absolute;top:6px;inset-inline-start:6px;z-index:2;width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(10,14,26,.72);color:#cfe0ff;font-size:13px;font-weight:900;cursor:pointer;backdrop-filter:blur(4px);}
-.pic-swap:active{transform:rotate(180deg);}
-.pic-hint{margin-top:7px;text-align:center;font-size:10.5px;color:#8b95ad;font-weight:700;}
-.pr-round{font-weight:900;font-size:13px;color:#ffd873;margin:14px 4px 8px;padding-top:4px;border-top:1px dashed rgba(232,178,58,.25);}
-.pr-round:first-child{border-top:none;margin-top:2px;}
-.pics-getty{display:block;text-align:center;margin-top:14px;color:#9db8ff;font-weight:800;font-size:12px;text-decoration:none;background:rgba(120,150,255,.08);border:1px solid rgba(120,150,255,.3);border-radius:12px;padding:10px;}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -1936,12 +1912,6 @@ if("serviceWorker" in navigator){
   </section>
 
   <!-- ============ GROUPS ============ -->
-  <section id="tab-pics" class="tab">
-    <div class="sec-t"><i></i>📸 لقطات المباريات <span class="cnt">٤ لقطات مختارة لكل مباراة</span></div>
-    <div class="st-source" style="margin-bottom:12px">اضغط أي مباراة لعرض أبرز أحداثها بالصور — من مصدر النتائج الرسمي</div>
-    <div id="picsList"></div>
-    <a class="pics-getty" href="https://www.gettyimages.com/photos/fifa-world-cup-2026" target="_blank" rel="noopener">🖼 المعرض الرسمي الكامل (Getty) ↗</a>
-  </section>
   <section id="tab-groups" class="tab">
     <div class="sec-t"><i></i>المجموعات الـ12 <span class="cnt">48 منتخبًا</span></div>
     <div id="stSource" class="st-source">المصدر: حساب تلقائي من النتائج</div>
@@ -2120,7 +2090,6 @@ if("serviceWorker" in navigator){
   <button data-tab="matches"><span class="ic">📅</span>المباريات</button>
   <button data-tab="stats"><span class="ic">📊</span>الإحصائيات</button>
   <button data-tab="goals"><span class="ic">📋</span>الملخص</button>
-  <button data-tab="pics"><span class="ic">📸</span>اللقطات</button>
   <button data-tab="groups"><span class="ic">🧩</span>المجموعات</button>
   <button data-tab="ko"><span class="ic">🏆</span>الإقصائيات</button>
   <button data-tab="champions"><span class="ic">👑</span><span data-i18n="tab_champs">الأبطال</span></button>
@@ -4329,103 +4298,6 @@ function renderGoals(m, g){
   }
   return '<div class="gl-grid">'+col(hN,g.home)+col(aN,g.away)+'</div>';
 }
-var PIC_CACHE={};
-function picsRound(m){
-  if(m.n===104) return "🏆 النهائي";
-  if(m.n===103) return "🥉 المركز الثالث";
-  if(m.n>=101) return "نصف النهائي";
-  if(m.n>=97) return "ربع النهائي";
-  if(m.n>=89) return "دور الـ16";
-  if(m.n>=73) return "دور الـ32";
-  return "دور المجموعات";
-}
-function renderPics(){
-  var box=document.getElementById("picsList");
-  if(!box || box.dataset.done) return;
-  var order=[]; for(var i=104;i>=1;i--){ var m=getM(i); if(m&&m.d) order.push(m); }
-  var html='', lastR='';
-  order.forEach(function(m){
-    var R=picsRound(m);
-    if(R!==lastR){ html+='<div class="pr-round">'+R+'</div>'; lastR=R; }
-    var hN=(typeof resolveKOName==="function")?resolveKOName(m.h):m.h;
-    var aN=(typeof resolveKOName==="function")?resolveKOName(m.a):m.a;
-    var r=(typeof radarScore==="function")?radarScore(m):null;
-    var mid=(r&&r.played)?('<b class="pr-sc">'+r.sh+'-'+r.sa+'</b>'):'<b class="pr-sc pr-vs">VS</b>';
-    html+='<div class="pr-wrap"><div class="pr-row" data-picsm="'+m.n+'">'
-      +'<span class="pr-t">'+flagImg(hN)+' '+hN+'</span>'+mid+'<span class="pr-t">'+aN+' '+flagImg(aN)+'</span>'
-      +'<span class="pr-cam">📸</span></div>'
-      +'<div class="pics-panel" id="pics-'+m.n+'" style="display:none"></div></div>';
-  });
-  box.innerHTML=html;
-  box.dataset.done="1";
-}
-var PIC_POOL={};
-function picBig(u){
-  if(!u) return u;
-  if(u.indexOf("combiner/i?")>=0) return u+(u.indexOf("&w=")<0?"&w=640&h=400":"");
-  return u;
-}
-function picScore(cap, names){
-  var c=(cap||"").toLowerCase(), s=0;
-  if(/goal|هدف|يسجل|scores?\b/.test(c)) s+=4;
-  if(/highlights|الملخص|أبرز/.test(c)) s+=2;
-  if(/red card|penalty|save|طرد|ركلة|تصد/.test(c)) s+=2;
-  for(var i=0;i<names.length;i++){ if(names[i] && c.indexOf(names[i])>=0){ s+=2; break; } }
-  if(/preview|prediction|predict|react|debate|studio|press|training|توقع|تدريب|مؤتمر/.test(c)) s-=4;
-  return s;
-}
-function picsSaved(){ try{ return JSON.parse(localStorage.getItem("wcpics")||"{}"); }catch(e){ return {}; } }
-function picsSave(o){ try{ localStorage.setItem("wcpics", JSON.stringify(o)); }catch(e){} }
-function renderPicsPanel(n, box){
-  var pool=PIC_POOL[n]||[];
-  if(!pool.length){ box.innerHTML='<div class="lu-note">لا تتوفر لقطات لهذه المباراة حاليًا 📷</div>'; return; }
-  var saved=picsSaved()[n];
-  var sel=(saved&&saved.length?saved:[0,1,2,3]).map(function(i){return Math.min(i,pool.length-1);});
-  var cells=sel.slice(0,Math.min(4,pool.length)).map(function(pi,slot){
-    var p=pool[pi];
-    return '<div class="pic-cell'+(slot===0?' pic-hero':'')+'" data-picopen="'+p.img+'">'
-      +'<img src="'+picBig(p.img)+'" loading="lazy" alt="">'
-      +(pool.length>4?'<button class="pic-swap" data-swap="'+n+','+slot+'">↻</button>':'')
-      +(p.cap?'<span>'+p.cap+'</span>':'')+'</div>';
-  }).join("");
-  box.innerHTML='<div class="pic-grid">'+cells+'</div>'
-    +(pool.length>4?'<div class="pic-hint">↻ ما عجبتك لقطة؟ بدّلها — واختيارك ينحفظ بجهازك</div>':'');
-}
-async function fetchMatchPics(n, box){
-  if(PIC_POOL[n]){ renderPicsPanel(n,box); return; }
-  box.innerHTML='<div class="lu-note">جارٍ جلب اللقطات <span class="spin"></span></div>';
-  try{
-    var m=getM(n);
-    var id=EV_ID[n];
-    if(!id && m && m.d){
-      var base=dateObj(m).getTime();
-      await loadScoresESPN(ymd(new Date(base-30*3600000)), ymd(new Date(base+30*3600000)));
-      id=EV_ID[n];
-    }
-    if(!id) throw new Error("noid");
-    var r1=await fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event="+id);
-    if(!r1.ok) throw new Error("sum");
-    var d1=await r1.json();
-    // أسماء هدّافي المباراة (للترشيح) من السجل أو الكاش
-    var names=[];
-    var fr=FINAL_RESULTS[n]||{};
-    (fr.gh||[]).concat(fr.ga||[]).forEach(function(g){ if(g.who) names.push(String(g.who).toLowerCase()); });
-    var gc=GOAL_CACHE[n];
-    if(gc)(gc.home||[]).concat(gc.away||[]).forEach(function(g){ var nm=g.rawName||g.who||g.name; if(nm) names.push(String(nm).toLowerCase().split(" ").pop()); });
-    var seen={}, pool=[];
-    (d1.videos||[]).forEach(function(v){
-      var img=v.thumbnail||(v.posterImages&&v.posterImages.default&&v.posterImages.default.href)||"";
-      if(!img||seen[img]) return; seen[img]=1;
-      var cap=(v.headline||v.title||"").trim();
-      pool.push({img:img, cap:cap, s:picScore(cap,names)});
-    });
-    pool.sort(function(a,b){return b.s-a.s;});
-    PIC_POOL[n]=pool;
-    renderPicsPanel(n,box);
-  }catch(e){
-    box.innerHTML='<div class="lu-err">تعذّر جلب اللقطات — <button class="lu-alt" data-picsr="'+n+'">↻ إعادة المحاولة</button></div>';
-  }
-}
 async function fetchGoals(n, box, btn){
   var m=getM(n); if(!m || !box) return;
   if(FINAL_RESULTS[n] && GOAL_CACHE[n]){ box.innerHTML=renderGoals(m,GOAL_CACHE[n]); return; }
@@ -5652,7 +5524,6 @@ function openMatchFull(mn){
 function goTab(id){
   if(id==="info" && !window._stadDone){ if(typeof renderStadiums==="function"){ renderStadiums(); window._stadDone=true; } }
   if(id==="ko"){ renderKO(); }
-  if(id==="pics"){ renderPics(); }
   if(id==="stats"){ try{buildLeaderboard();}catch(_e){} renderStats(); }
   if(id==="goals"){ try{buildLeaderboard();}catch(_e){} renderGoalsTab(); }
   if(id==="info" && !window._infoDone){ renderInfo(); window._infoDone=true; }
@@ -6216,27 +6087,6 @@ document.body.addEventListener("click", function(e){
   if(ltv){ openLiveTV(ltv); return; }
   var bvb=e.target.closest("[data-bein-q]");
   if(bvb){ openBeinMatch(bvb); return; }
-  var prw=e.target.closest("[data-picsm]");
-  if(prw){
-    var pn=+prw.dataset.picsm, pb=document.getElementById("pics-"+pn);
-    if(pb.style.display==="none"){ pb.style.display="block"; fetchMatchPics(pn,pb); }
-    else pb.style.display="none";
-    return;
-  }
-  var prr=e.target.closest("[data-picsr]");
-  if(prr){ fetchMatchPics(+prr.dataset.picsr, document.getElementById("pics-"+prr.dataset.picsr)); return; }
-  var psw=e.target.closest("[data-swap]");
-  if(psw){
-    var pp=psw.dataset.swap.split(","), sn=+pp[0], slot=+pp[1];
-    var pool=PIC_POOL[sn]||[];
-    var all=picsSaved(); var cur=(all[sn]&&all[sn].length?all[sn]:[0,1,2,3]).slice(0,4);
-    cur[slot]=(cur[slot]+1)%pool.length;
-    all[sn]=cur; picsSave(all);
-    renderPicsPanel(sn, document.getElementById("pics-"+sn));
-    return;
-  }
-  var pop=e.target.closest("[data-picopen]");
-  if(pop){ window.open(pop.dataset.picopen, "_blank", "noopener"); return; }
   var lub=e.target.closest("[data-lu]");
   if(lub){
     var ln=+lub.dataset.lu, lcard=lub.closest(".match");
