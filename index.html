@@ -1988,8 +1988,8 @@ if("serviceWorker" in navigator){
 
   <!-- ============ CHAMPIONS (الأبطال التاريخيون) ============ -->
   <section id="tab-champions" class="tab">
-    <div class="sec-t"><i></i><span data-i18n="ch_title">الأبطال التاريخيون</span> <span class="cnt">22 نسخة</span></div>
-    <div class="st-source" style="margin-bottom:14px">🏆 من 1930 إلى 2022 — رحلة كل الأبطال عبر التاريخ</div>
+    <div class="sec-t"><i></i><span data-i18n="ch_title">الأبطال التاريخيون</span> <span class="cnt">23 نسخة</span></div>
+    <div class="st-source" style="margin-bottom:14px">🏆 من 1930 إلى 2026 — رحلة كل الأبطال عبر التاريخ</div>
     <div id="chList"></div>
   </section>
 
@@ -6511,16 +6511,17 @@ var CHAMPIONS_HISTORY = [
   {year:2010, host:"جنوب أفريقيا", winner:"إسبانيا", runner:"هولندا", score:"1-0", emoji:"🇪🇸"},
   {year:2014, host:"البرازيل", winner:"ألمانيا", runner:"الأرجنتين", score:"1-0", emoji:"🇩🇪"},
   {year:2018, host:"روسيا", winner:"فرنسا", runner:"كرواتيا", score:"4-2", emoji:"🇫🇷"},
-  {year:2022, host:"قطر", winner:"الأرجنتين", runner:"فرنسا", score:"3-3 (4-2)", emoji:"🇦🇷"}
+  {year:2022, host:"قطر", winner:"الأرجنتين", runner:"فرنسا", score:"3-3 (4-2)", emoji:"🇦🇷"},
+  {year:2026, host:"أمريكا وكندا والمكسيك", winner:"إسبانيا", runner:"الأرجنتين", score:"1-0 (بعد التمديد)", emoji:"🇪🇸"}
 ];
 
 /* ===== بطاقة معلومات لكل منتخب ===== */
 var TEAM_WIKI = {
   "البرازيل":{conf:"CONMEBOL",rank:5,titles:5,lastTitle:2002,coach:"دوريفال جونيور",captain:"ماركينيوس",nickname:"السيليساو",starPlayer:"فينيسيوس جونيور",bio:"أكثر منتخب فاز بكأس العالم بـ 5 ألقاب. معروف بأسلوب السامبا الهجومي."},
-  "الأرجنتين":{conf:"CONMEBOL",rank:1,titles:3,lastTitle:2022,coach:"ليونيل سكالوني",captain:"ليونيل ميسي",nickname:"التانجو",starPlayer:"ميسي",bio:"حامل اللقب الحالي. فاز بأول لقب 1978 ثم 1986 مع مارادونا و2022 مع ميسي."},
+  "الأرجنتين":{conf:"CONMEBOL",rank:1,titles:3,lastTitle:2022,coach:"ليونيل سكالوني",captain:"ليونيل ميسي",nickname:"التانجو",starPlayer:"ميسي",bio:"ثلاثة ألقاب: 1978 و1986 مع مارادونا و2022 مع ميسي — ووصيف 2026 في ختام مسيرة ميسي المونديالية."},
   "فرنسا":{conf:"UEFA",rank:2,titles:2,lastTitle:2018,coach:"ديدييه ديشان",captain:"كيليان مبابي",nickname:"الديوك",starPlayer:"كيليان مبابي",bio:"منتخب قوي ومتنوع. فاز في 1998 و2018، ووصل النهائي 2006 و2022."},
   "ألمانيا":{conf:"UEFA",rank:9,titles:4,lastTitle:2014,coach:"يوليان ناغيلسمان",captain:"إلكاي غوندوغان",nickname:"المانشافت",starPlayer:"فلوريان فيرتز",bio:"من أكثر المنتخبات تتويجًا. 4 ألقاب مع تاريخ طويل من الانضباط التكتيكي."},
-  "إسبانيا":{conf:"UEFA",rank:3,titles:1,lastTitle:2010,coach:"لويس دي لا فوينتي",captain:"ألفارو موراتا",nickname:"لاروخا",starPlayer:"لامين يامال",bio:"بطل 2010 بأسلوب التيكي تاكا الشهير. مواهب شابة مذهلة."},
+  "إسبانيا":{conf:"UEFA",rank:3,titles:2,lastTitle:2026,coach:"لويس دي لا فوينتي",captain:"ألفارو موراتا",nickname:"لاروخا",starPlayer:"لامين يامال",bio:"بطل العالم 2026 بجيل يامال الذهبي — اللقب الثاني بعد 2010 وأسلوب التيكي تاكا."},
   "إنجلترا":{conf:"UEFA",rank:4,titles:1,lastTitle:1966,coach:"توماس توخيل",captain:"هاري كين",nickname:"الأسود الثلاثة",starPlayer:"جود بيلينغهام",bio:"بطل العالم 1966 على أرضه. وصل نصف نهائي 2018 ونهائي يورو 2020 و2024."},
   "البرتغال":{conf:"UEFA",rank:6,titles:0,lastTitle:null,coach:"روبرتو مارتينيز",captain:"كريستيانو رونالدو",nickname:"برازيليو أوروبا",starPlayer:"كريستيانو رونالدو",bio:"بطل يورو 2016. أول مشاركة في مونديال 1966 (نصف نهائي)."},
   "هولندا":{conf:"UEFA",rank:7,titles:0,lastTitle:null,coach:"رونالد كومان",captain:"فيرجيل فان ديك",nickname:"الطواحين",starPlayer:"فرينكي دي يونغ",bio:"وصيف 1974 و1978 و2010. كرة قدم هجومية جميلة."},
