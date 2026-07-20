@@ -1717,6 +1717,9 @@ img.kr-fl.kr-lose,.kr-slot.kr-lose img{filter:grayscale(.75);}
 .aw-t small{display:block;font-weight:700;font-size:9.5px;color:#8b93a5;}
 .aw-n{flex:1;font-weight:900;font-size:14.5px;color:#fff;line-height:1.4;min-width:0;}
 .aw-n i{display:block;font-style:normal;font-weight:700;font-size:10.5px;color:#e8b23a;margin-top:1px;}
+.aw-champ{background:linear-gradient(135deg,rgba(198,11,30,.20),rgba(232,178,58,.16)),#191510;padding:12px 14px;border-top:1px solid rgba(232,178,58,.25);font-weight:900;font-size:16.5px;color:#fff;line-height:1.5;}
+.aw-champ b{color:#ffd873;font-size:18px;}
+.aw-champ small{display:block;font-weight:700;font-size:11px;color:#d9c99e;margin-top:2px;}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0f24">
@@ -1814,7 +1817,8 @@ if("serviceWorker" in navigator){
       <div class="beam"><i id="beamFill"></i></div>
     </div>
     <div class="awards">
-      <div class="aw-h">🏅 جوائز البطولة الفردية</div>
+      <div class="aw-h">🏅 جوائز البطولة</div>
+      <div class="aw-champ">🏆 بطل كأس العالم ٢٠٢٦ — <b>إسبانيا</b> 🇪🇸<small>النهائي ١ - ٠ على الأرجنتين بعد التمديد · العرس الثاني بعد ٢٠١٠</small></div>
       <div class="aw-r"><span class="aw-i">🏆</span><span class="aw-t">أفضل لاعب <small>الكرة الذهبية</small></span><span class="aw-n">رودري <i>🇪🇸 إسبانيا — قائد وسط الأبطال</i></span></div>
       <div class="aw-r"><span class="aw-i">👟</span><span class="aw-t">الهدّاف <small>الحذاء الذهبي</small></span><span class="aw-n">كيليان مبابي <i>🇫🇷 ١٠ أهداف — الأول تاريخيًا يحرزه مرتين</i></span></div>
       <div class="aw-r"><span class="aw-i">🎯</span><span class="aw-t">أفضل صانع <small>الأكثر صناعةً</small></span><span class="aw-n">مايكل أوليسي <i>🇫🇷 ٧ صناعات — حطّم رقم بيليه (١٩٧٠)</i></span></div>
@@ -4415,7 +4419,7 @@ function extShell(m){
     if(stxV==="done"){
       var q=encodeURIComponent(((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" beIN Sports ملخص");
       var qMatch=encodeURIComponent(m.h+" ضد "+m.a);
-      summaryBox='';
+      summaryBox='<button class="bein-video-btn" data-bein-q="'+q+'" data-bein-match="'+qMatch+'">🎬 شاهد ملخص المباراة على beIN SPORTS</button><div class="behin-empty" id="behin-'+m.n+'" style="display:none"></div><div class="ext-div"></div>';
     }
     if(stxV!=="done"){
       var llbl = stxV==="live" ? "🔴 شاهد المباراة بثًّا مباشراً الآن" : "📺 روابط بث المباراة المباشر";
@@ -5457,6 +5461,15 @@ function openLiveTV(btn){
   }).join("");
   box.innerHTML='<div class="livetv-head">🔴 البث الرسمي المباشر</div>'+links;
 }
+function ytLink(q){ return "https://www.youtube.com/results?search_query="+encodeURIComponent(q); }
+function openBeinMatch(btn){
+  var card = btn.closest(".match");
+  if(!card) return;
+  var m = getM(+card.dataset.mn);
+  if(!m) return;
+  var q = "ملخص "+((typeof resolveKOName==="function")?resolveKOName(m.h):m.h)+" ضد "+((typeof resolveKOName==="function")?resolveKOName(m.a):m.a)+" كأس العالم 2026 beIN SPORTS";
+  window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(q), "_blank", "noopener");
+}
 function openLiveTVModal(mn){
   var m=getM(+mn); if(!m) return;
   var ex=document.getElementById("ltvModal"); if(ex) ex.remove();
@@ -5708,7 +5721,7 @@ function renderGoalsTab(){
     }
     var items=teamBlock(hN, homeGoals, gr.sh)+teamBlock(aN, awayGoals, gr.sa);
     var yqSum="ملخص "+hN+" ضد "+aN+" كأس العالم 2026 بي ان سبورت";
-    var beinBtn='';
+    var beinBtn='<a class="gt-bein" href="'+ytLink(yqSum)+'" target="_blank" rel="noopener"><span class="gt-bein-ic">🎬</span> شاهد ملخص المباراة على beIN</a>';
     html+='<div class="gt-block">'+head+items+beinBtn+'</div>';
   });
   var cnt=document.getElementById("goalsCnt");
@@ -6067,6 +6080,8 @@ document.body.addEventListener("click", function(e){
   // زر beIN SPORTS — منفصل (لما يضغط على data-bein-q مباشرة)
   var ltv=e.target.closest("[data-livetv]");
   if(ltv){ openLiveTV(ltv); return; }
+  var bvb=e.target.closest("[data-bein-q]");
+  if(bvb){ openBeinMatch(bvb); return; }
   var lub=e.target.closest("[data-lu]");
   if(lub){
     var ln=+lub.dataset.lu, lcard=lub.closest(".match");
